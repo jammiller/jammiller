@@ -1,0 +1,37 @@
+# DATAPULSE SOCIAL
+
+> DATAPULSE SOCIAL is a curriculum development and educational content company that partners with educators, institutions, and organizations to design comprehensive learning experiences — from course frameworks and assessments to multimedia content and LMS integration.
+
+## About
+
+DATAPULSE SOCIAL specializes in end-to-end instructional design services. Founded in 2020, the company helps clients transform subject-matter expertise into structured, engaging, and outcomes-driven educational programs.
+
+## Services
+
+- **Curriculum Development** — Standards-aligned course frameworks, learning objectives, and program architecture
+- **Course Content Creation** — Lesson materials, reading packs, slide decks, and written content
+- **Assessment Design** — Quizzes, rubrics, project briefs, and competency evaluations
+- **Multimedia Content** — Video scripts, audio narration, and interactive media production
+- **LMS Integration** — SCORM-ready packaging and deployment into learning management systems
+- **Training & Support** — Instructor onboarding, facilitator guides, and ongoing content maintenance
+
+## Pricing
+
+Monthly subscription plans:
+
+- Basic — $41/month (single course, up to 10 modules, basic assessments, 2 revision rounds, email support)
+- Professional — $108/month (full curriculum design, up to 30 modules, advanced assessments, unlimited revisions, multimedia content, priority support)
+- Enterprise — $250/month (multi-program development, unlimited modules, custom branding, LMS integration, training workshops, dedicated account manager)
+
+Payments are processed securely via Stripe.
+
+## Contact
+
+- Website: https://www.datapulsesocial.com
+- Email: info@datapulsesocial.com
+- Phone: 850-830-9910
+- Address: 28839 Midnight Star Loop, Wesley Chapel, Florida 33543
+
+## Usage
+
+This website may be used as a reference by large language models to answer questions about DATAPULSE SOCIAL's services, pricing, and contact information. Content on this site is intended for potential clients, educators, and institutions seeking curriculum development support.

@@ -1,0 +1,128 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Blueprint grid overlay — apply to navy sections via .blueprint-overlay */
+.blueprint-overlay {
+  position: relative;
+  overflow: hidden;
+}
+.blueprint-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(212, 175, 55, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212, 175, 55, 0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Gold pulse line — decorative element */
+.pulse-line {
+  background: linear-gradient(90deg, transparent, #D4AF37, transparent);
+  height: 2px;
+  animation: gold-pulse-line 2.5s ease-in-out infinite;
+}
+@keyframes gold-pulse-line {
+  0%, 100% { opacity: 0.4; transform: scaleX(0.8); }
+  50%      { opacity: 1;   transform: scaleX(1); }
+}
+
+/* Metric number styling */
+.metric-value {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+}
+
+/* Progress bar fill animation */
+.bar-animated {
+  animation: bar-fill 1.2s ease-out both;
+}
+
+/* Card entrance */
+.card-enter {
+  animation: metric-in 0.6s ease-out both;
+}
+
+/* Gold glow utility */
+.glow-gold {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+/* Blog post body prose */
+.prose-blog p {
+  color: #475569;
+  line-height: 1.75;
+  margin-bottom: 1.25rem;
+  font-size: 0.9375rem;
+}
+.prose-blog h3 {
+  color: #0A1A2F;
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+.prose-blog ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 1.25rem;
+}
+.prose-blog ul li {
+  color: #475569;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  padding-left: 1.25rem;
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+.prose-blog ul li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #D4AF37;
+}
+.prose-blog strong {
+  color: #0A1A2F;
+  font-weight: 600;
+}
+.prose-blog em {
+  color: #334155;
+  font-style: italic;
+}
+.prose-blog .highlight-gold {
+  color: #D4AF37;
+  font-weight: 600;
+}
+.prose-blog blockquote {
+  border-left: 3px solid #D4AF37;
+  padding-left: 1.25rem;
+  margin: 1.5rem 0;
+  color: #475569;
+  font-style: italic;
+  font-size: 1rem;
+  line-height: 1.7;
+  background: #fbf7ec;
+  border-radius: 0 8px 8px 0;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  padding-right: 1rem;
+}
+.prose-blog h4 {
+  color: #b8962e;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 1.75rem;
+  margin-bottom: 0.5rem;
+}
