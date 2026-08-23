@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ArrowLeft, GraduationCap, Shield, BarChart3 } from 'lucide-react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { AcutelyAware } from './components/AcutelyAware';
 import { DataPulseSite } from './components/DataPulseSite';
 import { PulseOS } from './components/PulseOS';
@@ -109,6 +110,7 @@ function App() {
 
       <CookieConsent />
       <InstallPrompt />
+      <SpeedInsights />
     </>
   );
 }
