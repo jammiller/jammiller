@@ -1,0 +1,30 @@
+{
+  "name": "PulseOS Platform",
+  "short_name": "PulseOS",
+  "description": "UbD-driven learning operations. Build curriculum units with Stage 1, 2, and 3 structure, assessments, and analytics.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a1a2f",
+  "theme_color": "#0a1a2f",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/pulseos-banner-graphic.webp",
+      "sizes": "512x512",
+      "type": "image/webp",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/pwa-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/pwa-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+apply plugin: 'com.android.application'
+
+android {
+    namespace = "com.easybus.app"
+    compileSdk = rootProject.ext.compileSdkVersion
+    flavorDimensions += "app"
+    productFlavors {
+        safety {
+            dimension = "app"
+            applicationId = "com.safetyapp.app"
+            resValue "string", "app_name", "Safety App"
+            resValue "string", "title_activity_main", "Safety App"
+            resValue "string", "package_name", "com.safetyapp.app"
+            resValue "string", "custom_url_scheme", "com.safetyapp.app"
+        }
+        datapulse {
+            dimension = "app"
+            applicationId = "com.datapulse.app"
+            resValue "string", "app_name", "DATAPULSE SOCIAL"
+            resValue "string", "title_activity_main", "DATAPULSE SOCIAL"
+            resValue "string", "package_name", "com.datapulse.app"
+            resValue "string", "custom_url_scheme", "com.datapulse.app"
+        }
+        statslab {
+            dimension = "app"
+            applicationId = "com.statslab.app"
+            resValue "string", "app_name", "StatsLab"
+            resValue "string", "title_activity_main", "StatsLab"
+            resValue "string", "package_name", "com.statslab.app"
+            resValue "string", "custom_url_scheme", "com.statslab.app"
+        }
+    }
+    defaultConfig {
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        aaptOptions {
+             // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
+             // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#L61
+            ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
+        }
+    }
+    signingConfigs {
+        safetyRelease {
+            storeFile file('safety.keystore')
+            storePassword System.getenv('SAFETY_KEYSTORE_PASSWORD') ?: 'safety123'
+            keyAlias System.getenv('SAFETY_KEY_ALIAS') ?: 'safety'
+            keyPassword System.getenv('SAFETY_KEY_PASSWORD') ?: 'safety123'
+        }
+        datapulseRelease {
+            storeFile file('datapulse.keystore')
+            storePassword System.getenv('DATAPULSE_KEYSTORE_PASSWORD') ?: 'datapulse123'
+            keyAlias System.getenv('DATAPULSE_KEY_ALIAS') ?: 'datapulse'
+            keyPassword System.getenv('DATAPULSE_KEY_PASSWORD') ?: 'datapulse123'
+        }
+        statslabRelease {
+            storeFile file('statslab.keystore')
+            storePassword System.getenv('STATSLAB_KEYSTORE_PASSWORD') ?: 'statslab123'
+            keyAlias System.getenv('STATSLAB_KEY_ALIAS') ?: 'statslab'
+            keyPassword System.getenv('STATSLAB_KEY_PASSWORD') ?: 'statslab123'
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    productFlavors.all { flavor ->
+        flavor.signingConfig = signingConfigs."${flavor.name}Release"
+    }
+}
+
+repositories {
+    flatDir{
+        dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
+    implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
+    implementation project(':capacitor-android')
+    testImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
+    implementation project(':capacitor-cordova-android-plugins')
+}
+
+apply from: 'capacitor.build.gradle'
+
+try {
+    def servicesJSON = file('google-services.json')
+    if (servicesJSON.text) {
+        apply plugin: 'com.google.gms.google-services'
+    }
+} catch(Exception e) {
+    logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
+}
