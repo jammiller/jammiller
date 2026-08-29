@@ -1,4 +1,4 @@
-const CACHE_NAME = 'datapulse-social-v2';
+const CACHE_NAME = 'pulseos-platform-v2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -30,6 +30,21 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
+
+  // Always fetch HTML navigations first so a deployment immediately reaches users.
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (response && response.status === 200 && response.type === 'basic') {
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
+          }
+          return response;
+        })
+        .catch(() => caches.match(request))
+    );
+    return;
+  }
 
   event.respondWith(
     caches.match(request).then((cached) => {

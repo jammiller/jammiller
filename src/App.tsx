@@ -36,6 +36,19 @@ function App() {
     document.title = title;
     document.querySelector('meta[name="description"]')?.setAttribute('content', description);
 
+    if (isPulseOSDomain) {
+      const pulseOSUrl = 'https://pulseosplatform.com/';
+      const pulseOSTitle = 'PulseOS Platform | UbD-Driven Learning Operations';
+      const pulseOSDescription = 'PulseOS — UbD-driven learning operations. Build curriculum units with Stage 1, 2, and 3 structure, assessments, and analytics.';
+      document.querySelector('link[rel="canonical"]')?.setAttribute('href', pulseOSUrl);
+      document.querySelector('meta[property="og:site_name"]')?.setAttribute('content', 'PulseOS Platform');
+      document.querySelector('meta[property="og:title"]')?.setAttribute('content', pulseOSTitle);
+      document.querySelector('meta[property="og:description"]')?.setAttribute('content', pulseOSDescription);
+      document.querySelector('meta[property="og:url"]')?.setAttribute('content', pulseOSUrl);
+      document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', pulseOSTitle);
+      document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', pulseOSDescription);
+    }
+
     if (isSafetyDomain) {
       document.querySelector('link[rel="icon"][sizes="32x32"]')?.setAttribute('href', '/safety-favicon-32.png');
       document.querySelector('link[rel="icon"][sizes="16x16"]')?.setAttribute('href', '/safety-favicon-16.png');
@@ -44,6 +57,9 @@ function App() {
       document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#07131f');
       document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', 'Safety App');
     } else if (isPulseOSDomain) {
+      document.querySelector('link[rel="icon"][sizes="32x32"]')?.setAttribute('href', '/pulseos-favicon.svg');
+      document.querySelector('link[rel="icon"][sizes="16x16"]')?.setAttribute('href', '/pulseos-favicon.svg');
+      document.querySelector('link[rel="apple-touch-icon"]')?.setAttribute('href', '/pulseos-favicon.svg');
       document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#0a1a2f');
       document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', 'PulseOS');
       document.querySelector('link[rel="manifest"]')?.setAttribute('href', '/pulseos-manifest.json');

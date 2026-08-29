@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { supabase } from '../../lib/supabaseClient';
+import { hasSupabaseConfig, supabase } from '../../lib/supabaseClient';
 import type {
   Program, Course, UbDUnit, Lesson, Assessment, AssessmentSubmission,
 } from '../../lib/pulseos-types';
@@ -17,6 +17,11 @@ export function usePulseOSData() {
   const fetchAll = useCallback(async () => {
     setLoading(true);
     setError(null);
+    if (!hasSupabaseConfig) {
+      setError('PulseOS is temporarily unavailable while its data connection is restored.');
+      setLoading(false);
+      return;
+    }
     try {
       const [pRes, cRes, uRes, lRes, aRes, sRes] = await Promise.all([
         supabase.from('pulseos_programs').select('*').order('created_at', { ascending: false }),
