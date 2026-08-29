@@ -1,11 +1,7 @@
-const CACHE_NAME = 'pulseos-platform-v2';
+const CACHE_NAME = 'pulseos-platform-v3';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
-  '/manifest.json',
-  '/pwa-icon-192.png',
-  '/pwa-icon-512.png',
-  '/apple-touch-icon.png',
 ];
 
 self.addEventListener('install', (event) => {
