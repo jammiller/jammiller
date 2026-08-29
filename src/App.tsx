@@ -57,6 +57,9 @@ function App() {
       document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#07131f');
       document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', 'Safety App');
     } else if (isPulseOSDomain) {
+      document.querySelector('link[rel="icon"][sizes="32x32"]')?.setAttribute('href', '/pulseos-favicon.svg');
+      document.querySelector('link[rel="icon"][sizes="16x16"]')?.setAttribute('href', '/pulseos-favicon.svg');
+      document.querySelector('link[rel="apple-touch-icon"]')?.setAttribute('href', '/pulseos-favicon.svg');
       document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#0a1a2f');
       document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', 'PulseOS');
       document.querySelector('link[rel="manifest"]')?.setAttribute('href', '/pulseos-manifest.json');
