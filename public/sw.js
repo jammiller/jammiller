@@ -1,4 +1,4 @@
-const CACHE_NAME = 'datapulse-social-v2';
+const CACHE_NAME = 'pulseos-platform-v1';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
