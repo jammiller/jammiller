@@ -59,6 +59,13 @@ function App() {
       document.querySelector('link[rel="icon"][sizes="32x32"]')?.setAttribute('href', '/pulseos-icon-512.webp');
       document.querySelector('link[rel="icon"][sizes="16x16"]')?.setAttribute('href', '/pulseos-icon-512.webp');
       document.querySelector('link[rel="apple-touch-icon"]')?.setAttribute('href', '/pulseos-icon-512.webp');
+    } else {
+      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#0a1a2f');
+      document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', 'DATAPULSE SOCIAL');
+      document.querySelector('link[rel="manifest"]')?.setAttribute('href', '/manifest.json');
+      document.querySelector('link[rel="icon"][sizes="32x32"]')?.setAttribute('href', '/favicon-32.png');
+      document.querySelector('link[rel="icon"][sizes="16x16"]')?.setAttribute('href', '/favicon-16.png');
+      document.querySelector('link[rel="apple-touch-icon"]')?.setAttribute('href', '/apple-touch-icon.png');
     }
   }, [isSafetyDomain, isStatsLabDomain, isPulseOSDomain, isPulseOSPath]);
 
