@@ -4,6 +4,7 @@ import {
   ChevronRight, FileText, Target, CheckCircle2, Clock,
   TrendingUp, Award, ListChecks, Zap, Brain, Calendar, Phone, Check,
   Sparkles, ArrowRight, Activity, Users, GraduationCap,
+  CircleDot, LayoutGrid, FolderTree,
 } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import type {
@@ -52,7 +53,7 @@ export function PulseOS() {
   };
 
   const navItems: { key: View; label: string; icon: typeof BookOpen }[] = [
-    { key: 'dashboard', label: 'Dashboard', icon: Layers },
+    { key: 'dashboard', label: 'Dashboard', icon: LayoutGrid },
     { key: 'builder', label: 'UbD Units', icon: BookOpen },
     { key: 'assessments', label: 'Assessments', icon: ClipboardList },
     { key: 'analytics', label: 'Analytics', icon: BarChart3 },
@@ -63,21 +64,23 @@ export function PulseOS() {
       {/* Top bar */}
       <header className="sticky top-0 z-50 border-b border-white/10 bg-navy-950 text-white backdrop-blur-xl">
         <div className="absolute inset-0 bg-grid-dark bg-grid opacity-40" />
-        <div className="relative mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
-          <div className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gold-500 text-navy-950 shadow-lg shadow-gold-500/30">
+        <div className="relative mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+          <div className="flex items-center gap-3">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gold-500 text-navy-950 shadow-lg shadow-gold-500/30">
               <Zap className="h-4 w-4" />
             </span>
-            <span className="text-sm font-bold tracking-wide">PulseOS</span>
-            <span className="ml-2 hidden rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-gold-400 sm:inline">UbD Platform</span>
+            <div className="flex flex-col">
+              <span className="text-sm font-bold tracking-wide leading-none">PulseOS</span>
+              <span className="mt-0.5 text-[10px] font-medium uppercase tracking-wider text-gold-400/80">UbD Platform</span>
+            </div>
           </div>
           <nav className="hidden items-center gap-1 md:flex">
             {navItems.map(item => (
               <button
                 key={item.key}
                 onClick={() => setView(item.key)}
-                className={`inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all ${
-                  view === item.key ? 'bg-white/10 text-gold-400 shadow-sm' : 'text-slate-300 hover:text-white hover:bg-white/5'
+                className={`inline-flex items-center gap-2 rounded-lg px-3.5 py-2 text-sm font-medium transition-all ${
+                  view === item.key ? 'bg-white/10 text-gold-400 shadow-sm ring-1 ring-white/10' : 'text-slate-300 hover:text-white hover:bg-white/5'
                 }`}
               >
                 <item.icon className="h-4 w-4" /> {item.label}
@@ -194,45 +197,48 @@ function Dashboard({
     : 0;
 
   const stats = [
-    { label: 'Total Units', value: units.length, icon: BookOpen, color: 'navy', gradient: 'from-navy-600 to-navy-800' },
-    { label: 'Published', value: publishedCount, icon: CheckCircle2, color: 'green', gradient: 'from-emerald-500 to-emerald-700' },
-    { label: 'In Review', value: reviewCount, icon: Clock, color: 'amber', gradient: 'from-amber-400 to-amber-600' },
-    { label: 'Drafts', value: draftCount, icon: FileText, color: 'slate', gradient: 'from-slate-400 to-slate-600' },
-    { label: 'Lessons', value: lessons.length, icon: ListChecks, color: 'navy', gradient: 'from-navy-500 to-navy-700' },
-    { label: 'Assessments', value: assessments.length, icon: ClipboardList, color: 'gold', gradient: 'from-gold-400 to-gold-600' },
-    { label: 'Submissions', value: submissions.length, icon: TrendingUp, color: 'navy', gradient: 'from-navy-600 to-navy-800' },
-    { label: 'Avg Score', value: `${avgScore}%`, icon: Award, color: 'gold', gradient: 'from-gold-400 to-gold-600' },
+    { label: 'Total Units', value: units.length, icon: BookOpen, gradient: 'from-navy-600 to-navy-800', glow: 'shadow-navy-500/20' },
+    { label: 'Published', value: publishedCount, icon: CheckCircle2, gradient: 'from-emerald-500 to-emerald-700', glow: 'shadow-emerald-500/20' },
+    { label: 'In Review', value: reviewCount, icon: Clock, gradient: 'from-amber-400 to-amber-600', glow: 'shadow-amber-500/20' },
+    { label: 'Drafts', value: draftCount, icon: FileText, gradient: 'from-slate-400 to-slate-600', glow: 'shadow-slate-500/20' },
+    { label: 'Lessons', value: lessons.length, icon: ListChecks, gradient: 'from-navy-500 to-navy-700', glow: 'shadow-navy-500/20' },
+    { label: 'Assessments', value: assessments.length, icon: ClipboardList, gradient: 'from-gold-400 to-gold-600', glow: 'shadow-gold-500/20' },
+    { label: 'Submissions', value: submissions.length, icon: TrendingUp, gradient: 'from-navy-600 to-navy-800', glow: 'shadow-navy-500/20' },
+    { label: 'Avg Score', value: `${avgScore}%`, icon: Award, gradient: 'from-gold-400 to-gold-600', glow: 'shadow-gold-500/20' },
   ];
 
   return (
     <div className="space-y-8">
       {/* Hero banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-navy-950 p-8 sm:p-10">
+      <div className="relative overflow-hidden rounded-3xl bg-navy-950 p-8 sm:p-12">
         <div className="absolute inset-0 bg-grid-dark bg-grid opacity-30" />
-        <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-gold-500/10 blur-3xl" />
-        <div className="absolute -bottom-20 -left-10 h-48 w-48 rounded-full bg-navy-400/10 blur-3xl" />
+        <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-gold-500/10 blur-3xl animate-glow-pulse" />
+        <div className="absolute -bottom-20 -left-10 h-56 w-56 rounded-full bg-navy-400/15 blur-3xl" />
+        <div className="absolute right-1/3 top-0 h-32 w-32 rounded-full bg-gold-400/5 blur-2xl" />
         <div className="relative">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-gold-400">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-gold-500/30 bg-gold-500/10 px-4 py-1.5 text-xs font-semibold text-gold-400">
             <Sparkles className="h-3.5 w-3.5" />
             Understanding by Design
           </div>
-          <h1 className="text-3xl font-bold text-white sm:text-4xl">PulseOS Dashboard</h1>
-          <p className="mt-2 max-w-2xl text-sm text-slate-300">
+          <h1 className="text-3xl font-bold text-white sm:text-5xl">
+            PulseOS <span className="text-gold-400">Dashboard</span>
+          </h1>
+          <p className="mt-3 max-w-2xl text-sm text-slate-300 sm:text-base">
             Build, assess, and measure curriculum with real instructional design structure.
             Drag and drop units, sequence lessons, and track UbD integrity — all in one workspace.
           </p>
-          <div className="mt-6 flex flex-wrap gap-3">
+          <div className="mt-8 flex flex-wrap gap-3">
             <button
               onClick={() => onNavigate('builder')}
-              className="group inline-flex items-center gap-2 rounded-xl bg-gold-500 px-5 py-2.5 text-sm font-bold text-navy-950 transition-all hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/30"
+              className="group inline-flex items-center gap-2 rounded-xl bg-gold-500 px-6 py-3 text-sm font-bold text-navy-950 transition-all hover:bg-gold-400 hover:shadow-xl hover:shadow-gold-500/40"
             >
               <BookOpen className="h-4 w-4" />
               Build a Unit
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </button>
             <button
               onClick={() => onNavigate('assessments')}
-              className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/5 px-5 py-2.5 text-sm font-bold text-white transition-all hover:bg-white/10"
+              className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/5 px-6 py-3 text-sm font-bold text-white backdrop-blur-sm transition-all hover:bg-white/10 hover:border-white/30"
             >
               <ClipboardList className="h-4 w-4" />
               Create Assessments
@@ -246,88 +252,70 @@ function Dashboard({
         {stats.map((stat, i) => (
           <div
             key={stat.label}
-            className="group relative overflow-hidden rounded-xl border border-slate-200 bg-white p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg"
-            style={{ animation: `metric-in 0.5s ease-out ${i * 0.05}s both` }}
+            className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:-translate-y-1 hover:shadow-xl"
+            style={{ animation: `metric-in 0.5s ease-out ${i * 0.06}s both` }}
           >
-            <div className={`mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${stat.gradient} text-white shadow-md`}>
-              <stat.icon className="h-5 w-5" />
+            <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-slate-50 transition-transform duration-500 group-hover:scale-[2.5]" />
+            <div className="relative">
+              <div className={`mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br ${stat.gradient} text-white shadow-lg ${stat.glow}`}>
+                <stat.icon className="h-5 w-5" />
+              </div>
+              <p className="text-3xl font-bold text-navy-900">{stat.value}</p>
+              <p className="mt-0.5 text-xs font-medium text-slate-500">{stat.label}</p>
             </div>
-            <p className="text-2xl font-bold text-navy-900">{stat.value}</p>
-            <p className="text-xs text-slate-500">{stat.label}</p>
           </div>
         ))}
       </div>
 
       {/* Quick actions */}
-      <div className="grid gap-4 md:grid-cols-3">
-        <button
+      <div className="grid gap-5 md:grid-cols-3">
+        <ActionCard
           onClick={() => onNavigate('builder')}
-          className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 text-left transition-all hover:-translate-y-1 hover:border-gold-300 hover:shadow-xl"
-        >
-          <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-navy-50 transition-transform group-hover:scale-150" />
-          <div className="relative">
-            <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-navy-100 text-navy-700 transition-colors group-hover:bg-gold-100 group-hover:text-gold-700">
-              <BookOpen className="h-5 w-5" />
-            </div>
-            <h3 className="text-base font-bold text-navy-900">Build a UbD Unit</h3>
-            <p className="mt-1 text-sm text-slate-500">Drag and drop curriculum units with Stage 1, 2, and 3 structure.</p>
-            <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-navy-700 group-hover:text-gold-700">
-              Open Unit Builder <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </span>
-          </div>
-        </button>
-
-        <button
+          icon={BookOpen}
+          title="Build a UbD Unit"
+          desc="Drag and drop curriculum units with Stage 1, 2, and 3 structure."
+          cta="Open Unit Builder"
+          accent="navy"
+        />
+        <ActionCard
           onClick={() => onNavigate('assessments')}
-          className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 text-left transition-all hover:-translate-y-1 hover:border-gold-300 hover:shadow-xl"
-        >
-          <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-gold-50 transition-transform group-hover:scale-150" />
-          <div className="relative">
-            <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-navy-100 text-navy-700 transition-colors group-hover:bg-gold-100 group-hover:text-gold-700">
-              <ClipboardList className="h-5 w-5" />
-            </div>
-            <h3 className="text-base font-bold text-navy-900">Create Assessments</h3>
-            <p className="mt-1 text-sm text-slate-500">Build formative, summative, and performance assessments tied to units.</p>
-            <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-navy-700 group-hover:text-gold-700">
-              Open Assessment Engine <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </span>
-          </div>
-        </button>
-
-        <button
+          icon={ClipboardList}
+          title="Create Assessments"
+          desc="Build formative, summative, and performance assessments tied to units."
+          cta="Open Assessment Engine"
+          accent="gold"
+        />
+        <ActionCard
           onClick={() => onNavigate('analytics')}
-          className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 text-left transition-all hover:-translate-y-1 hover:border-gold-300 hover:shadow-xl"
-        >
-          <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-navy-50 transition-transform group-hover:scale-150" />
-          <div className="relative">
-            <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-navy-100 text-navy-700 transition-colors group-hover:bg-gold-100 group-hover:text-gold-700">
-              <BarChart3 className="h-5 w-5" />
-            </div>
-            <h3 className="text-base font-bold text-navy-900">View Analytics</h3>
-            <p className="mt-1 text-sm text-slate-500">Track UbD integrity, completion, and performance across units.</p>
-            <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-navy-700 group-hover:text-gold-700">
-              Open Analytics <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </span>
-          </div>
-        </button>
+          icon={BarChart3}
+          title="View Analytics"
+          desc="Track UbD integrity, completion, and performance across units."
+          cta="Open Analytics"
+          accent="navy"
+        />
       </div>
 
       {/* Recent units */}
       <div>
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-bold text-navy-900">Recent Units</h2>
+        <div className="mb-5 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <FolderTree className="h-5 w-5 text-navy-700" />
+            <h2 className="text-xl font-bold text-navy-900">Recent Units</h2>
+          </div>
           <button onClick={() => onNavigate('builder')} className="text-sm font-semibold text-navy-700 hover:text-gold-700">
             View all
           </button>
         </div>
         {units.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-slate-300 bg-white p-12 text-center">
-            <Target className="mx-auto mb-3 h-10 w-10 text-slate-300" />
+          <div className="rounded-2xl border-2 border-dashed border-slate-300 bg-white p-16 text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-navy-50">
+              <Target className="h-8 w-8 text-navy-300" />
+            </div>
             <p className="text-sm font-medium text-slate-500">No units yet. Create your first UbD unit to get started.</p>
             {courses.length > 0 && (
               <button
                 onClick={() => onCreateUnit(courses[0].id)}
-                className="mt-4 inline-flex items-center gap-2 rounded-lg bg-navy-900 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-navy-800"
+                className="mt-5 inline-flex items-center gap-2 rounded-xl bg-navy-900 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-navy-800 hover:shadow-lg"
               >
                 <Plus className="h-4 w-4" /> Create Unit
               </button>
@@ -341,28 +329,36 @@ function Dashboard({
             {units.slice(0, 6).map(unit => {
               const course = courses.find(c => c.id === unit.course_id);
               const program = programs.find(p => p.id === course?.program_id);
-              const statusColors: Record<string, string> = {
-                draft: 'bg-slate-100 text-slate-600',
-                in_review: 'bg-amber-100 text-amber-700',
-                published: 'bg-green-100 text-green-700',
-                archived: 'bg-rose-100 text-rose-700',
+              const statusConfig: Record<string, { bg: string; text: string; dot: string }> = {
+                draft: { bg: 'bg-slate-100', text: 'text-slate-600', dot: 'bg-slate-400' },
+                in_review: { bg: 'bg-amber-100', text: 'text-amber-700', dot: 'bg-amber-500' },
+                published: { bg: 'bg-green-100', text: 'text-green-700', dot: 'bg-green-500' },
+                archived: { bg: 'bg-rose-100', text: 'text-rose-700', dot: 'bg-rose-500' },
               };
+              const sc = statusConfig[unit.status];
               return (
                 <button
                   key={unit.id}
                   onClick={() => onSelectUnit(unit.id)}
-                  className="group rounded-xl border border-slate-200 bg-white p-5 text-left transition-all hover:-translate-y-0.5 hover:border-gold-300 hover:shadow-md"
+                  className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 text-left transition-all hover:-translate-y-1 hover:border-gold-300 hover:shadow-xl"
                 >
-                  <div className="mb-2 flex items-center justify-between">
-                    <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColors[unit.status]}`}>
-                      {unit.status.replace('_', ' ')}
-                    </span>
-                    <span className="text-xs text-slate-400">v{unit.version}</span>
+                  <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-navy-50 transition-transform duration-500 group-hover:scale-[2.5]" />
+                  <div className="relative">
+                    <div className="mb-3 flex items-center justify-between">
+                      <span className={`inline-flex items-center gap-1.5 rounded-full ${sc.bg} px-3 py-1 text-xs font-semibold ${sc.text}`}>
+                        <span className={`h-1.5 w-1.5 rounded-full ${sc.dot}`} />
+                        {unit.status.replace('_', ' ')}
+                      </span>
+                      <span className="text-xs font-medium text-slate-400">v{unit.version}</span>
+                    </div>
+                    <h3 className="text-base font-bold text-navy-900 transition-colors group-hover:text-gold-700">{unit.title}</h3>
+                    <p className="mt-1.5 text-xs text-slate-500">
+                      {program?.title ?? '—'} / {course?.title ?? '—'}
+                    </p>
+                    <div className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-navy-700 transition-colors group-hover:text-gold-700">
+                      Open unit <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </div>
                   </div>
-                  <h3 className="text-sm font-bold text-navy-900 group-hover:text-gold-700">{unit.title}</h3>
-                  <p className="mt-1 text-xs text-slate-500">
-                    {program?.title ?? '—'} / {course?.title ?? '—'}
-                  </p>
                 </button>
               );
             })}
@@ -372,8 +368,11 @@ function Dashboard({
 
       {/* Pricing */}
       <div>
-        <h2 className="mb-4 text-lg font-bold text-navy-900">Pricing</h2>
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="mb-5 flex items-center gap-2">
+          <GraduationCap className="h-5 w-5 text-navy-700" />
+          <h2 className="text-xl font-bold text-navy-900">Pricing</h2>
+        </div>
+        <div className="grid gap-5 md:grid-cols-3">
           <PricingCard
             name="Educator"
             price="$0"
@@ -427,6 +426,40 @@ function Dashboard({
   );
 }
 
+function ActionCard({
+  onClick, icon: Icon, title, desc, cta, accent,
+}: {
+  onClick: () => void;
+  icon: typeof BookOpen;
+  title: string;
+  desc: string;
+  cta: string;
+  accent: 'navy' | 'gold';
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-7 text-left transition-all hover:-translate-y-1.5 hover:border-gold-300 hover:shadow-2xl"
+    >
+      <div className={`absolute -right-10 -top-10 h-28 w-28 rounded-full transition-transform duration-500 group-hover:scale-[2.5] ${accent === 'gold' ? 'bg-gold-50' : 'bg-navy-50'}`} />
+      <div className="relative">
+        <div className={`mb-5 flex h-12 w-12 items-center justify-center rounded-2xl transition-all ${
+          accent === 'gold'
+            ? 'bg-gold-100 text-gold-700 group-hover:bg-gold-500 group-hover:text-navy-950 group-hover:shadow-lg group-hover:shadow-gold-500/30'
+            : 'bg-navy-100 text-navy-700 group-hover:bg-navy-900 group-hover:text-white group-hover:shadow-lg group-hover:shadow-navy-500/30'
+        }`}>
+          <Icon className="h-6 w-6" />
+        </div>
+        <h3 className="text-lg font-bold text-navy-900">{title}</h3>
+        <p className="mt-1.5 text-sm text-slate-500">{desc}</p>
+        <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-navy-700 transition-colors group-hover:text-gold-700">
+          {cta} <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+        </span>
+      </div>
+    </button>
+  );
+}
+
 function PricingCard({
   name, price, tagline, features, ctaLabel, ctaHref, highlighted,
 }: {
@@ -439,38 +472,45 @@ function PricingCard({
   highlighted: boolean;
 }) {
   return (
-    <div className={`relative rounded-2xl border bg-white p-6 transition-all ${highlighted ? 'border-gold-400 shadow-lg ring-2 ring-gold-200' : 'border-slate-200'}`}>
+    <div className={`relative overflow-hidden rounded-2xl border bg-white p-7 transition-all ${highlighted ? 'border-gold-400 shadow-xl ring-2 ring-gold-200' : 'border-slate-200 hover:shadow-lg'}`}>
       {highlighted && (
-        <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gold-500 px-3 py-1 text-xs font-bold text-navy-950">
-          Most popular
-        </span>
+        <>
+          <div className="absolute -right-12 -top-12 h-32 w-32 rounded-full bg-gold-50 blur-2xl" />
+          <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gold-500 px-4 py-1 text-xs font-bold text-navy-950 shadow-lg">
+            Most popular
+          </span>
+        </>
       )}
-      <h3 className="text-lg font-bold text-navy-900">{name}</h3>
-      <p className="mt-1 text-xs text-slate-500">{tagline}</p>
-      <div className="mt-4 flex items-baseline gap-1">
-        <span className="text-3xl font-bold text-navy-900">{price}</span>
-        {price !== 'Custom' && <span className="text-sm text-slate-500">/month</span>}
+      <div className="relative">
+        <h3 className="text-lg font-bold text-navy-900">{name}</h3>
+        <p className="mt-1 text-xs text-slate-500">{tagline}</p>
+        <div className="mt-5 flex items-baseline gap-1">
+          <span className="text-4xl font-bold text-navy-900">{price}</span>
+          {price !== 'Custom' && <span className="text-sm text-slate-500">/month</span>}
+        </div>
+        <ul className="mt-6 space-y-3">
+          {features.map((feature, i) => (
+            <li key={i} className="flex items-start gap-2.5 text-sm text-slate-700">
+              <span className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${highlighted ? 'bg-gold-100' : 'bg-green-50'}`}>
+                <Check className={`h-3 w-3 ${highlighted ? 'text-gold-700' : 'text-green-600'}`} />
+              </span>
+              {feature}
+            </li>
+          ))}
+        </ul>
+        <a
+          href={ctaHref}
+          target={ctaHref.startsWith('http') ? '_blank' : undefined}
+          rel={ctaHref.startsWith('http') ? 'noopener noreferrer' : undefined}
+          className={`mt-7 inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-all ${
+            highlighted
+              ? 'bg-gold-500 text-navy-950 hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/30'
+              : 'bg-navy-900 text-white hover:bg-navy-800 hover:shadow-lg'
+          }`}
+        >
+          {ctaLabel}
+        </a>
       </div>
-      <ul className="mt-5 space-y-2.5">
-        {features.map((feature, i) => (
-          <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
-            <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
-            {feature}
-          </li>
-        ))}
-      </ul>
-      <a
-        href={ctaHref}
-        target={ctaHref.startsWith('http') ? '_blank' : undefined}
-        rel={ctaHref.startsWith('http') ? 'noopener noreferrer' : undefined}
-        className={`mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-colors ${
-          highlighted
-            ? 'bg-gold-500 text-navy-950 hover:bg-gold-400'
-            : 'bg-navy-900 text-white hover:bg-navy-800'
-        }`}
-      >
-        {ctaLabel}
-      </a>
     </div>
   );
 }
