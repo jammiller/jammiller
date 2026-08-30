@@ -1,4 +1,7 @@
 {
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "installCommand": "npm install",
   "rewrites": [
     { "source": "/((?!sw\\.js|manifest\\.json|safety-manifest\\.json|pulseos-manifest\\.json|statslab-manifest\\.json|robots\\.txt|sitemap\\.xml|llms\\.txt|_redirects|google.*|privacy-policy\\.html).*)", "destination": "/index.html" }
   ],

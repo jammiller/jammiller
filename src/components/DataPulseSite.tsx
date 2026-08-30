@@ -2,38 +2,24 @@ import { useState } from 'react';
 import {
   ArrowRight,
   Calendar,
-  Check,
   Cpu,
   Download,
-  FileText,
   Layers,
   Mail,
   Menu,
   Phone,
-  RefreshCw,
   Shield,
   Sparkles,
   Target,
   X,
-  type LucideIcon,
 } from 'lucide-react';
 import { About } from './About';
 import { Blog } from './Blog';
 import { FAQ } from './FAQ';
 import { Portfolio } from './Portfolio';
-import { services } from '../data/services';
-
 interface DataPulseSiteProps {
   onOpenApp: (view: 'safety') => void;
 }
-
-const serviceIcons: Record<string, LucideIcon> = {
-  Layers,
-  FileText,
-  Target,
-  Sparkles,
-  RefreshCw,
-};
 
 export function DataPulseSite({ onOpenApp }: DataPulseSiteProps) {
   const [menuOpen, setMenuOpen] = useState(false);
