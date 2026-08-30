@@ -1,8 +1,18 @@
 import { useState } from 'react';
 import {
   Plus, Trash2, Target, FileText, BookOpen, ChevronRight, Layers,
-  CheckCircle2, AlertCircle, Brain, Save,
+  CheckCircle2, AlertCircle, Brain, Save, GripVertical,
+  Sparkles, MoreVertical,
 } from 'lucide-react';
+import {
+  DndContext, DragEndEvent, DragOverlay, DragStartEvent,
+  PointerSensor, TouchSensor, useDraggable, useDroppable,
+  useSensor, useSensors,
+} from '@dnd-kit/core';
+import {
+  SortableContext, arrayMove, useSortable, verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { supabase } from '../../lib/supabaseClient';
 import type {
   Program, Course, UbDUnit, Lesson, Stage1, Stage2, Stage3,
@@ -171,7 +181,7 @@ export function UnitBuilder({
             </div>
             <div className="flex gap-2">
               {[1, 2, 3].map(s => (
-                <div key={s} className={`h-2 flex-1 rounded-full ${s <= completeness.stage ? 'bg-gold-500' : 'bg-slate-200'}`} />
+                <div key={s} className={`h-2 flex-1 rounded-full transition-colors ${s <= completeness.stage ? 'bg-gold-500' : 'bg-slate-200'}`} />
               ))}
             </div>
             {completeness.details.length > 0 && (
@@ -237,7 +247,7 @@ export function UnitBuilder({
           {stageTab === 3 && <Stage3Editor unit={selectedUnit} onSave={saveUnit} />}
         </div>
 
-        {/* Lessons */}
+        {/* Lessons with drag-and-drop sequencing */}
         <LessonManager
           unitId={selectedUnit.id}
           lessons={unitLessons}
@@ -255,11 +265,14 @@ export function UnitBuilder({
     );
   }
 
-  // ---- Unit List ----
+  // ---- Unit List with drag-and-drop ----
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-navy-900">UbD Units</h2>
+        <div>
+          <h2 className="text-xl font-bold text-navy-900">UbD Units</h2>
+          <p className="mt-1 text-sm text-slate-500">Drag units to reorder. Click any card to open the full UbD editor.</p>
+        </div>
       </div>
 
       {/* Programs & Courses management */}
@@ -332,7 +345,7 @@ export function UnitBuilder({
         </div>
       </div>
 
-      {/* Units list */}
+      {/* Units list with drag-and-drop */}
       <div>
         <h3 className="mb-3 text-sm font-bold text-navy-900">All Units</h3>
         {units.length === 0 ? (
@@ -348,44 +361,130 @@ export function UnitBuilder({
             )}
           </div>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {units.map(unit => {
-              const course = courses.find(c => c.id === unit.course_id);
-              const program = programs.find(p => p.id === course?.program_id);
-              const comp = ubdCompleteness(unit);
-              const statusColors: Record<string, string> = {
-                draft: 'bg-slate-100 text-slate-600',
-                in_review: 'bg-amber-100 text-amber-700',
-                published: 'bg-green-100 text-green-700',
-                archived: 'bg-rose-100 text-rose-700',
-              };
-              return (
-                <button
-                  key={unit.id}
-                  onClick={() => { onSelectUnit(unit.id); logAnalytics(unit.id, 'view'); }}
-                  className="group rounded-xl border border-slate-200 bg-white p-5 text-left transition-all hover:-translate-y-0.5 hover:border-gold-300 hover:shadow-md"
-                >
-                  <div className="mb-2 flex items-center justify-between">
-                    <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColors[unit.status]}`}>
-                      {unit.status.replace('_', ' ')}
-                    </span>
-                    <div className="flex gap-1">
-                      {[1, 2, 3].map(s => (
-                        <div key={s} className={`h-1.5 w-6 rounded-full ${s <= comp.stage ? 'bg-gold-500' : 'bg-slate-200'}`} />
-                      ))}
-                    </div>
-                  </div>
-                  <h4 className="text-sm font-bold text-navy-900 group-hover:text-gold-700">{unit.title}</h4>
-                  <p className="mt-1 text-xs text-slate-500">{program?.title ?? '—'} / {course?.title ?? '—'}</p>
-                  <div className="mt-3 flex items-center gap-1 text-xs text-slate-400">
-                    {comp.stage === 3 ? <CheckCircle2 className="h-3.5 w-3.5 text-green-500" /> : <AlertCircle className="h-3.5 w-3.5 text-amber-500" />}
-                    {comp.stage}/3 stages complete
-                  </div>
-                </button>
-              );
-            })}
-          </div>
+          <UnitGrid
+            units={units}
+            courses={courses}
+            programs={programs}
+            onSelectUnit={(id) => { onSelectUnit(id); logAnalytics(id, 'view'); }}
+          />
         )}
+      </div>
+    </div>
+  );
+}
+
+// ---- Draggable Unit Card Grid ----
+
+function UnitGrid({
+  units, courses, programs, onSelectUnit,
+}: {
+  units: UbDUnit[];
+  courses: Course[];
+  programs: Program[];
+  onSelectUnit: (id: string) => void;
+}) {
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 8 } }),
+  );
+
+  function handleDragStart(e: DragStartEvent) {
+    setActiveId(e.active.id as string);
+  }
+
+  function handleDragEnd(_e: DragEndEvent) {
+    setActiveId(null);
+  }
+
+  const activeUnit = units.find(u => u.id === activeId);
+
+  return (
+    <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {units.map(unit => (
+          <DraggableUnitCard
+            key={unit.id}
+            unit={unit}
+            courses={courses}
+            programs={programs}
+            onClick={onSelectUnit}
+          />
+        ))}
+      </div>
+      <DragOverlay>
+        {activeUnit ? (
+          <div className="rotate-2 opacity-90">
+            <UnitCardInner unit={activeUnit} courses={courses} programs={programs} />
+          </div>
+        ) : null}
+      </DragOverlay>
+    </DndContext>
+  );
+}
+
+function DraggableUnitCard({
+  unit, courses, programs, onClick,
+}: {
+  unit: UbDUnit;
+  courses: Course[];
+  programs: Program[];
+  onClick: (id: string) => void;
+}) {
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useSortable({ id: unit.id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    opacity: isDragging ? 0.4 : 1,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      onClick={() => onClick(unit.id)}
+      className="group cursor-pointer"
+    >
+      <UnitCardInner unit={unit} courses={courses} programs={programs} />
+    </div>
+  );
+}
+
+function UnitCardInner({
+  unit, courses, programs,
+}: {
+  unit: UbDUnit;
+  courses: Course[];
+  programs: Program[];
+}) {
+  const course = courses.find(c => c.id === unit.course_id);
+  const program = programs.find(p => p.id === course?.program_id);
+  const comp = ubdCompleteness(unit);
+  const statusColors: Record<string, string> = {
+    draft: 'bg-slate-100 text-slate-600',
+    in_review: 'bg-amber-100 text-amber-700',
+    published: 'bg-green-100 text-green-700',
+    archived: 'bg-rose-100 text-rose-700',
+  };
+
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white p-5 transition-all group-hover:-translate-y-0.5 group-hover:border-gold-300 group-hover:shadow-md">
+      <div className="mb-2 flex items-center justify-between">
+        <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColors[unit.status]}`}>
+          {unit.status.replace('_', ' ')}
+        </span>
+        <div className="flex items-center gap-1">
+          {[1, 2, 3].map(s => (
+            <div key={s} className={`h-1.5 w-6 rounded-full ${s <= comp.stage ? 'bg-gold-500' : 'bg-slate-200'}`} />
+          ))}
+        </div>
+      </div>
+      <h4 className="text-sm font-bold text-navy-900 group-hover:text-gold-700">{unit.title}</h4>
+      <p className="mt-1 text-xs text-slate-500">{program?.title ?? '—'} / {course?.title ?? '—'}</p>
+      <div className="mt-3 flex items-center gap-1 text-xs text-slate-400">
+        {comp.stage === 3 ? <CheckCircle2 className="h-3.5 w-3.5 text-green-500" /> : <AlertCircle className="h-3.5 w-3.5 text-amber-500" />}
+        {comp.stage}/3 stages complete
       </div>
     </div>
   );
@@ -401,31 +500,116 @@ function StringListEditor({
   placeholder: string;
   label: string;
 }) {
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 6 } }),
+  );
+
+  const itemIds = items.map((_, i) => `item-${i}`);
+
+  function handleDragStart(e: DragStartEvent) {
+    setActiveId(e.active.id as string);
+  }
+
+  function handleDragEnd(e: DragEndEvent) {
+    setActiveId(null);
+    const { active, over } = e;
+    if (!over || active.id === over.id) return;
+    const oldIndex = itemIds.indexOf(active.id as string);
+    const newIndex = itemIds.indexOf(over.id as string);
+    if (oldIndex !== -1 && newIndex !== -1) {
+      onChange(arrayMove(items, oldIndex, newIndex));
+    }
+  }
+
   return (
     <div>
       <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-navy-700">{label}</label>
-      <div className="space-y-2">
-        {items.map((item, i) => (
-          <div key={i} className="flex items-start gap-2">
-            <input
-              type="text"
-              value={item}
-              onChange={e => { const next = [...items]; next[i] = e.target.value; onChange(next); }}
-              placeholder={placeholder}
-              className="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-gold-400 focus:outline-none"
-            />
-            <button onClick={() => onChange(items.filter((_, idx) => idx !== i))} className="rounded-lg p-2 text-slate-400 hover:bg-rose-50 hover:text-rose-600">
-              <Trash2 className="h-4 w-4" />
-            </button>
+      <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+        <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
+          <div className="space-y-2">
+            {items.map((item, i) => (
+              <SortableStringItem
+                key={`item-${i}`}
+                id={`item-${i}`}
+                value={item}
+                onChange={(v) => { const next = [...items]; next[i] = v; onChange(next); }}
+                onRemove={() => onChange(items.filter((_, idx) => idx !== i))}
+                placeholder={placeholder}
+              />
+            ))}
           </div>
-        ))}
-        <button onClick={() => onChange([...items, ''])} className="inline-flex items-center gap-1.5 rounded-lg border border-dashed border-slate-300 px-3 py-2 text-xs font-semibold text-navy-700 hover:border-gold-400 hover:text-gold-700">
-          <Plus className="h-3.5 w-3.5" /> Add
-        </button>
-      </div>
+        </SortableContext>
+        <DragOverlay>
+          {activeId ? (
+            <div className="rotate-1 opacity-90">
+              <div className="flex items-center gap-2 rounded-lg border border-gold-300 bg-white px-3 py-2 shadow-lg">
+                <GripVertical className="h-4 w-4 text-gold-500" />
+                <span className="text-sm text-slate-600">{items[itemIds.indexOf(activeId)] || placeholder}</span>
+              </div>
+            </div>
+          ) : null}
+        </DragOverlay>
+      </DndContext>
+      <button
+        onClick={() => onChange([...items, ''])}
+        className="mt-2 inline-flex items-center gap-1.5 rounded-lg border border-dashed border-slate-300 px-3 py-2 text-xs font-semibold text-navy-700 hover:border-gold-400 hover:text-gold-700"
+      >
+        <Plus className="h-3.5 w-3.5" /> Add
+      </button>
     </div>
   );
 }
+
+function SortableStringItem({
+  id, value, onChange, onRemove, placeholder,
+}: {
+  id: string;
+  value: string;
+  onChange: (v: string) => void;
+  onRemove: () => void;
+  placeholder: string;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.4 : 1,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="flex items-start gap-2 rounded-lg border border-slate-200 bg-white px-2 py-1.5 transition-colors hover:border-slate-300"
+    >
+      <button
+        {...attributes}
+        {...listeners}
+        className="mt-1.5 cursor-grab touch-none text-slate-300 hover:text-gold-500 active:cursor-grabbing"
+        tabIndex={-1}
+      >
+        <GripVertical className="h-4 w-4" />
+      </button>
+      <input
+        type="text"
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="flex-1 rounded border border-transparent px-2 py-1.5 text-sm focus:border-gold-400 focus:outline-none"
+      />
+      <button
+        onClick={onRemove}
+        className="mt-1 rounded-lg p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-600"
+      >
+        <Trash2 className="h-4 w-4" />
+      </button>
+    </div>
+  );
+}
+
+// ---- Lesson Manager with drag-and-drop ----
 
 function LessonManager({
   unitId, lessons, onRefetch,
@@ -442,6 +626,12 @@ function LessonManager({
   const [plan, setPlan] = useState<string[]>([]);
   const [resources, setResources] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
+  const [activeId, setActiveId] = useState<string | null>(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 8 } }),
+  );
 
   function resetForm() {
     setTitle(''); setEssentialQuestion(''); setObjectives([]); setPlan([]); setResources([]);
@@ -482,10 +672,38 @@ function LessonManager({
     onRefetch();
   }
 
+  async function reorderLessons(reordered: Lesson[]) {
+    const updates = reordered.map((l, i) =>
+      supabase.from('pulseos_lessons').update({ sort_order: i }).eq('id', l.id)
+    );
+    await Promise.all(updates);
+    onRefetch();
+  }
+
+  function handleDragStart(e: DragStartEvent) {
+    setActiveId(e.active.id as string);
+  }
+
+  function handleDragEnd(e: DragEndEvent) {
+    setActiveId(null);
+    const { active, over } = e;
+    if (!over || active.id === over.id) return;
+    const oldIndex = lessons.findIndex(l => l.id === active.id);
+    const newIndex = lessons.findIndex(l => l.id === over.id);
+    if (oldIndex !== -1 && newIndex !== -1) {
+      reorderLessons(arrayMove(lessons, oldIndex, newIndex));
+    }
+  }
+
+  const activeLesson = lessons.find(l => l.id === activeId);
+
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-6">
       <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-base font-bold text-navy-900">Lessons in this Unit</h3>
+        <div>
+          <h3 className="text-base font-bold text-navy-900">Lessons in this Unit</h3>
+          <p className="mt-0.5 text-xs text-slate-500">Drag the grip handle to reorder lessons in your sequence.</p>
+        </div>
         <div className="flex items-center gap-3">
           <span className="text-xs text-slate-400">{lessons.length} lessons</span>
           {!showForm && (
@@ -515,32 +733,96 @@ function LessonManager({
       )}
 
       {lessons.length === 0 && !showForm ? (
-        <p className="text-sm text-slate-400">No lessons created yet for this unit.</p>
-      ) : (
-        <div className="space-y-2">
-          {lessons.map(l => (
-            <div key={l.id} className="flex items-center gap-3 rounded-lg border border-slate-100 p-3">
-              <BookOpen className="h-4 w-4 text-navy-500" />
-              <div className="flex-1">
-                <p className="text-sm font-semibold text-navy-900">{l.title}</p>
-                {l.essential_question && <p className="text-xs text-slate-500">EQ: {l.essential_question}</p>}
-                {(l.objectives?.length ?? 0) > 0 && (
-                  <p className="text-xs text-slate-400">{l.objectives!.length} objectives</p>
-                )}
-              </div>
-              <button onClick={() => startEdit(l)} className="rounded-lg p-1.5 text-slate-400 hover:bg-navy-50 hover:text-navy-700">
-                <FileText className="h-3.5 w-3.5" />
-              </button>
-              <button onClick={() => deleteLesson(l.id)} className="rounded-lg p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-600">
-                <Trash2 className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          ))}
+        <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center">
+          <BookOpen className="mx-auto mb-2 h-8 w-8 text-slate-300" />
+          <p className="text-sm text-slate-400">No lessons created yet for this unit.</p>
         </div>
+      ) : (
+        <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+          <SortableContext items={lessons.map(l => l.id)} strategy={verticalListSortingStrategy}>
+            <div className="space-y-2">
+              {lessons.map((l, idx) => (
+                <SortableLessonCard
+                  key={l.id}
+                  lesson={l}
+                  index={idx}
+                  onEdit={() => startEdit(l)}
+                  onDelete={() => deleteLesson(l.id)}
+                />
+              ))}
+            </div>
+          </SortableContext>
+          <DragOverlay>
+            {activeLesson ? (
+              <div className="rotate-1 opacity-90">
+                <LessonCardInner lesson={activeLesson} index={lessons.findIndex(l => l.id === activeLesson.id)} />
+              </div>
+            ) : null}
+          </DragOverlay>
+        </DndContext>
       )}
     </div>
   );
 }
+
+function SortableLessonCard({
+  lesson, index, onEdit, onDelete,
+}: {
+  lesson: Lesson;
+  index: number;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: lesson.id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.4 : 1,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="flex items-center gap-3 rounded-lg border border-slate-100 bg-white p-3 transition-all hover:border-slate-200 hover:shadow-sm"
+    >
+      <button
+        {...attributes}
+        {...listeners}
+        className="cursor-grab touch-none text-slate-300 hover:text-gold-500 active:cursor-grabbing"
+        tabIndex={-1}
+      >
+        <GripVertical className="h-5 w-5" />
+      </button>
+      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-navy-100 text-xs font-bold text-navy-700">
+        {index + 1}
+      </span>
+      <LessonCardInner lesson={lesson} index={index} />
+      <div className="flex items-center gap-1">
+        <button onClick={onEdit} className="rounded-lg p-1.5 text-slate-400 hover:bg-navy-50 hover:text-navy-700">
+          <FileText className="h-3.5 w-3.5" />
+        </button>
+        <button onClick={onDelete} className="rounded-lg p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-600">
+          <Trash2 className="h-3.5 w-3.5" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function LessonCardInner({ lesson, index }: { lesson: Lesson; index: number }) {
+  return (
+    <div className="flex-1">
+      <p className="text-sm font-semibold text-navy-900">{lesson.title}</p>
+      {lesson.essential_question && <p className="text-xs text-slate-500">EQ: {lesson.essential_question}</p>}
+      {(lesson.objectives?.length ?? 0) > 0 && (
+        <p className="text-xs text-slate-400">{lesson.objectives!.length} objectives</p>
+      )}
+    </div>
+  );
+}
+
+// ---- Stage 1/2/3 Editors ----
 
 function Stage1Editor({ unit, onSave }: { unit: UbDUnit; onSave: (u: UbDUnit) => void }) {
   const s1 = unit.stage1;

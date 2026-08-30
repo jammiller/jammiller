@@ -22,7 +22,7 @@ export function usePulseOSData() {
         supabase.from('pulseos_programs').select('*').order('created_at', { ascending: false }),
         supabase.from('pulseos_courses').select('*').order('created_at', { ascending: false }),
         supabase.from('pulseos_units').select('*').order('updated_at', { ascending: false }),
-        supabase.from('pulseos_lessons').select('*').order('created_at', { ascending: false }),
+        supabase.from('pulseos_lessons').select('*').order('sort_order', { ascending: true }),
         supabase.from('pulseos_assessments').select('*').order('created_at', { ascending: false }),
         supabase.from('pulseos_assessment_submissions').select('*').order('submitted_at', { ascending: false }),
       ]);
