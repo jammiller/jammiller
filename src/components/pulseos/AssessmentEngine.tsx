@@ -1,29 +1,56 @@
 import { useState } from 'react';
 import {
   Plus, Trash2, ClipboardList, ChevronRight, Save, Award,
-  User,
+  User, BookPlus,
 } from 'lucide-react';
 import { supabase } from '../../lib/supabaseClient';
 import type {
-  UbDUnit, Assessment, AssessmentSubmission, AssessmentQuestion,
+  UbDUnit, Assessment, AssessmentSubmission, AssessmentQuestion, Course,
 } from '../../lib/pulseos-types';
+import { emptyStage1, emptyStage2, emptyStage3 } from '../../lib/pulseos-types';
 
 interface Props {
   assessments: Assessment[];
   units: UbDUnit[];
   submissions: AssessmentSubmission[];
+  courses: Course[];
   onRefetch: () => void;
 }
 
-export function AssessmentEngine({ assessments, units, submissions, onRefetch }: Props) {
+export function AssessmentEngine({ assessments, units, submissions, courses, onRefetch }: Props) {
   const [selectedAssessmentId, setSelectedAssessmentId] = useState<string | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newType, setNewType] = useState<'summative' | 'formative' | 'performance'>('formative');
   const [newUnitId, setNewUnitId] = useState('');
   const [saving, setSaving] = useState(false);
+  const [showInlineUnitForm, setShowInlineUnitForm] = useState(false);
+  const [inlineUnitTitle, setInlineUnitTitle] = useState('');
+  const [inlineUnitCourseId, setInlineUnitCourseId] = useState('');
 
   const selected = assessments.find(a => a.id === selectedAssessmentId) ?? null;
+
+  async function createInlineUnit() {
+    if (!inlineUnitTitle.trim() || !inlineUnitCourseId) return;
+    setSaving(true);
+    const { data, error } = await supabase
+      .from('pulseos_units')
+      .insert({
+        course_id: inlineUnitCourseId,
+        title: inlineUnitTitle,
+        stage1: emptyStage1, stage2: emptyStage2, stage3: emptyStage3,
+        status: 'draft', version: 1,
+      })
+      .select().single();
+    setSaving(false);
+    if (!error && data) {
+      setNewUnitId(data.id);
+      setInlineUnitTitle('');
+      setInlineUnitCourseId('');
+      setShowInlineUnitForm(false);
+      onRefetch();
+    }
+  }
 
   async function createAssessment() {
     if (!newTitle.trim() || !newUnitId) return;
@@ -133,10 +160,46 @@ export function AssessmentEngine({ assessments, units, submissions, onRefetch }:
             </div>
             <div>
               <label className="mb-1 block text-xs font-semibold text-navy-700">Unit</label>
-              <select value={newUnitId} onChange={e => setNewUnitId(e.target.value)} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-gold-400 focus:outline-none">
-                <option value="">Select unit...</option>
-                {units.map(u => <option key={u.id} value={u.id}>{u.title}</option>)}
-              </select>
+              <div className="flex gap-2">
+                <select value={newUnitId} onChange={e => setNewUnitId(e.target.value)} className="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-gold-400 focus:outline-none">
+                  <option value="">Select unit...</option>
+                  {units.map(u => <option key={u.id} value={u.id}>{u.title}</option>)}
+                </select>
+                <button
+                  type="button"
+                  onClick={() => setShowInlineUnitForm(!showInlineUnitForm)}
+                  className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-navy-700 hover:border-gold-400 hover:text-gold-700"
+                  title="Create a new unit"
+                >
+                  <BookPlus className="h-3.5 w-3.5" /> New Unit
+                </button>
+              </div>
+              {showInlineUnitForm && (
+                <div className="mt-2 space-y-2 rounded-lg bg-softgray p-3">
+                  <select value={inlineUnitCourseId} onChange={e => setInlineUnitCourseId(e.target.value)} className="w-full rounded border border-slate-200 px-2 py-1.5 text-sm">
+                    <option value="">Select course...</option>
+                    {courses.map(c => <option key={c.id} value={c.id}>{c.title}</option>)}
+                  </select>
+                  <input value={inlineUnitTitle} onChange={e => setInlineUnitTitle(e.target.value)} placeholder="New unit title" className="w-full rounded border border-slate-200 px-2 py-1.5 text-sm" />
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={createInlineUnit}
+                      disabled={saving || !inlineUnitTitle.trim() || !inlineUnitCourseId}
+                      className="inline-flex items-center gap-1.5 rounded bg-navy-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-navy-800 disabled:opacity-50"
+                    >
+                      <Plus className="h-3 w-3" /> Create Unit
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowInlineUnitForm(false)}
+                      className="rounded border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-50"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
             <div>
               <label className="mb-1 block text-xs font-semibold text-navy-700">Type</label>

@@ -142,6 +142,7 @@ export function PulseOS() {
             assessments={assessments}
             units={units}
             submissions={submissions}
+            courses={courses}
             onRefetch={refetch}
           />
         )}
