@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import {
   BookOpen, ClipboardList, BarChart3, Plus, Layers,
   ChevronRight, FileText, Target, CheckCircle2, Clock,
   TrendingUp, Award, ListChecks, Zap, Brain, Calendar, Phone, Check,
   Sparkles, ArrowRight, Activity, Users, GraduationCap,
-  CircleDot, LayoutGrid, FolderTree,
+  CircleDot, LayoutGrid, FolderTree, LogOut, LockKeyhole,
 } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import type {
@@ -18,6 +18,29 @@ import { AnalyticsDashboard } from './pulseos/AnalyticsDashboard';
 type View = 'dashboard' | 'builder' | 'assessments' | 'analytics';
 
 export function PulseOS() {
+  const [sessionLoading, setSessionLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsAuthenticated(Boolean(session));
+      setSessionLoading(false);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(Boolean(session));
+      setSessionLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  if (sessionLoading) return <PulseOSLoading />;
+  if (!isAuthenticated) return <PulseOSSignIn />;
+  return <PulseOSDashboard />;
+}
+
+function PulseOSDashboard() {
   const [view, setView] = useState<View>('dashboard');
   const [selectedUnitId, setSelectedUnitId] = useState<string | null>(null);
   const {
@@ -86,6 +109,12 @@ export function PulseOS() {
                 <item.icon className="h-4 w-4" /> {item.label}
               </button>
             ))}
+            <button
+              onClick={() => void supabase.auth.signOut()}
+              className="ml-2 inline-flex items-center gap-2 rounded-lg px-3.5 py-2 text-sm font-medium text-slate-300 transition-all hover:bg-white/5 hover:text-white"
+            >
+              <LogOut className="h-4 w-4" /> Sign out
+            </button>
           </nav>
         </div>
         {/* Mobile nav */}
@@ -172,6 +201,51 @@ export function PulseOS() {
         </div>
       </footer>
     </div>
+  );
+}
+
+function PulseOSLoading() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-softgray">
+      <div className="h-10 w-10 animate-spin rounded-full border-2 border-navy-200 border-t-gold-500" />
+    </div>
+  );
+}
+
+function PulseOSSignIn() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError(null);
+    setSubmitting(true);
+    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+    if (signInError) setError('Sign-in failed. Check your email and password.');
+    setSubmitting(false);
+  };
+
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-softgray px-4 font-sans antialiased">
+      <form onSubmit={handleSubmit} className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-xl">
+        <div className="mb-7 flex items-center gap-3 text-navy-950">
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gold-500"><LockKeyhole className="h-5 w-5" /></span>
+          <div><h1 className="text-xl font-bold">PulseOS</h1><p className="text-sm text-slate-500">Sign in to access the dashboard</p></div>
+        </div>
+        <label className="mb-4 block text-sm font-medium text-slate-700">Email
+          <input type="email" autoComplete="email" required value={email} onChange={event => setEmail(event.target.value)} className="mt-1.5 w-full rounded-lg border border-slate-300 px-3 py-2.5 outline-none ring-gold-400 focus:ring-2" />
+        </label>
+        <label className="mb-5 block text-sm font-medium text-slate-700">Password
+          <input type="password" autoComplete="current-password" required value={password} onChange={event => setPassword(event.target.value)} className="mt-1.5 w-full rounded-lg border border-slate-300 px-3 py-2.5 outline-none ring-gold-400 focus:ring-2" />
+        </label>
+        {error && <p className="mb-4 text-sm text-rose-700" role="alert">{error}</p>}
+        <button disabled={submitting} className="w-full rounded-lg bg-navy-950 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-navy-800 disabled:cursor-not-allowed disabled:opacity-60">
+          {submitting ? 'Signing in...' : 'Sign in'}
+        </button>
+      </form>
+    </main>
   );
 }
 
