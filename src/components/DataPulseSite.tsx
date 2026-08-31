@@ -159,7 +159,7 @@ export function DataPulseSite({ onOpenApp }: DataPulseSiteProps) {
               <h2 className="text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">Tools for the work that matters.</h2>
               <p className="mx-auto mt-4 max-w-2xl leading-relaxed text-slate-600">Use our focused tools when you need them, then return to the bigger picture.</p>
             </div>
-            <div className="grid gap-6 md:grid-cols-1 max-w-xl">
+            <div className="grid max-w-4xl gap-6 md:grid-cols-2">
               <div className="group flex flex-col rounded-3xl border border-slate-200 bg-softgray p-7 text-left transition-all duration-300 hover:-translate-y-1 hover:border-rose-300 hover:shadow-xl sm:p-9">
                 <button onClick={() => onOpenApp('safety')} className="text-left">
                   <div className="flex items-start justify-between"><span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-100 text-rose-600"><Shield className="h-6 w-6" /></span><ArrowRight className="h-5 w-5 text-navy-700 transition-transform group-hover:translate-x-1" /></div>
@@ -172,6 +172,13 @@ export function DataPulseSite({ onOpenApp }: DataPulseSiteProps) {
                   <Download className="h-4 w-4" /> Download on Google Play
                 </a>
               </div>
+              <a href="https://statslab.app" className="group flex flex-col rounded-3xl border border-slate-200 bg-softgray p-7 text-left transition-all duration-300 hover:-translate-y-1 hover:border-sky-300 hover:shadow-xl sm:p-9">
+                <div className="flex items-start justify-between"><span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-100 text-sky-700"><Cpu className="h-6 w-6" /></span><ArrowRight className="h-5 w-5 text-navy-700 transition-transform group-hover:translate-x-1" /></div>
+                <p className="mt-8 text-xs font-semibold uppercase tracking-[0.18em] text-sky-700">Interactive statistics tool</p>
+                <h3 className="mt-2 text-2xl font-bold text-navy-900">StatsLab</h3>
+                <p className="mt-3 max-w-md text-sm leading-relaxed text-slate-600">Explore datasets, descriptive statistics, visualizations, and inference testing in one focused workspace.</p>
+                <span className="mt-7 inline-block text-sm font-semibold text-navy-900">Open StatsLab</span>
+              </a>
             </div>
           </div>
         </section>
