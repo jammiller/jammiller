@@ -12,6 +12,7 @@ import {
   Sparkles,
   Target,
   X,
+  ChevronDown,
 } from 'lucide-react';
 import { About } from './About';
 import { Blog } from './Blog';
@@ -23,6 +24,7 @@ interface DataPulseSiteProps {
 
 export function DataPulseSite({ onOpenApp }: DataPulseSiteProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [siteMenuOpen, setSiteMenuOpen] = useState(false);
 
   const closeMenu = () => setMenuOpen(false);
 
@@ -47,6 +49,25 @@ export function DataPulseSite({ onOpenApp }: DataPulseSiteProps) {
           </button>
 
           <nav className="hidden items-center gap-7 md:flex" aria-label="Primary navigation">
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setSiteMenuOpen(!siteMenuOpen)}
+                className="inline-flex items-center gap-1.5 text-sm text-slate-300 transition-colors hover:text-white"
+                aria-expanded={siteMenuOpen}
+                aria-haspopup="menu"
+              >
+                Visit a site <ChevronDown className="h-4 w-4" />
+              </button>
+              {siteMenuOpen && (
+                <div className="absolute left-0 top-9 w-52 rounded-xl border border-white/10 bg-navy-950 p-1.5 shadow-xl" role="menu">
+                  <a href="/" className="block rounded-lg px-3 py-2 text-sm text-slate-200 hover:bg-white/10" role="menuitem">DATAPULSE SOCIAL</a>
+                  <a href="/pulseos" className="block rounded-lg px-3 py-2 text-sm text-slate-200 hover:bg-white/10" role="menuitem">PulseOS Dashboard</a>
+                  <a href="https://safetyapp.com" className="block rounded-lg px-3 py-2 text-sm text-slate-200 hover:bg-white/10" role="menuitem">Safety App</a>
+                  <a href="https://statslab.app" className="block rounded-lg px-3 py-2 text-sm text-slate-200 hover:bg-white/10" role="menuitem">StatsLab</a>
+                </div>
+              )}
+            </div>
             <a href="#about" className="text-sm text-slate-300 transition-colors hover:text-white">About</a>
             <a href="#services" className="text-sm text-slate-300 transition-colors hover:text-white">Services</a>
             <a href="#portfolio" className="text-sm text-slate-300 transition-colors hover:text-white">Portfolio</a>
@@ -58,6 +79,12 @@ export function DataPulseSite({ onOpenApp }: DataPulseSiteProps) {
         {menuOpen && (
           <nav className="border-t border-white/10 px-4 py-4 md:hidden" aria-label="Mobile navigation">
             <div className="mx-auto flex max-w-7xl flex-col gap-1">
+              <p className="px-3 pb-1 pt-2 text-xs font-semibold uppercase tracking-wider text-gold-400">Visit a site</p>
+              <a href="/" onClick={closeMenu} className="rounded-lg px-3 py-3 text-sm font-medium text-slate-200 hover:bg-white/10">DATAPULSE SOCIAL</a>
+              <a href="/pulseos" onClick={closeMenu} className="rounded-lg px-3 py-3 text-sm font-medium text-slate-200 hover:bg-white/10">PulseOS Dashboard</a>
+              <a href="https://safetyapp.com" className="rounded-lg px-3 py-3 text-sm font-medium text-slate-200 hover:bg-white/10">Safety App</a>
+              <a href="https://statslab.app" className="rounded-lg px-3 py-3 text-sm font-medium text-slate-200 hover:bg-white/10">StatsLab</a>
+              <div className="my-1 border-t border-white/10" />
               {['about', 'services', 'portfolio', 'blog', 'contact'].map((section) => (
                 <a key={section} href={`#${section}`} onClick={closeMenu} className="rounded-lg px-3 py-3 text-sm font-medium capitalize text-slate-200 hover:bg-white/10">
                   {section === 'blog' ? 'Insights' : section === 'contact' ? "Let's Talk" : section}
