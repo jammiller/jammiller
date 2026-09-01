@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ArrowLeft, Shield } from 'lucide-react';
 import { DataPulseSite } from './components/DataPulseSite';
-import { PulseOS } from './components/PulseOS';
+import { PulseOSAccess, PulseOSLanding } from './components/PulseOSAccess';
 import { SafetyApp } from './components/SafetyApp';
 import { StatsLab } from './components/StatsLab';
 import { VideoWalkthrough } from './components/VideoWalkthrough';
@@ -19,7 +19,8 @@ function App() {
   const pathname = window.location.pathname.replace(/\/$/, '') || '/';
   const searchParams = new URLSearchParams(window.location.search);
   const isWalkthroughPath = pathname === '/walkthrough' || searchParams.get('walkthrough') === '1';
-  const isPulseOSPath = pathname === '/pulseos';
+  const isPulseOSPath = pathname === '/pulseos' || pathname === '/pulseos/dashboard';
+  const isPulseOSDashboard = (isPulseOSDomain && pathname === '/dashboard') || pathname === '/pulseos/dashboard';
   const [activeView, setActiveView] = useState<AppView>('site');
 
   useEffect(() => {
@@ -73,7 +74,7 @@ function App() {
     return <VideoWalkthrough />;
   }
   if (isPulseOSDomain || isPulseOSPath) {
-    return <><PulseOS /><InstallPrompt /></>;
+    return <>{isPulseOSDashboard ? <PulseOSAccess /> : <PulseOSLanding />}<InstallPrompt /></>;
   }
   if (isSafetyDomain) {
     return <><SafetyApp /><InstallPrompt /></>;
