@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Harbor & StatsLab | Premium community experiences</title>
+  <style>
+    :root {
+      --bg: #f8f5f0;
+      --surface: rgba(255, 255, 255, 0.88);
+      --primary: #1a3a42;
+      --primary-dark: #0f2a32;
+      --accent: #a88c5d;
+      --text: #1c2a2d;
+      --muted: #5a6f73;
+      --line: rgba(26, 58, 66, 0.1);
+      --shadow: 0 24px 48px rgba(15, 42, 50, 0.08);
+      --radius: 20px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background: linear-gradient(135deg, #f9f5f0 0%, #f5f0e8 100%);
+      line-height: 1.6;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    .container {
+      width: min(1200px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    header {
+      padding: 48px 0 32px;
+      text-align: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--primary), #2a5963);
+      color: white;
+      font-size: 1.8rem;
+      box-shadow: 0 12px 24px rgba(15, 42, 50, 0.15);
+    }
+
+    .brand-text {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+
+    header h1 {
+      font-size: clamp(2.2rem, 4vw, 3.4rem);
+      letter-spacing: -0.06em;
+      margin: 0 0 12px;
+      line-height: 1.1;
+    }
+
+    header p {
+      color: var(--muted);
+      font-size: 1.1rem;
+      max-width: 54ch;
+      margin: 0 auto;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+      margin: 60px 0;
+    }
+
+    .product-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 32px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
+    }
+
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 32px 64px rgba(15, 42, 50, 0.12);
+      border-color: rgba(168, 140, 93, 0.3);
+    }
+
+    .product-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      background: linear-gradient(135deg, rgba(168, 140, 93, 0.15), rgba(26, 58, 66, 0.08));
+      margin-bottom: 18px;
+    }
+
+    .product-card h2 {
+      font-size: 1.4rem;
+      letter-spacing: -0.04em;
+      margin: 0 0 10px;
+    }
+
+    .product-card p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin: 0 0 24px;
+      flex-grow: 1;
+    }
+
+    .product-features {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 24px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .product-features li {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .product-features li:last-child {
+      border-bottom: none;
+    }
+
+    .product-features li::before {
+      content: "✓ ";
+      color: var(--accent);
+      font-weight: 700;
+      margin-right: 8px;
+    }
+
+    .product-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 20px;
+      background: linear-gradient(135deg, var(--primary), #2a5963);
+      color: white;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      box-shadow: 0 8px 16px rgba(26, 58, 66, 0.15);
+      transition: all 0.3s ease;
+    }
+
+    .product-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(26, 58, 66, 0.2);
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--line);
+      margin: 60px 0;
+    }
+
+    .info-section {
+      background: linear-gradient(135deg, rgba(26, 58, 66, 0.04), rgba(168, 140, 93, 0.04));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 40px;
+      text-align: center;
+    }
+
+    .info-section h3 {
+      font-size: 1.4rem;
+      letter-spacing: -0.04em;
+      margin: 0 0 12px;
+    }
+
+    .info-section p {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 60ch;
+      margin: 0 auto;
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      border-top: 1px solid var(--line);
+      margin-top: 60px;
+    }
+
+    @media (max-width: 1024px) {
+      .products {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .products {
+        grid-template-columns: 1fr;
+      }
+
+      header {
+        padding: 32px 0 24px;
+      }
+
+      header h1 {
+        font-size: 2rem;
+      }
+
+      .product-card {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="container">
+      <header>
+        <div class="brand">
+          <div class="brand-mark">⚓</div>
+          <div class="brand-text">Harbor</div>
+        </div>
+        <h1>Wellness brands. Premium communities. Intentional connection.</h1>
+        <p>Two powerful tools built for modern wellness leaders and community builders.</p>
+      </header>
+
+      <div class="products">
+        <div class="product-card">
+          <div class="product-icon">🌊</div>
+          <h2>Harbor</h2>
+          <p>A guided community experience platform designed to help members feel supported, seen, and consistently engaged.</p>
+          <ul class="product-features">
+            <li>Guided member onboarding</li>
+            <li>Intentional circles & groups</li>
+            <li>Progress tracking dashboard</li>
+          </ul>
+          <a class="product-link" href="harbor.html">Open Harbor App</a>
+        </div>
+
+        <div class="product-card">
+          <div class="product-icon">💎</div>
+          <h2>Harbor Sales</h2>
+          <p>A premium sales and discovery page to help wellness brands convert prospects and present pricing to potential clients.</p>
+          <ul class="product-features">
+            <li>Sales messaging & positioning</li>
+            <li>Feature showcase</li>
+            <li>Pricing tiers & booking</li>
+          </ul>
+          <a class="product-link" href="harbor-sales.html">View Sales Page</a>
+        </div>
+
+        <div class="product-card">
+          <div class="product-icon">📊</div>
+          <h2>StatsLab</h2>
+          <p>A real-time analytics dashboard for tracking community health, engagement metrics, and member progression over time.</p>
+          <ul class="product-features">
+            <li>Member engagement metrics</li>
+            <li>Real-time dashboards</li>
+            <li>Advanced reporting</li>
+          </ul>
+          <a class="product-link" href="statslab.html">Open StatsLab</a>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="info-section">
+        <h3>Ready to launch your wellness community?</h3>
+        <p>Start with the Harbor app to build your community experience, use the sales page to convert new members, and track everything in StatsLab.</p>
+      </div>
+    </section>
+
+    <footer class="container">
+      <p>Harbor & StatsLab © 2026 · Built for wellness brands and community leaders</p>
+    </footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "name": "Safety App",
+  "short_name": "Safety",
+  "description": "Personal safety tools for emergency contacts, SOS support, location sharing, safety check-ins, and first aid guidance.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#07131f",
+  "theme_color": "#07131f",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/safety-pwa-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/safety-pwa-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

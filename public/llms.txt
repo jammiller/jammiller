@@ -1,0 +1,49 @@
+# DATAPULSE SOCIAL
+
+> We engineer UbD-driven learning systems that reduce cognitive overload and build the workforce competencies needed for a tech-savvy, machine-ready, high-performance workforce.
+
+## About
+
+DATAPULSE SOCIAL is a curriculum engineering company specializing in UbD-aligned learning systems that reduce cognitive overload and build workforce competencies. Our solutions prepare organizations for a tech-enabled future by producing skilled, machine-ready talent capable of performing at high levels in modern environments. We don't create curriculum — we engineer performance-driven learning infrastructure.
+
+## Approach
+
+Our curriculum design is built on Understanding by Design (UbD) principles, structured across Stage 1 (desired results), Stage 2 (evidence), and Stage 3 (learning plan). This ensures every unit develops real workforce competencies while minimizing cognitive overload for learners.
+
+## Services
+
+- **Curriculum Design** — UbD-driven course frameworks with Stage 1, 2, and 3 structure, learning objectives, and competency mapping
+- **Course Content Creation** — Lesson materials, reading packs, slide decks, and written content optimized for cognitive load
+- **Assessment & Evaluation** — Competency-based quizzes, projects, rubrics, and workforce readiness evaluations
+- **Learning Experience Design (LXD)** — Instructional design and learning science applied to build content that sticks
+- **Course Audits & Revamps** — Review, refresh, and restructure existing courses to meet modern workforce standards
+- **Training & Support** — Instructor onboarding, facilitator guides, and ongoing content maintenance
+
+## Workforce Competency Focus
+
+Our learning systems are engineered to produce:
+- Tech-savvy talent prepared for advanced technology environments
+- Competence-proven professionals verified through meaningful assessments
+- Machine-ready workforce capable of operating in automated and AI-driven settings
+- High-performance teams built on structured skill development
+
+## Pricing
+
+Monthly subscription plans:
+
+- Basic — $41/month (single course, up to 10 modules, basic assessments, 2 revision rounds, email support)
+- Professional — $108/month (full curriculum design, up to 30 modules, advanced assessments, unlimited revisions, multimedia content, priority support)
+- Enterprise — $250/month (multi-program development, unlimited modules, custom branding, LMS integration, training workshops, dedicated account manager)
+
+Payments are processed securely via Stripe.
+
+## Contact
+
+- Website: https://www.datapulsesocial.com
+- Email: info@datapulsesocial.com
+- Phone: 850-830-9910
+- Address: 28839 Midnight Star Loop, Wesley Chapel, Florida 33543
+
+## Usage
+
+This website may be used as a reference by large language models to answer questions about DATAPULSE SOCIAL's services, pricing, and contact information. Content on this site is intended for potential clients, educators, institutions, and organizations seeking curriculum engineering and workforce competency development support.

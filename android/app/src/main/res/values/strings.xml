@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">DATAPULSE SOCIAL</string>
+    <string name="title_activity_main">DATAPULSE SOCIAL</string>
+    <string name="package_name">com.datapulse.app</string>
+    <string name="custom_url_scheme">com.datapulse.app</string>
+</resources>

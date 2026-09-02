@@ -1,0 +1,24 @@
+{
+  "name": "DATAPULSE SOCIAL",
+  "short_name": "DATAPULSE",
+  "description": "UbD-engineered learning systems that build workforce competencies for a tech-savvy, machine-ready future.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a1a2f",
+  "theme_color": "#0a1a2f",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/pwa-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/pwa-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
