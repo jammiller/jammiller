@@ -12,7 +12,7 @@ on:
       branch-id:
         required: true
         type: string
-
+ 
 env:
   DEPLOYMENT_FOLDER: dist
 
