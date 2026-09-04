@@ -324,6 +324,10 @@ function AssessmentTakeView({
       answers,
       score: computedScore,
     });
+    if (error) {
+      setSubmitting(false);
+      return;
+    }
     await supabase.from('pulseos_analytics_events').insert({
       assessment_id: assessment.id,
       event_type: 'score',

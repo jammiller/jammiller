@@ -164,12 +164,15 @@ export function SafetyApp() {
     );
   }, []);
 
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const showToast = useCallback((msg: string) => {
     setToast(msg);
-    setTimeout(() => setToast(null), 3000);
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = setTimeout(() => setToast(null), 3000);
   }, []);
+  useEffect(() => () => { if (toastTimerRef.current) clearTimeout(toastTimerRef.current); }, []);
 
-  // SOS countdown logic
+  // SOS countdown interval — only runs while counting down
   useEffect(() => {
     if (sosActive && sosCountdown > 0) {
       sosTimerRef.current = setInterval(() => {
@@ -177,26 +180,31 @@ export function SafetyApp() {
       }, 1000);
       return () => { if (sosTimerRef.current) clearInterval(sosTimerRef.current); };
     }
-    if (sosActive && sosCountdown === 0) {
-      // SOS triggered
-      showToast('SOS sent to your emergency contacts');
-      if (settings.shareLocation && location) {
-        const mapsUrl = `https://maps.google.com/?q=${location.lat},${location.lng}`;
-        if (navigator.share) {
-          navigator.share({
-            title: 'Emergency SOS',
-            text: `${settings.sosMessage} My location: ${mapsUrl}`,
-          }).catch(() => {});
-        } else if (navigator.clipboard) {
-          navigator.clipboard.writeText(`${settings.sosMessage} My location: ${mapsUrl}`);
-        }
-      } else {
-        showToast('SOS sent — enable location sharing for best results');
+  }, [sosActive, sosCountdown]);
+
+  // SOS fired — runs once when countdown reaches zero
+  const sosFiredRef = useRef(false);
+  useEffect(() => {
+    if (!sosActive || sosCountdown !== 0 || sosFiredRef.current) return;
+    sosFiredRef.current = true;
+    showToast('SOS sent to your emergency contacts');
+    if (settings.shareLocation && location) {
+      const mapsUrl = `https://maps.google.com/?q=${location.lat},${location.lng}`;
+      if (navigator.share) {
+        navigator.share({
+          title: 'Emergency SOS',
+          text: `${settings.sosMessage} My location: ${mapsUrl}`,
+        }).catch(() => {});
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(`${settings.sosMessage} My location: ${mapsUrl}`).catch(() => {});
       }
+    } else {
+      showToast('SOS sent — enable location sharing for best results');
     }
   }, [sosActive, sosCountdown, location, settings, showToast]);
 
   const triggerSOS = () => {
+    sosFiredRef.current = false;
     setSosCountdown(5);
     setSosActive(true);
   };

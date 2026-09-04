@@ -12,10 +12,15 @@ export function usePulseOSData() {
   const [assessments, setAssessments] = useState<Assessment[]>([]);
   const [submissions, setSubmissions] = useState<AssessmentSubmission[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refetching, setRefetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchAll = useCallback(async () => {
-    setLoading(true);
+  const fetchAll = useCallback(async (isRefetch = false) => {
+    if (isRefetch) {
+      setRefetching(true);
+    } else {
+      setLoading(true);
+    }
     setError(null);
     try {
       const [pRes, cRes, uRes, lRes, aRes, sRes] = await Promise.all([
@@ -52,10 +57,11 @@ export function usePulseOSData() {
       setError(message);
     } finally {
       setLoading(false);
+      setRefetching(false);
     }
   }, []);
 
   useEffect(() => { fetchAll(); }, [fetchAll]);
 
-  return { programs, courses, units, lessons, assessments, submissions, loading, error, refetch: fetchAll };
+  return { programs, courses, units, lessons, assessments, submissions, loading, refetching, error, refetch: () => fetchAll(true) };
 }

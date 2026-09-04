@@ -271,9 +271,11 @@ export function StatsLab() {
   const [hypothesizedMean, setHypothesizedMean] = useState(75);
   const [compareDataset, setCompareDataset] = useState<Dataset>(BUILT_IN_DATASETS[1]);
 
-  const currentData = useCustom
-    ? customData.split(/[,\s\n]+/).map(Number).filter((n) => !isNaN(n))
-    : activeDataset.data;
+  const currentData = useMemo(() =>
+    useCustom
+      ? customData.split(/[,\s\n]+/).map(Number).filter((n) => !isNaN(n))
+      : activeDataset.data,
+  [useCustom, customData, activeDataset]);
 
   const stats = useMemo(() => {
     if (currentData.length === 0) return null;

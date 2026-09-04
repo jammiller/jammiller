@@ -133,7 +133,7 @@ export function VideoWalkthrough() {
   const [playing, setPlaying] = useState(true);
   const [muted, setMuted] = useState(false);
   const [progress, setProgress] = useState(0);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const progressRef = useRef(0);
   const rafRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(0);
 
@@ -153,11 +153,15 @@ export function VideoWalkthrough() {
     const animate = (now: number) => {
       const elapsed = now - startTimeRef.current;
       const pct = Math.min(elapsed / scene.duration, 1);
-      setProgress(pct);
+      progressRef.current = pct;
       if (pct >= 1) {
         setSceneIndex((prev) => (prev + 1) % SCENES.length);
+        progressRef.current = 0;
         setProgress(0);
         return;
+      }
+      if (Math.floor(pct * 100) !== Math.floor(progressRef.current * 100) || pct === 0) {
+        setProgress(pct);
       }
       rafRef.current = requestAnimationFrame(animate);
     };
@@ -187,7 +191,6 @@ export function VideoWalkthrough() {
 
   const togglePlay = () => {
     setPlaying((p) => !p);
-    if (timerRef.current) clearInterval(timerRef.current);
   };
 
   const restart = () => {

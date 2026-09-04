@@ -33,7 +33,7 @@ export function usePulseOSAuth(): PulseOSAuthState {
       .eq('user_id', uid)
       .maybeSingle();
     if (error) {
-      setRole('client');
+      setRole(null);
       return;
     }
     setRole(data?.role ?? 'client');
