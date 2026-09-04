@@ -21,6 +21,14 @@ import {
 
 export function Harbor() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [email, setEmail] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setSubmitted(true);
+  };
 
   return (
     <div className="min-h-screen bg-[#f8f5f0] font-sans antialiased text-[#1c2a2d]">
@@ -348,20 +356,33 @@ export function Harbor() {
                 Join the founding cohort of wellness brands building intentional communities on Harbor. Your first 14 days are free.
               </p>
 
-              <form className="mx-auto flex max-w-md flex-col gap-3 sm:flex-row" onSubmit={(e) => e.preventDefault()}>
-                <input
-                  type="email"
-                  placeholder="you@wellnessbrand.com"
-                  className="flex-1 rounded-xl border border-white/15 bg-white/10 px-5 py-3.5 text-sm text-white placeholder-white/40 backdrop-blur-sm focus:border-[#a88c5d]/50 focus:outline-none focus:ring-1 focus:ring-[#a88c5d]/30"
-                />
-                <button
-                  type="submit"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#a88c5d] to-[#8b7444] px-6 py-3.5 text-sm font-bold text-white shadow-lg transition-all hover:-translate-y-0.5"
-                >
-                  Get Started
-                  <ArrowRight className="h-4 w-4" />
-                </button>
-              </form>
+              {submitted ? (
+                <div className="mx-auto flex max-w-md items-center justify-center gap-3 rounded-xl bg-white/10 px-6 py-4 backdrop-blur-sm">
+                  <CheckCircle2 className="h-6 w-6 flex-shrink-0 text-[#a88c5d]" />
+                  <div className="text-left">
+                    <p className="text-sm font-bold text-white">You're on the list!</p>
+                    <p className="text-xs text-white/60">We'll reach out to {email} with your trial access soon.</p>
+                  </div>
+                </div>
+              ) : (
+                <form className="mx-auto flex max-w-md flex-col gap-3 sm:flex-row" onSubmit={handleSubmit}>
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@wellnessbrand.com"
+                    className="flex-1 rounded-xl border border-white/15 bg-white/10 px-5 py-3.5 text-sm text-white placeholder-white/40 backdrop-blur-sm focus:border-[#a88c5d]/50 focus:outline-none focus:ring-1 focus:ring-[#a88c5d]/30"
+                  />
+                  <button
+                    type="submit"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#a88c5d] to-[#8b7444] px-6 py-3.5 text-sm font-bold text-white shadow-lg transition-all hover:-translate-y-0.5"
+                  >
+                    Get Started
+                    <ArrowRight className="h-4 w-4" />
+                  </button>
+                </form>
+              )}
 
               <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-white/50">
                 <div className="flex items-center gap-2"><Zap className="h-4 w-4" /> No credit card required</div>
