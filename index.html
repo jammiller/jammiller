@@ -17,6 +17,7 @@
         var isSafety = h === 'safetyapp.com' || h === 'www.safetyapp.com';
         var isStatsLab = h === 'statslab.app' || h === 'www.statslab.app';
         var isPulseOS = h === 'pulseosplatform.com' || h === 'www.pulseosplatform.com' || p === '/pulseos';
+        var isHarbor = h === 'harborhush.website' || h === 'www.harborhush.website';
 
         var manifestHref = '/manifest.json';
         var appleHref = '/apple-touch-icon.png';
@@ -44,6 +45,9 @@
           fav32Href = '/pulseos-icon-512.webp';
           fav16Href = '/pulseos-icon-512.webp';
           appTitle = 'PulseOS';
+        } else if (isHarbor) {
+          themeColor = '#1a3a42';
+          appTitle = 'Harbor';
         }
 
         function createLink(rel, href, attrs) {

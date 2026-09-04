@@ -1,1 +1,1 @@
-export const APP_VARIANT = 'pulseos';
+export const APP_VARIANT = '';

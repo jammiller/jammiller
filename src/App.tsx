@@ -7,6 +7,7 @@ import { StatsLab } from './components/StatsLab';
 import { VideoWalkthrough } from './components/VideoWalkthrough';
 import { CookieConsent } from './components/CookieConsent';
 import { InstallPrompt } from './components/InstallPrompt';
+import { Harbor } from './components/Harbor';
 import { APP_VARIANT } from './config';
 
 type AppView = 'site' | 'safety';
@@ -17,6 +18,7 @@ function App() {
   const isSafetyDomain = appVariant === 'safety' || hostname === 'safetyapp.com' || hostname === 'www.safetyapp.com';
   const isStatsLabDomain = appVariant === 'statslab' || hostname === 'statslab.app' || hostname === 'www.statslab.app';
   const isPulseOSDomain = appVariant === 'pulseos' || hostname === 'pulseosplatform.com' || hostname === 'www.pulseosplatform.com';
+  const isHarborDomain = appVariant === 'harbor' || hostname === 'harborhush.website' || hostname === 'www.harborhush.website';
   const pathname = window.location.pathname.replace(/\/$/, '') || '/';
   const searchParams = new URLSearchParams(window.location.search);
   const isWalkthroughPath = pathname === '/walkthrough' || searchParams.get('walkthrough') === '1';
@@ -26,9 +28,11 @@ function App() {
 
   useEffect(() => {
     const isPulseOS = isPulseOSDomain;
+    const isHarbor = isHarborDomain;
     const title = isSafetyDomain ? 'Safety App'
       : isStatsLabDomain ? 'StatsLab'
       : isPulseOS ? 'PulseOS Platform'
+      : isHarbor ? 'Harbor — Wellness Community Platform'
       : 'DATAPULSE SOCIAL';
     const description = isSafetyDomain
       ? 'Personal safety tools for emergency contacts, SOS support, location sharing, safety check-ins, and first aid guidance.'
@@ -36,7 +40,9 @@ function App() {
           ? 'Interactive statistics tool for datasets, descriptive stats, visualizations, and inference tests.'
           : isPulseOS
             ? 'PulseOS — UbD-driven learning operations. Build curriculum units with Stage 1, 2, and 3 structure, assessments, and analytics.'
-            : 'DATAPULSE SOCIAL creates practical learning experiences and focused digital tools.';
+            : isHarbor
+              ? 'A guided community experience platform designed to help wellness brands build intentional, supportive member communities.'
+              : 'DATAPULSE SOCIAL creates practical learning experiences and focused digital tools.';
     document.title = title;
     document.querySelector('meta[name="description"]')?.setAttribute('content', description);
 
@@ -61,6 +67,9 @@ function App() {
       document.querySelector('link[rel="icon"][sizes="32x32"]')?.setAttribute('href', '/pulseos-icon-512.webp');
       document.querySelector('link[rel="icon"][sizes="16x16"]')?.setAttribute('href', '/pulseos-icon-512.webp');
       document.querySelector('link[rel="apple-touch-icon"]')?.setAttribute('href', '/pulseos-icon-512.webp');
+    } else if (isHarbor) {
+      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#1a3a42');
+      document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', 'Harbor');
     } else {
       document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#0a1a2f');
       document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', 'DATAPULSE SOCIAL');
@@ -69,10 +78,13 @@ function App() {
       document.querySelector('link[rel="icon"][sizes="16x16"]')?.setAttribute('href', '/favicon-16.png');
       document.querySelector('link[rel="apple-touch-icon"]')?.setAttribute('href', '/apple-touch-icon.png');
     }
-  }, [isSafetyDomain, isStatsLabDomain, isPulseOSDomain]);
+  }, [isSafetyDomain, isStatsLabDomain, isPulseOSDomain, isHarborDomain]);
 
   if (isWalkthroughPath) {
     return <VideoWalkthrough />;
+  }
+  if (isHarborDomain) {
+    return <Harbor />;
   }
   if (isPulseOSDomain) {
     return <><PulseOS /><InstallPrompt /></>;
