@@ -13,7 +13,6 @@ import {
   ArrowRight,
   Menu,
   X,
-  Star,
   Compass,
   Shield,
   Zap,
@@ -46,7 +45,7 @@ export function Harbor() {
             <a href="#features" className="text-sm font-medium text-[#5a6f73] transition-colors hover:text-[#1a3a42]">Features</a>
             <a href="#how-it-works" className="text-sm font-medium text-[#5a6f73] transition-colors hover:text-[#1a3a42]">How It Works</a>
             <a href="#pricing" className="text-sm font-medium text-[#5a6f73] transition-colors hover:text-[#1a3a42]">Pricing</a>
-            <a href="#testimonials" className="text-sm font-medium text-[#5a6f73] transition-colors hover:text-[#1a3a42]">Stories</a>
+
           </div>
 
           <div className="hidden items-center gap-3 md:flex">
@@ -73,7 +72,6 @@ export function Harbor() {
               <a href="#features" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-[#5a6f73]">Features</a>
               <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-[#5a6f73]">How It Works</a>
               <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-[#5a6f73]">Pricing</a>
-              <a href="#testimonials" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-[#5a6f73]">Stories</a>
               <a href="#cta" onClick={() => setMobileMenuOpen(false)} className="rounded-xl bg-gradient-to-r from-[#1a3a42] to-[#2a5963] px-5 py-2.5 text-center text-sm font-bold text-white">Start Free Trial</a>
             </div>
           </div>
@@ -123,23 +121,6 @@ export function Harbor() {
             <div className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#a88c5d]" /> Cancel anytime</div>
             <div className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#a88c5d]" /> Setup in minutes</div>
           </div>
-        </div>
-      </section>
-
-      {/* Stats Bar */}
-      <section className="border-y border-[rgba(26,58,66,0.08)] bg-white/60 py-12 backdrop-blur-sm">
-        <div className="mx-auto grid max-w-5xl grid-cols-2 gap-8 px-4 sm:px-6 md:grid-cols-4">
-          {[
-            { value: '500+', label: 'Wellness communities' },
-            { value: '92%', label: 'Member engagement rate' },
-            { value: '3.4x', label: 'Faster onboarding' },
-            { value: '24/7', label: 'Guided support' },
-          ].map((stat) => (
-            <div key={stat.label} className="text-center">
-              <div className="text-3xl font-extrabold tracking-tight text-[#1a3a42]">{stat.value}</div>
-              <div className="mt-1 text-sm text-[#5a6f73]">{stat.label}</div>
-            </div>
-          ))}
         </div>
       </section>
 
@@ -206,46 +187,6 @@ export function Harbor() {
                 </div>
                 <h3 className="mb-2 text-lg font-bold tracking-tight text-[#1a3a42]">{item.title}</h3>
                 <p className="text-sm leading-relaxed text-[#5a6f73]">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section id="testimonials" className="px-4 py-24 sm:px-6">
-        <div className="mx-auto max-w-5xl">
-          <div className="mb-16 text-center">
-            <h2 className="mb-4 text-3xl font-extrabold tracking-tight text-[#1a3a42] sm:text-4xl">
-              Trusted by wellness leaders
-            </h2>
-            <p className="mx-auto max-w-2xl text-lg text-[#5a6f73]">
-              Community builders who switched from scattered tools to Harbor.
-            </p>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-3">
-            {[
-              { quote: 'Our members went from lurkers to active participants within the first week. The guided onboarding made all the difference.', name: 'Sarah Chen', role: 'Mindfulness Coach', initials: 'SC' },
-              { quote: 'I was juggling five different tools. Harbor replaced all of them and my members actually know where to go now.', name: 'Marcus Webb', role: 'Fitness Community Leader', initials: 'MW' },
-              { quote: 'The progress dashboard is a game changer. I can see exactly who needs a nudge and who is ready to step into leadership.', name: 'Dr. Lena Okafor', role: 'Wellness Practitioner', initials: 'LO' },
-            ].map((t) => (
-              <div key={t.name} className="rounded-2xl border border-[rgba(26,58,66,0.08)] bg-white/80 p-7 shadow-lg shadow-[#0f2a32]/5 backdrop-blur-sm">
-                <div className="mb-4 flex gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-[#a88c5d] text-[#a88c5d]" />
-                  ))}
-                </div>
-                <p className="mb-6 text-sm leading-relaxed text-[#1c2a2d]">"{t.quote}"</p>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#1a3a42] to-[#2a5963] text-sm font-bold text-white">
-                    {t.initials}
-                  </div>
-                  <div>
-                    <div className="text-sm font-bold text-[#1a3a42]">{t.name}</div>
-                    <div className="text-xs text-[#5a6f73]">{t.role}</div>
-                  </div>
-                </div>
               </div>
             ))}
           </div>
@@ -407,7 +348,6 @@ export function Harbor() {
             <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-[#5a6f73]">
               <a href="#features" className="transition-colors hover:text-[#1a3a42]">Features</a>
               <a href="#pricing" className="transition-colors hover:text-[#1a3a42]">Pricing</a>
-              <a href="#testimonials" className="transition-colors hover:text-[#1a3a42]">Stories</a>
               <a href="#cta" className="transition-colors hover:text-[#1a3a42]">Get Started</a>
             </div>
 

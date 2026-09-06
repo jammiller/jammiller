@@ -1,31 +1,25 @@
 import { TrendingUp, CheckCircle, Building2 } from 'lucide-react';
 
-const stats = [
-  { value: '100+', label: 'Courses Built' },
-  { value: '100%', label: 'Client Satisfaction' },
-  { value: '4+', label: 'Industries Served' },
-];
-
 const industries = ['K-12', 'Higher Ed', 'Corporate Training', 'Faith-Based'];
 
 const caseStudies = [
   {
     client: 'Northgate University',
-    challenge: 'Needed a complete online curriculum rebuild for 12 graduate-level courses with outdated materials and low engagement.',
-    solution: 'Redesigned all 12 courses with interactive modules, multimedia content, and competency-based assessments.',
-    result: '87% course completion rate (up from 54%)',
+    challenge: 'Needed a complete online curriculum rebuild for graduate-level courses with outdated materials and low engagement.',
+    solution: 'Redesigned all courses with interactive modules, multimedia content, and competency-based assessments.',
+    result: 'Improved course completion rates and learner engagement',
   },
   {
     client: 'Riverside School District',
-    challenge: 'Required 40+ K-12 courses built from scratch to meet new state standards within a single semester.',
-    solution: 'Built standards-aligned curriculum with lesson plans, assessments, and teacher resources in 6 weeks.',
-    result: 'Launched in 6 weeks, 100% standards compliance',
+    challenge: 'Required K-12 courses built from scratch to meet new state standards within a single semester.',
+    solution: 'Built standards-aligned curriculum with lesson plans, assessments, and teacher resources.',
+    result: 'Launched on schedule with full standards alignment',
   },
   {
     client: 'Meridian Corporate Training',
     challenge: 'Existing employee onboarding program had low retention and couldn\'t scale across departments.',
     solution: 'Restructured into a modular, interactive learning path with role-specific tracks and assessments.',
-    result: 'Onboarding time reduced by 40%, 95% learner satisfaction',
+    result: 'Streamlined onboarding with positive learner feedback',
   },
 ];
 
@@ -46,18 +40,6 @@ export function Portfolio() {
           <p className="text-slate-600 max-w-2xl mx-auto leading-relaxed">
             A look at what we've built — and the impact it's made across K-12, higher education, corporate training, and faith-based organizations.
           </p>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-6 mb-16">
-          {stats.map((stat, index) => (
-            <div
-              key={index}
-              className="text-center p-8 bg-white rounded-2xl border border-slate-200 hover:shadow-md transition-all duration-300"
-            >
-              <p className="metric-value text-5xl font-bold text-navy-900 mb-2">{stat.value}</p>
-              <p className="text-sm text-slate-500 tracking-wide">{stat.label}</p>
-            </div>
-          ))}
         </div>
 
         <div className="flex flex-wrap items-center justify-center gap-3 mb-16">
