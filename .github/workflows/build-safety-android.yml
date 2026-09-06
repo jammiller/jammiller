@@ -1,0 +1,76 @@
+name: Build Safety App Android app
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-safety:
+    runs-on: ubuntu-latest
+    env:
+      ANDROID_HOME: /usr/local/lib/android/sdk
+      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+      SAFETY_KEYSTORE_PASSWORD: ${{ secrets.SAFETY_KEYSTORE_PASSWORD }}
+      SAFETY_KEY_ALIAS: ${{ secrets.SAFETY_KEY_ALIAS }}
+      SAFETY_KEY_PASSWORD: ${{ secrets.SAFETY_KEY_PASSWORD }}
+
+    steps:
+      - name: Check out project
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK 36
+        run: |
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKMANAGER" --sdk_root="$ANDROID_SDK_ROOT" --licenses >/dev/null || true
+          "$SDKMANAGER" --sdk_root="$ANDROID_SDK_ROOT" "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+
+      - name: Install packages
+        run: npm ci
+
+      - name: Build web app
+        run: VITE_APP_VARIANT=safety npm run build
+
+      - name: Copy web app into Android project
+        run: npx cap sync android
+
+      - name: Decode keystore from secret
+        run: |
+          echo "${{ secrets.SAFETY_KEYSTORE_BASE64 }}" | base64 -d > android/app/safety.keystore
+        if: ${{ secrets.SAFETY_KEYSTORE_BASE64 != '' }}
+
+      - name: Build Safety App release bundle (.aab)
+        working-directory: android
+        run: bash gradlew bundleSafetyRelease
+
+      - name: Upload Safety App release bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: safety-android-release
+          path: android/app/build/outputs/bundle/safetyRelease/app-safety-release.aab
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload Safety App debug APK (fallback)
+        uses: actions/upload-artifact@v4
+        with:
+          name: safety-android-debug
+          path: android/app/build/outputs/apk/safety/debug/app-safety-debug.apk
+          if-no-files-found: warn
+          retention-days: 14
