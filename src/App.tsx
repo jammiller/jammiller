@@ -75,6 +75,9 @@ function App() {
     } else if (isHarbor) {
       document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#1a3a42');
       document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', 'Harbor');
+    } else if (isTremonixDomain) {
+      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#0a1f1a');
+      document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', 'Tremonix');
     } else {
       document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#0a1a2f');
       document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', 'DATAPULSE SOCIAL');
@@ -83,7 +86,7 @@ function App() {
       document.querySelector('link[rel="icon"][sizes="16x16"]')?.setAttribute('href', '/favicon-16.png');
       document.querySelector('link[rel="apple-touch-icon"]')?.setAttribute('href', '/apple-touch-icon.png');
     }
-  }, [isSafetyDomain, isStatsLabDomain, isPulseOSDomain, isHarborDomain]);
+  }, [isSafetyDomain, isStatsLabDomain, isPulseOSDomain, isHarborDomain, isTremonixDomain]);
 
   if (isWalkthroughPath) {
     return <VideoWalkthrough />;

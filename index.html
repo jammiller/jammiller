@@ -18,6 +18,7 @@
         var isStatsLab = h === 'statslab.app' || h === 'www.statslab.app';
         var isPulseOS = h === 'pulseosplatform.com' || h === 'www.pulseosplatform.com' || p === '/pulseos';
         var isHarbor = h === 'harborhush.website' || h === 'www.harborhush.website';
+        var isTremonix = h === 'tremonix.com' || h === 'www.tremonix.com';
 
         var manifestHref = '/manifest.json';
         var appleHref = '/apple-touch-icon.png';
@@ -48,6 +49,9 @@
         } else if (isHarbor) {
           themeColor = '#1a3a42';
           appTitle = 'Harbor';
+        } else if (isTremonix) {
+          themeColor = '#0a1f1a';
+          appTitle = 'Tremonix';
         }
 
         function createLink(rel, href, attrs) {
@@ -67,6 +71,12 @@
 
         document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColor);
         document.querySelector('meta[name="apple-mobile-web-app-title"]').setAttribute('content', appTitle);
+
+        if (isTremonix) {
+          document.title = 'Tremonix — Revenue Leak Diagnostic';
+          var desc = document.querySelector('meta[name="description"]');
+          if (desc) desc.setAttribute('content', 'Tremonix — find the revenue your business is losing to slow response times, insufficient follow-up, and abandoned leads. Backed by published research.');
+        }
       })();
     </script>
     <meta name="mobile-web-app-capable" content="yes" />
