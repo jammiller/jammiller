@@ -175,8 +175,8 @@ export function DataPulseSite({ onOpenApp }: DataPulseSiteProps) {
               {[
                 { icon: Layers, title: 'UbD-driven structure', desc: 'Every unit is built with Stage 1, 2, and 3 structure to support real competency development.' },
                 { icon: Sparkles, title: 'Reduced cognitive overload', desc: 'Streamlined content design that helps learners absorb, retain, and apply skills.' },
-                { icon: Target, title: 'Competence-proven assessments', desc: 'Measure real workforce readiness, not just memorization.' },
-                { icon: Cpu, title: 'Tech-savvy, machine-ready', desc: 'Curriculum built for advanced technology and machine-driven environments.' },
+                { icon: Target, title: 'Assessment-driven outcomes', desc: 'Assessments that measure real workforce readiness, not just memorization.' },
+                { icon: Cpu, title: 'Technology-focused curriculum', desc: 'Curriculum built for advanced technology and machine-driven environments.' },
               ].map((item) => (
                 <div key={item.title} className="group rounded-2xl border border-slate-200 bg-softgray p-6 transition-all duration-300 hover:-translate-y-1 hover:border-gold-300 hover:shadow-md">
                   <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl border border-navy-200 bg-navy-100 text-navy-900 transition-colors group-hover:bg-gold-100 group-hover:text-gold-700"><item.icon className="h-5 w-5" /></div>

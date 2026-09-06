@@ -26,7 +26,7 @@ export const services: Service[] = [
   {
     id: 'assessment-evaluation',
     title: 'Assessment & Evaluation',
-    description: 'We design quizzes, projects, and rubrics that measure real understanding — not just recall — so you can prove the impact of your program.',
+    description: 'We design quizzes, projects, and rubrics that measure real understanding — not just recall — so you can measure the impact of your program.',
     icon: 'Target',
     features: ['Quizzes & formative checks', 'Project-based assessments', 'Rubric development', 'Outcome measurement'],
     sort_order: 3,
@@ -37,7 +37,7 @@ export const services: Service[] = [
   {
     id: 'learning-experience-design',
     title: 'Learning Experience Design (LXD)',
-    description: 'We apply instructional design principles and modern learning science to make your content stick. Interactive, accessible, and built for results.',
+    description: 'We apply instructional design principles and modern learning science to make your content stick. Interactive, accessible, and built for measurable learning.',
     icon: 'Sparkles',
     features: ['Instructional design principles', 'Accessibility & inclusion', 'Interactive elements', 'Learning science application'],
     sort_order: 4,

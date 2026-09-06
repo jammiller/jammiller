@@ -30,7 +30,7 @@ export function About() {
             We Engineer Learning Systems, Not Curriculum Packets
           </h2>
           <p className="text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            DATAPULSE SOCIAL engineers modern learning systems built on UbD principles, reducing cognitive overload and strengthening workforce competencies across every role. We don't create curriculum — we engineer performance-driven learning infrastructure.
+            DATAPULSE SOCIAL engineers modern learning systems built on UbD principles, reducing cognitive overload and strengthening workforce competencies across every role. We don't create curriculum — we engineer structured learning infrastructure.
           </p>
         </div>
 
@@ -39,7 +39,7 @@ export function About() {
             Our curriculum design approach prepares teams for advanced technology, machine-driven environments, and the evolving demands of today's industries. Every learning experience we build is structured to develop the competencies your workforce needs.
           </p>
           <p className="text-slate-600 leading-relaxed">
-            Whether you're launching your first online course or overhauling a full curriculum, we bring the structure, creativity, and dedication your project deserves — backed by learning science and designed for measurable performance outcomes.
+            Whether you're launching your first online course or overhauling a full curriculum, we bring the structure, creativity, and dedication your project deserves — backed by learning science and designed for measurable learning outcomes.
           </p>
         </div>
 
