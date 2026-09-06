@@ -221,10 +221,35 @@ export function Tremonix() {
 
   const leakScore = quizComplete
     ? Object.values(quizAnswers).reduce((score, answer) => {
-        const idx = quizQuestions[Object.keys(quizAnswers).length - 1].options.indexOf(answer);
-        return score + (idx >= 0 ? idx * 20 : 0);
+        const idx = Object.values(quizAnswers).indexOf(answer);
+        const qIdx = parseInt(Object.keys(quizAnswers).find(k => quizAnswers[parseInt(k)] === answer) || '0');
+        const optIdx = quizQuestions[qIdx]?.options.indexOf(answer) ?? 0;
+        return score + (optIdx >= 0 ? optIdx * 20 : 0);
       }, 0)
     : 0;
+
+  const leakSeverity = leakScore >= 60 ? 'critical' : leakScore >= 40 ? 'moderate' : 'manageable';
+  const leakSeverityColor = leakSeverity === 'critical' ? 'text-rose-400' : leakSeverity === 'moderate' ? 'text-amber-400' : 'text-emerald-400';
+  const leakSeverityLabel = leakSeverity === 'critical' ? 'Critical — significant revenue at risk' : leakSeverity === 'moderate' ? 'Moderate — fixable leaks detected' : 'Manageable — minor improvements needed';
+
+  const recommendations = quizComplete
+    ? Object.entries(quizAnswers)
+        .map(([qIdx, answer]) => {
+          const q = quizQuestions[parseInt(qIdx)];
+          const optIdx = q.options.indexOf(answer);
+          const severity = optIdx >= 2 ? 'high' : optIdx === 1 ? 'medium' : 'low';
+          const priority = optIdx >= 2 ? 1 : optIdx === 1 ? 2 : 3;
+          const actions: Record<string, string> = {
+            '0': optIdx >= 2 ? 'Implement automated lead routing so inbound leads are contacted within 5 minutes. Use tools like Calendly, HubSpot, or Slack alerts to notify your team instantly.' : optIdx === 1 ? 'Set a 15-minute SLA for lead response. Add a shared inbox or CRM alert so no lead sits waiting.' : 'Your response speed is strong. Maintain it and consider automating follow-up sequences for scale.',
+            '1': optIdx >= 2 ? 'Build a 5-touch follow-up cadence (email, call, LinkedIn, email, call) spread over 2 weeks. Use a CRM sequence or outreach tool to enforce it.' : optIdx === 1 ? 'Extend your follow-up to 5 touches minimum. Create a template sequence so reps can execute it in under 10 minutes per lead.' : 'Your follow-up discipline is solid. Track touch counts in your CRM to ensure consistency as you scale.',
+            '2': optIdx >= 2 ? 'Audit your lead pipeline weekly. Assign every lead to a rep within 24 hours. Set up a dashboard showing uncontacted leads so nothing falls through.' : optIdx === 1 ? 'Create a weekly lead audit. Assign ownership at lead capture time so every lead has an accountable rep.' : 'Your lead contact rate is healthy. Keep monitoring with a weekly uncontacted-leads report.',
+            '3': optIdx >= 2 ? 'Build a churn recovery campaign: reach out to churned customers with a win-back offer (discount, new feature, or check-in call). Start with the 10 most recent churns this month.' : optIdx === 1 ? 'Formalize your win-back process. Create a template email and call script for churned customers, and schedule outreach 30 days after churn.' : 'You have a churn recovery process in place. Measure its win-back rate quarterly to optimize.',
+            '4': optIdx >= 2 ? 'Start measuring training impact with post-training quizzes (Learning) and a 30-day behavior survey (Behavior). Track at least one revenue metric tied to each training program.' : optIdx === 1 ? 'Add a Learning-level quiz after each training session, and survey participants 30 days later to check if behavior changed.' : 'Your training measurement is comprehensive. Consider tying results to compensation or performance reviews for accountability.',
+          };
+          return { qIdx, question: q.question, answer, severity, priority, action: actions[qIdx] || '' };
+        })
+        .sort((a, b) => a.priority - b.priority)
+    : [];
 
   return (
     <div className="min-h-screen bg-navy-950 text-white antialiased">
@@ -480,23 +505,50 @@ export function Tremonix() {
               <div className="rounded-3xl border border-white/10 bg-white/[0.05] p-8 text-center sm:p-12">
                 <CheckCircle2 className="mx-auto h-16 w-16 text-emerald-400" />
                 <h3 className="mt-6 text-2xl font-bold">Your diagnostic is complete</h3>
-                <p className="mt-3 text-sm leading-relaxed text-slate-300">Based on your answers, here's an overview of where your revenue may be leaking compared to research benchmarks.</p>
+                <p className="mt-3 text-sm leading-relaxed text-slate-300">Based on your answers, here's your revenue leak assessment with prioritized recommendations.</p>
 
                 <div className="mt-8 rounded-2xl bg-white/10 p-6">
-                  <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Estimated leak areas</p>
-                  <div className="mt-4 space-y-4">
-                    {Object.entries(quizAnswers).map(([qIdx, answer]) => {
-                      const q = quizQuestions[parseInt(qIdx)];
-                      const optIdx = q.options.indexOf(answer);
-                      const severity = optIdx >= 2 ? 'high' : optIdx === 1 ? 'medium' : 'low';
-                      const colors = { high: 'text-rose-400', medium: 'text-amber-400', low: 'text-emerald-400' };
+                  <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                    <div className="text-left">
+                      <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Leak score</p>
+                      <p className="mt-1 text-3xl font-bold text-white">{leakScore}<span className="text-lg text-slate-400">/100</span></p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Assessment</p>
+                      <p className={`mt-1 text-sm font-bold ${leakSeverityColor}`}>{leakSeverityLabel}</p>
+                    </div>
+                  </div>
+
+                  <div className="mt-4">
+                    <div className="h-2.5 w-full overflow-hidden rounded-full bg-white/10">
+                      <div
+                        className={`h-full rounded-full transition-all duration-1000 ${leakSeverity === 'critical' ? 'bg-rose-500' : leakSeverity === 'moderate' ? 'bg-amber-500' : 'bg-emerald-500'}`}
+                        style={{ width: `${leakScore}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6 text-left">
+                  <p className="text-xs uppercase tracking-[0.18em] text-slate-400 mb-3">Prioritized recommendations</p>
+                  <div className="space-y-4">
+                    {recommendations.map((rec, i) => {
+                      const colors = { high: { border: 'border-rose-400/30', bg: 'bg-rose-500/10', text: 'text-rose-400', label: 'HIGH PRIORITY' }, medium: { border: 'border-amber-400/30', bg: 'bg-amber-500/10', text: 'text-amber-400', label: 'MEDIUM PRIORITY' }, low: { border: 'border-emerald-400/30', bg: 'bg-emerald-500/10', text: 'text-emerald-400', label: 'LOW PRIORITY' } };
+                      const c = colors[rec.severity as keyof typeof colors];
                       return (
-                        <div key={qIdx} className="flex items-start justify-between gap-4 border-b border-white/10 pb-3 last:border-0">
-                          <div className="text-left">
-                            <p className="text-xs text-slate-400">{q.question}</p>
-                            <p className="mt-1 text-sm font-semibold text-slate-100">{answer}</p>
+                        <div key={rec.qIdx} className={`rounded-2xl border ${c.border} ${c.bg} p-5`}>
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex items-center gap-2">
+                              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 text-xs font-bold text-white">{i + 1}</span>
+                              <span className={`text-xs font-bold uppercase tracking-wider ${c.text}`}>{c.label}</span>
+                            </div>
                           </div>
-                          <span className={`flex-shrink-0 text-xs font-bold uppercase ${colors[severity]}`}>{severity}</span>
+                          <p className="mt-3 text-sm font-semibold text-slate-100">{rec.question}</p>
+                          <p className="mt-1 text-xs text-slate-400">Your answer: {rec.answer}</p>
+                          <div className="mt-3 flex items-start gap-2 border-t border-white/10 pt-3">
+                            <Zap className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-400" />
+                            <p className="text-sm leading-relaxed text-slate-200">{rec.action}</p>
+                          </div>
                         </div>
                       );
                     })}
@@ -505,13 +557,13 @@ export function Tremonix() {
 
                 <div className="mt-8 rounded-2xl border border-amber-400/20 bg-amber-400/5 p-4">
                   <p className="text-xs leading-relaxed text-slate-300">
-                    This is a qualitative assessment based on research benchmarks, not a dollar-amount calculation. For a detailed revenue leak analysis with specific dollar figures, book a consultation.
+                    This assessment is based on research benchmarks from InsideSales, Harvard Business Review, Forbes, and Velocify. For a detailed revenue leak analysis with specific dollar figures and implementation support, book a consultation.
                   </p>
                 </div>
 
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
                   <a href="#contact" className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-navy-950 transition-colors hover:bg-emerald-400">
-                    Get your detailed report <ArrowRight className="h-4 w-4" />
+                    Book a consultation <ArrowRight className="h-4 w-4" />
                   </a>
                   <button onClick={resetQuiz} className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 px-5 py-3 text-sm font-semibold text-white transition-colors hover:border-emerald-400 hover:text-emerald-300">
                     Retake diagnostic
