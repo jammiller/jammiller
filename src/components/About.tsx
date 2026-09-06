@@ -9,12 +9,12 @@ const values = [
   {
     icon: Users,
     title: 'Workforce-Ready',
-    description: 'We produce tech-savvy, competence-proven talent prepared for machine-driven environments.',
+    description: 'We prepare teams for advanced technology and machine-driven environments through structured learning.',
   },
   {
     icon: Lightbulb,
     title: 'Cognitive Load Optimized',
-    description: 'Streamlined learning design that reduces overload and accelerates skill mastery.',
+    description: 'Streamlined learning design that reduces cognitive overload and supports skill development.',
   },
 ];
 

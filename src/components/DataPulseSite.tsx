@@ -80,7 +80,7 @@ export function DataPulseSite({ onOpenApp }: DataPulseSiteProps) {
                 We engineer learning systems that <span className="text-gold-400">build workforce competencies.</span>
               </h1>
               <p className="mt-6 max-w-xl text-base leading-relaxed text-slate-300 sm:text-lg">
-                We engineer UbD-driven learning systems that reduce cognitive overload and build the workforce competencies needed for a tech-savvy, machine-ready, high-performance workforce.
+                We engineer UbD-driven learning systems that reduce cognitive overload and build workforce competencies for technology-driven environments.
               </p>
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                 <a href="#services" className="inline-flex items-center justify-center gap-2 rounded-xl bg-gold-500 px-5 py-3 text-sm font-semibold text-navy-950 transition-all hover:-translate-y-0.5 hover:bg-gold-400">
@@ -104,9 +104,9 @@ export function DataPulseSite({ onOpenApp }: DataPulseSiteProps) {
                 </div>
                 <div className="space-y-5">
                   {[
-                    { label: 'UbD-driven design', desc: 'Stage 1, 2, and 3 structure ensures every unit builds toward real workforce competencies.' },
-                    { label: 'Reduced cognitive overload', desc: 'Streamlined content design that helps learners absorb, retain, and apply skills faster.' },
-                    { label: 'Competence-proven outcomes', desc: 'Assessments that verify tech-savvy, machine-ready talent — not just test scores.' },
+                    { label: 'UbD-driven design', desc: 'Stage 1, 2, and 3 structure that builds every unit toward real workforce competencies.' },
+                    { label: 'Reduced cognitive overload', desc: 'Streamlined content design that helps learners absorb, retain, and apply skills.' },
+                    { label: 'Assessment-driven outcomes', desc: 'Assessments that measure real workforce readiness — not just test scores.' },
                   ].map((item, index) => (
                     <div key={item.label} className="flex items-start gap-4">
                       <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-gold-400/50 text-xs font-bold text-gold-300">0{index + 1}</span>
@@ -119,7 +119,7 @@ export function DataPulseSite({ onOpenApp }: DataPulseSiteProps) {
                 </div>
                 <div className="mt-8 rounded-2xl bg-white/10 p-4">
                   <p className="text-xs text-slate-400">Our approach</p>
-                  <p className="mt-1 text-sm leading-relaxed text-slate-200">We don't create curriculum — we engineer performance-driven learning infrastructure that produces tech-savvy, competence-proven talent.</p>
+                  <p className="mt-1 text-sm leading-relaxed text-slate-200">We don't create curriculum — we engineer structured learning infrastructure designed to develop workforce-ready talent.</p>
                 </div>
               </div>
             </div>
@@ -173,8 +173,8 @@ export function DataPulseSite({ onOpenApp }: DataPulseSiteProps) {
             </div>
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
               {[
-                { icon: Layers, title: 'UbD-driven structure', desc: 'Every unit is built with Stage 1, 2, and 3 structure to ensure real competency development.' },
-                { icon: Sparkles, title: 'Reduced cognitive overload', desc: 'Streamlined content design that helps learners absorb, retain, and apply skills faster.' },
+                { icon: Layers, title: 'UbD-driven structure', desc: 'Every unit is built with Stage 1, 2, and 3 structure to support real competency development.' },
+                { icon: Sparkles, title: 'Reduced cognitive overload', desc: 'Streamlined content design that helps learners absorb, retain, and apply skills.' },
                 { icon: Target, title: 'Competence-proven assessments', desc: 'Measure real workforce readiness, not just memorization.' },
                 { icon: Cpu, title: 'Tech-savvy, machine-ready', desc: 'Curriculum built for advanced technology and machine-driven environments.' },
               ].map((item) => (
