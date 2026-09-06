@@ -1,1 +1,1 @@
-export const APP_VARIANT = 'tremonix';
+export const APP_VARIANT = '';

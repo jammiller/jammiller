@@ -72,11 +72,29 @@
         document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColor);
         document.querySelector('meta[name="apple-mobile-web-app-title"]').setAttribute('content', appTitle);
 
-        if (isTremonix) {
-          document.title = 'Tremonix — Revenue Leak Diagnostic';
-          var desc = document.querySelector('meta[name="description"]');
-          if (desc) desc.setAttribute('content', 'Tremonix — find the revenue your business is losing to slow response times, insufficient follow-up, and abandoned leads. Backed by published research.');
+        var dynTitle = 'DATAPULSE SOCIAL';
+        var dynDesc = 'We engineer UbD-driven learning systems that reduce cognitive overload and build the workforce competencies needed for a tech-savvy, machine-ready, high-performance workforce.';
+
+        if (isSafety) {
+          dynTitle = 'Safety App';
+          dynDesc = 'Personal safety tools for emergency contacts, SOS support, location sharing, safety check-ins, and first aid guidance.';
+        } else if (isStatsLab) {
+          dynTitle = 'StatsLab';
+          dynDesc = 'Interactive statistics tool for datasets, descriptive stats, visualizations, and inference tests.';
+        } else if (isPulseOS) {
+          dynTitle = 'PulseOS Platform';
+          dynDesc = 'PulseOS — UbD-driven learning operations. Build curriculum units with Stage 1, 2, and 3 structure, assessments, and analytics.';
+        } else if (isHarbor) {
+          dynTitle = 'Harbor — Wellness Community Platform';
+          dynDesc = 'A guided community experience platform designed to help wellness brands build intentional, supportive member communities.';
+        } else if (isTremonix) {
+          dynTitle = 'Tremonix — Revenue Leak Diagnostic';
+          dynDesc = 'Tremonix — find the revenue your business is losing to slow response times, insufficient follow-up, and abandoned leads. Backed by published research.';
         }
+
+        document.title = dynTitle;
+        var descEl = document.querySelector('meta[name="description"]');
+        if (descEl) descEl.setAttribute('content', dynDesc);
       })();
     </script>
     <meta name="mobile-web-app-capable" content="yes" />
