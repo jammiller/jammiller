@@ -9,7 +9,6 @@ import {
   Mail,
   Menu,
   Phone,
-  Shield,
   Sparkles,
   Target,
   X,
@@ -23,11 +22,7 @@ import { About } from './About';
 import { Blog } from './Blog';
 import { FAQ } from './FAQ';
 import { Portfolio } from './Portfolio';
-interface DataPulseSiteProps {
-  onOpenApp: (view: 'safety') => void;
-}
-
-export function DataPulseSite({ onOpenApp }: DataPulseSiteProps) {
+export function DataPulseSite() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [whyActive, setWhyActive] = useState(0);
 
@@ -159,20 +154,7 @@ export function DataPulseSite({ onOpenApp }: DataPulseSiteProps) {
               <h2 className="text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">Tools for the work that matters.</h2>
               <p className="mx-auto mt-4 max-w-2xl leading-relaxed text-slate-600">Use our focused tools when you need them, then return to the bigger picture.</p>
             </div>
-            <div className="grid gap-6 md:grid-cols-2 max-w-3xl">
-              <div className="group flex flex-col rounded-3xl border border-slate-200 bg-softgray p-7 text-left transition-all duration-300 hover:-translate-y-1 hover:border-rose-300 hover:shadow-xl sm:p-9">
-                <button onClick={() => onOpenApp('safety')} className="text-left">
-                  <div className="flex items-start justify-between"><span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-100 text-rose-600"><Shield className="h-6 w-6" /></span><ArrowRight className="h-5 w-5 text-navy-700 transition-transform group-hover:translate-x-1" /></div>
-                  <p className="mt-8 text-xs font-semibold uppercase tracking-[0.18em] text-rose-600">Personal safety toolkit</p>
-                  <h3 className="mt-2 text-2xl font-bold text-navy-900">Safety App</h3>
-                  <p className="mt-3 max-w-md text-sm leading-relaxed text-slate-600">Emergency contacts, SOS support, location sharing, and quick access to essential safety tools.</p>
-                  <span className="mt-7 inline-block text-sm font-semibold text-navy-900">Open Safety App</span>
-                </button>
-                <a href="https://play.google.com/store/apps/details?id=com.safetyapp.app" target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl border border-navy-200 bg-white px-4 py-2.5 text-sm font-semibold text-navy-900 transition-colors hover:border-rose-400 hover:bg-rose-50 hover:text-rose-700">
-                  <Download className="h-4 w-4" /> Download on Google Play
-                </a>
-              </div>
-
+            <div className="grid gap-6 max-w-3xl">
               <div className="group flex flex-col rounded-3xl border border-slate-200 bg-softgray p-7 text-left transition-all duration-300 hover:-translate-y-1 hover:border-navy-400 hover:shadow-xl sm:p-9">
                 <a href="https://statslab.app" target="_blank" rel="noopener noreferrer" className="text-left">
                   <div className="flex items-start justify-between"><span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-navy-100 text-navy-900"><BarChart3 className="h-6 w-6" /></span><ArrowRight className="h-5 w-5 text-navy-700 transition-transform group-hover:translate-x-1" /></div>
@@ -308,7 +290,6 @@ export function DataPulseSite({ onOpenApp }: DataPulseSiteProps) {
       <footer className="bg-navy-950 px-4 py-8 text-slate-400 sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-7xl flex-col gap-6 text-xs">
           <div className="flex flex-wrap gap-x-5 gap-y-2">
-            <a href="#apps" className="font-semibold text-slate-300 hover:text-gold-400">Safety App</a>
             <a href="https://statslab.app" target="_blank" rel="noopener noreferrer" className="font-semibold text-slate-300 hover:text-gold-400">StatsLab</a>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

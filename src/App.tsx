@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { ArrowLeft, Shield } from 'lucide-react';
+import { useEffect } from 'react';
 import { DataPulseSite } from './components/DataPulseSite';
 import { PulseOS } from './components/PulseOS';
 import { SafetyApp } from './components/SafetyApp';
@@ -10,8 +9,6 @@ import { InstallPrompt } from './components/InstallPrompt';
 import { Harbor } from './components/Harbor';
 import { Tremonix } from './components/Tremonix';
 import { APP_VARIANT } from './config';
-
-type AppView = 'site' | 'safety';
 
 function App() {
   const hostname = window.location.hostname.toLowerCase();
@@ -25,8 +22,6 @@ function App() {
   const searchParams = new URLSearchParams(window.location.search);
   const isWalkthroughPath = pathname === '/walkthrough' || searchParams.get('walkthrough') === '1';
 
-
-  const [activeView, setActiveView] = useState<AppView>('site');
 
   useEffect(() => {
     const isPulseOS = isPulseOSDomain;
@@ -88,6 +83,7 @@ function App() {
     }
   }, [isSafetyDomain, isStatsLabDomain, isPulseOSDomain, isHarborDomain, isTremonixDomain]);
 
+
   if (isWalkthroughPath) {
     return <VideoWalkthrough />;
   }
@@ -107,36 +103,9 @@ function App() {
     return <><StatsLab /><InstallPrompt /></>;
   }
 
-  const openApp = (view: 'safety') => {
-    setActiveView(view);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   return (
     <>
-      {activeView === 'site' && <DataPulseSite onOpenApp={openApp} />}
-
-      {activeView !== 'site' && (
-        <div className="min-h-screen bg-white font-sans antialiased">
-          <div className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur-md">
-            <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
-              <button
-                onClick={() => setActiveView('site')}
-                className="inline-flex items-center gap-2 text-sm font-semibold text-navy-900 transition-colors hover:text-gold-700"
-              >
-                <ArrowLeft className="h-4 w-4" /> Back to DATAPULSE SOCIAL
-              </button>
-              <div className="hidden items-center gap-2 text-xs font-semibold text-slate-500 sm:flex">
-                {activeView === 'safety' && <Shield className="h-4 w-4 text-rose-600" />}
-                {activeView === 'safety' ? 'Safety App' : ''}
-              </div>
-            </div>
-          </div>
-          <main>
-            {activeView === 'safety' && <SafetyApp />}
-          </main>
-        </div>
-      )}
+      <DataPulseSite />
 
       <CookieConsent />
       <InstallPrompt />
