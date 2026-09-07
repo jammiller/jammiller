@@ -18,8 +18,8 @@ function App() {
   const isStatsLabDomain = appVariant === 'statslab' || hostname === 'statslab.app' || hostname === 'www.statslab.app';
   const isPulseOSDomain = appVariant === 'pulseos' || hostname === 'pulseosplatform.com' || hostname === 'www.pulseosplatform.com';
   const isHarborDomain = appVariant === 'harbor' || hostname === 'harborhush.website' || hostname === 'www.harborhush.website';
-  const isTremonixDomain = appVariant === 'tremonix' || hostname === 'tremonix.com' || hostname === 'www.tremonix.com';
   const pathname = window.location.pathname.replace(/\/$/, '') || '/';
+  const isTremonixDomain = appVariant === 'tremonix' || hostname === 'tremonix.com' || hostname === 'www.tremonix.com' || pathname === '/tremonix';
   const isVoltEchoDomain = appVariant === 'voltecho' || hostname === 'voltecho.app' || hostname === 'www.voltecho.app' || pathname === '/voltecho';
   const searchParams = new URLSearchParams(window.location.search);
   const isWalkthroughPath = pathname === '/walkthrough' || searchParams.get('walkthrough') === '1';
