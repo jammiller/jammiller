@@ -19,6 +19,7 @@
         var isPulseOS = h === 'pulseosplatform.com' || h === 'www.pulseosplatform.com' || p === '/pulseos';
         var isHarbor = h === 'harborhush.website' || h === 'www.harborhush.website';
         var isTremonix = h === 'tremonix.com' || h === 'www.tremonix.com';
+        var isVoltEcho = h === 'voltecho.app' || h === 'www.voltecho.app';
 
         var manifestHref = '/manifest.json';
         var appleHref = '/apple-touch-icon.png';
@@ -52,6 +53,9 @@
         } else if (isTremonix) {
           themeColor = '#0a1f1a';
           appTitle = 'Tremonix';
+        } else if (isVoltEcho) {
+          themeColor = '#000000';
+          appTitle = 'VoltEcho';
         }
 
         function createLink(rel, href, attrs) {
@@ -90,6 +94,9 @@
         } else if (isTremonix) {
           dynTitle = 'Tremonix — Revenue Leak Diagnostic';
           dynDesc = 'Tremonix — find the revenue your business is losing to slow response times, insufficient follow-up, and abandoned leads. Backed by published research.';
+        } else if (isVoltEcho) {
+          dynTitle = 'VoltEcho — Smart Algorithm Hub';
+          dynDesc = 'VoltEcho — a single hub housing smart algorithms for data entry automation, customer churn prediction, and inventory forecasting.';
         }
 
         document.title = dynTitle;

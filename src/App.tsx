@@ -8,6 +8,7 @@ import { CookieConsent } from './components/CookieConsent';
 import { InstallPrompt } from './components/InstallPrompt';
 import { Harbor } from './components/Harbor';
 import { Tremonix } from './components/Tremonix';
+import { VoltEcho } from './components/VoltEcho';
 import { APP_VARIANT } from './config';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
   const isPulseOSDomain = appVariant === 'pulseos' || hostname === 'pulseosplatform.com' || hostname === 'www.pulseosplatform.com';
   const isHarborDomain = appVariant === 'harbor' || hostname === 'harborhush.website' || hostname === 'www.harborhush.website';
   const isTremonixDomain = appVariant === 'tremonix' || hostname === 'tremonix.com' || hostname === 'www.tremonix.com';
+  const isVoltEchoDomain = appVariant === 'voltecho' || hostname === 'voltecho.app' || hostname === 'www.voltecho.app';
   const pathname = window.location.pathname.replace(/\/$/, '') || '/';
   const searchParams = new URLSearchParams(window.location.search);
   const isWalkthroughPath = pathname === '/walkthrough' || searchParams.get('walkthrough') === '1';
@@ -31,6 +33,7 @@ function App() {
       : isPulseOS ? 'PulseOS Platform'
       : isHarbor ? 'Harbor — Wellness Community Platform'
       : isTremonixDomain ? 'Tremonix — Revenue Leak Diagnostic'
+      : isVoltEchoDomain ? 'VoltEcho — Smart Algorithm Hub'
       : 'DATAPULSE SOCIAL';
     const description = isSafetyDomain
       ? 'Personal safety tools for emergency contacts, SOS support, location sharing, safety check-ins, and first aid guidance.'
@@ -42,7 +45,9 @@ function App() {
               ? 'A guided community experience platform designed to help wellness brands build intentional, supportive member communities.'
               : isTremonixDomain
                 ? 'Tremonix — find the revenue your business is losing to slow response times, insufficient follow-up, and abandoned leads. Backed by published research.'
-                : 'DATAPULSE SOCIAL creates practical learning experiences and focused digital tools.';
+                : isVoltEchoDomain
+                  ? 'VoltEcho — a single hub housing smart algorithms for data entry automation, customer churn prediction, and inventory forecasting.'
+                  : 'DATAPULSE SOCIAL creates practical learning experiences and focused digital tools.';
     document.title = title;
     document.querySelector('meta[name="description"]')?.setAttribute('content', description);
 
@@ -73,6 +78,9 @@ function App() {
     } else if (isTremonixDomain) {
       document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#0a1f1a');
       document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', 'Tremonix');
+    } else if (isVoltEchoDomain) {
+      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#000000');
+      document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', 'VoltEcho');
     } else {
       document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#0a1a2f');
       document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', 'DATAPULSE SOCIAL');
@@ -81,7 +89,7 @@ function App() {
       document.querySelector('link[rel="icon"][sizes="16x16"]')?.setAttribute('href', '/favicon-16.png');
       document.querySelector('link[rel="apple-touch-icon"]')?.setAttribute('href', '/apple-touch-icon.png');
     }
-  }, [isSafetyDomain, isStatsLabDomain, isPulseOSDomain, isHarborDomain, isTremonixDomain]);
+  }, [isSafetyDomain, isStatsLabDomain, isPulseOSDomain, isHarborDomain, isTremonixDomain, isVoltEchoDomain]);
 
 
   if (isWalkthroughPath) {
@@ -92,6 +100,9 @@ function App() {
   }
   if (isTremonixDomain) {
     return <Tremonix />;
+  }
+  if (isVoltEchoDomain) {
+    return <VoltEcho />;
   }
   if (isPulseOSDomain) {
     return <><PulseOS /><InstallPrompt /></>;
