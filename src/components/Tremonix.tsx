@@ -619,8 +619,8 @@ export function Tremonix() {
               <a href="tel:8508309910" className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 px-5 py-3 text-sm font-semibold text-white transition-colors hover:border-emerald-400 hover:text-emerald-300">
                 <Phone className="h-4 w-4" /> 850-830-9910
               </a>
-              <a href="mailto:info@tremonix.com" className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 px-5 py-3 text-sm font-semibold text-white transition-colors hover:border-emerald-400 hover:text-emerald-300">
-                <Mail className="h-4 w-4" /> Email us
+              <a href="mailto:contact@tremonix.com" className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 px-5 py-3 text-sm font-semibold text-white transition-colors hover:border-emerald-400 hover:text-emerald-300">
+                <Mail className="h-4 w-4" /> contact@tremonix.com
               </a>
             </div>
           </div>
