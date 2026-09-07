@@ -17,6 +17,7 @@ import {
   ClipboardCheck,
   Zap,
   TrendingUp,
+  Droplets,
 } from 'lucide-react';
 import { About } from './About';
 import { Blog } from './Blog';
@@ -156,6 +157,15 @@ export function DataPulseSite() {
             </div>
             <div className="grid gap-6 max-w-3xl">
               <div className="group flex flex-col rounded-3xl border border-slate-200 bg-softgray p-7 text-left transition-all duration-300 hover:-translate-y-1 hover:border-navy-400 hover:shadow-xl sm:p-9">
+                <a href="https://tremonix.com" target="_blank" rel="noopener noreferrer" className="text-left">
+                  <div className="flex items-start justify-between"><span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700"><Droplets className="h-6 w-6" /></span><ArrowRight className="h-5 w-5 text-navy-700 transition-transform group-hover:translate-x-1" /></div>
+                  <p className="mt-8 text-xs font-semibold uppercase tracking-[0.18em] text-navy-700">Revenue leak diagnostic</p>
+                  <h3 className="mt-2 text-2xl font-bold text-navy-900">Tremonix</h3>
+                  <p className="mt-3 max-w-md text-sm leading-relaxed text-slate-600">Find the revenue your business is losing to slow response times, insufficient follow-up, and abandoned leads. Backed by published research.</p>
+                  <span className="mt-7 inline-block text-sm font-semibold text-navy-900">Open Tremonix</span>
+                </a>
+              </div>
+              <div className="group flex flex-col rounded-3xl border border-slate-200 bg-softgray p-7 text-left transition-all duration-300 hover:-translate-y-1 hover:border-navy-400 hover:shadow-xl sm:p-9">
                 <a href="https://statslab.app" target="_blank" rel="noopener noreferrer" className="text-left">
                   <div className="flex items-start justify-between"><span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-navy-100 text-navy-900"><BarChart3 className="h-6 w-6" /></span><ArrowRight className="h-5 w-5 text-navy-700 transition-transform group-hover:translate-x-1" /></div>
                   <p className="mt-8 text-xs font-semibold uppercase tracking-[0.18em] text-navy-700">Interactive statistics tool</p>
@@ -290,6 +300,7 @@ export function DataPulseSite() {
       <footer className="bg-navy-950 px-4 py-8 text-slate-400 sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-7xl flex-col gap-6 text-xs">
           <div className="flex flex-wrap gap-x-5 gap-y-2">
+            <a href="https://tremonix.com" target="_blank" rel="noopener noreferrer" className="font-semibold text-slate-300 hover:text-gold-400">Tremonix</a>
             <a href="https://statslab.app" target="_blank" rel="noopener noreferrer" className="font-semibold text-slate-300 hover:text-gold-400">StatsLab</a>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
