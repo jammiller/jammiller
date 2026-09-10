@@ -10,6 +10,9 @@ import {
   Menu,
   Phone,
   Sparkles,
+  Check,
+  Users,
+  CalendarDays,
   Target,
   X,
   CheckCircle2,
@@ -74,6 +77,7 @@ export function DataPulseSite() {
             <a href="#about" className="text-sm text-slate-300 transition-colors hover:text-white">About</a>
             <a href="#services" className="text-sm text-slate-300 transition-colors hover:text-white">Services</a>
             <a href="#portfolio" className="text-sm text-slate-300 transition-colors hover:text-white">Portfolio</a>
+            <a href="#insider" className="text-sm font-semibold text-gold-400 transition-colors hover:text-gold-300">Insider</a>
             <a href="#blog" className="text-sm text-slate-300 transition-colors hover:text-white">Insights</a>
             <a href="#contact" className="rounded-lg bg-gold-500 px-4 py-2 text-sm font-semibold text-navy-950 transition-colors hover:bg-gold-400">Let's Talk</a>
           </nav>
@@ -82,9 +86,9 @@ export function DataPulseSite() {
         {menuOpen && (
           <nav className="border-t border-white/10 px-4 py-4 md:hidden" aria-label="Mobile navigation">
             <div className="mx-auto flex max-w-7xl flex-col gap-1">
-              {['about', 'services', 'portfolio', 'blog', 'contact'].map((section) => (
+              {['about', 'services', 'portfolio', 'insider', 'blog', 'contact'].map((section) => (
                 <a key={section} href={'#' + section} onClick={closeMenu} className="rounded-lg px-3 py-3 text-sm font-medium capitalize text-slate-200 hover:bg-white/10">
-                  {section === 'blog' ? 'Insights' : section === 'contact' ? "Let's Talk" : section}
+                  {section === 'blog' ? 'Insights' : section === 'contact' ? "Let's Talk" : section === 'insider' ? 'Insider' : section}
                 </a>
               ))}
             </div>
@@ -186,6 +190,61 @@ export function DataPulseSite() {
                 <a href="https://play.google.com/store/apps/details?id=com.statslab.app" target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl border border-navy-200 bg-white px-4 py-2.5 text-sm font-semibold text-navy-900 transition-colors hover:border-navy-400 hover:bg-navy-50 hover:text-navy-700">
                   <Download className="h-4 w-4" /> Download on Google Play
                 </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="insider" className="relative overflow-hidden bg-softgray py-24">
+          <div className="absolute -right-40 top-16 h-96 w-96 rounded-full bg-gold-400/10 blur-3xl" />
+          <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-3xl text-center">
+              <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-gold-300 bg-gold-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-navy-900">
+                <Users className="h-3.5 w-3.5 text-gold-700" /> DATAPULSE SOCIAL INSIDER
+              </span>
+              <h2 className="text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">Your monthly advantage for smarter marketing.</h2>
+              <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
+                Join a focused community for practical marketing direction, fresh ideas, and the resources to turn strategy into consistent action.
+              </p>
+            </div>
+
+            <div className="mx-auto mt-12 grid max-w-5xl gap-6 lg:grid-cols-[1fr_0.8fr] lg:items-stretch">
+              <div className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm sm:p-9">
+                <div className="flex items-start justify-between gap-5 border-b border-slate-100 pb-6">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold-700">Included every month</p>
+                    <h3 className="mt-2 text-2xl font-bold text-navy-900">Built to keep you moving.</h3>
+                  </div>
+                  <CalendarDays className="h-7 w-7 flex-shrink-0 text-gold-600" />
+                </div>
+                <div className="mt-7 grid gap-4 sm:grid-cols-2">
+                  {[
+                    'Monthly content calendar',
+                    'New AI prompts',
+                    'Social trends',
+                    'Templates',
+                    'Strategy training',
+                    'Monthly optimization session',
+                    'Marketing resources',
+                  ].map((benefit) => (
+                    <div key={benefit} className="flex items-start gap-3 text-sm font-medium text-slate-700">
+                      <span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700"><Check className="h-3.5 w-3.5" /></span>
+                      {benefit}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-col justify-between rounded-3xl bg-navy-950 p-7 text-white shadow-xl sm:p-9">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold-400">Insider membership</p>
+                  <h3 className="mt-3 text-2xl font-bold">Get inside the group.</h3>
+                  <p className="mt-4 text-sm leading-relaxed text-slate-300">A monthly membership for people who want a clearer plan, better content, and a community that keeps strategy practical.</p>
+                </div>
+                <div className="mt-8">
+                  <a href="#contact" className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gold-500 px-5 py-3.5 text-sm font-bold text-navy-950 transition-all hover:-translate-y-0.5 hover:bg-gold-400">Join the Insider group <ArrowRight className="h-4 w-4" /></a>
+                  <p className="mt-3 text-center text-xs text-slate-400">Secure Stripe checkout link coming soon</p>
+                </div>
               </div>
             </div>
           </div>
