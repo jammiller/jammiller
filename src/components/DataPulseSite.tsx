@@ -22,14 +22,59 @@ import {
   TrendingUp,
   Droplets,
   Zap as ZapIcon,
+  Copy,
+  CheckCheck,
+  Search,
+  FileText,
+  Lightbulb,
+  Repeat,
+  Megaphone,
 } from 'lucide-react';
 import { About } from './About';
 import { Blog } from './Blog';
 import { FAQ } from './FAQ';
 import { Portfolio } from './Portfolio';
+import { insiderPrompts, insiderCategories } from '../data/insiderContent';
 export function DataPulseSite() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [whyActive, setWhyActive] = useState(0);
+  const [copiedPrompt, setCopiedPrompt] = useState<string | null>(null);
+  const [promptSearch, setPromptSearch] = useState('');
+  const [activePromptCategory, setActivePromptCategory] = useState('All');
+
+  const promptCategories = ['All', ...Array.from(new Set(insiderPrompts.map((p) => p.category)))];
+  const filteredPrompts = insiderPrompts.filter((p) => {
+    const matchesCategory = activePromptCategory === 'All' || p.category === activePromptCategory;
+    const matchesSearch = promptSearch === '' ||
+      p.title.toLowerCase().includes(promptSearch.toLowerCase()) ||
+      p.category.toLowerCase().includes(promptSearch.toLowerCase()) ||
+      p.platform.toLowerCase().includes(promptSearch.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
+  const categoryIcons: Record<string, typeof Search> = {
+    'Caption Writing': Megaphone,
+    'Content Creation': FileText,
+    'Strategy': Lightbulb,
+    'Repurposing': Repeat,
+    'Audience Research': Search,
+  };
+
+  const commandCenterIcons: Record<string, typeof Search> = {
+    'CalendarDays': CalendarDays,
+    'Sparkles': Sparkles,
+    'TrendingUp': TrendingUp,
+    'FileText': FileText,
+    'GraduationCap': GraduationCap,
+    'Target': Target,
+    'ClipboardCheck': ClipboardCheck,
+  };
+
+  const copyPrompt = (id: string, text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedPrompt(id);
+    setTimeout(() => setCopiedPrompt(null), 2000);
+  };
 
   const closeMenu = () => setMenuOpen(false);
 
@@ -246,6 +291,151 @@ export function DataPulseSite() {
                   <p className="mt-3 text-center text-xs text-slate-400">Secure checkout via Stripe</p>
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="relative overflow-hidden bg-white py-24">
+          <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-3xl text-center">
+              <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-gold-300 bg-gold-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-navy-900">
+                <Sparkles className="h-3.5 w-3.5 text-gold-700" /> MARKETING COMMAND CENTER
+              </span>
+              <h2 className="text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">Your monthly home for marketing content.</h2>
+              <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
+                Content planning, AI prompts, trends, templates, training, optimization sessions, and resources — all in one place.
+              </p>
+            </div>
+
+            <div className="mx-auto mt-10 max-w-3xl rounded-2xl border border-gold-200 bg-gold-50 p-6 text-center">
+              <p className="text-sm font-semibold text-navy-900">Get the Monthly Plan — $49</p>
+              <a href="https://buy.stripe.com/fZu14oe699z41dj8dAe3e08" target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center justify-center gap-2 rounded-xl bg-gold-500 px-5 py-3 text-sm font-bold text-navy-950 transition-all hover:-translate-y-0.5 hover:bg-gold-400">
+                Join the Insider group <ArrowRight className="h-4 w-4" />
+              </a>
+            </div>
+
+            <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {insiderCategories.map((cat) => {
+                const Icon = commandCenterIcons[cat.icon] || FileText;
+                return (
+                  <div key={cat.key} className="group rounded-2xl border border-slate-200 bg-softgray p-6 transition-all duration-300 hover:border-gold-300 hover:shadow-lg">
+                    <div className="flex items-start justify-between">
+                      <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-gold-100 text-gold-700">
+                        <Icon className="h-5 w-5" />
+                      </span>
+                      <span className="text-2xl font-bold text-slate-300">{cat.count}</span>
+                    </div>
+                    <h3 className="mt-4 text-base font-bold text-navy-900">{cat.label}</h3>
+                    <p className="mt-1 text-sm text-slate-600">{cat.description}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        <section className="relative overflow-hidden bg-softgray py-24">
+          <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-3xl text-center">
+              <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-gold-300 bg-gold-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-navy-900">
+                <Sparkles className="h-3.5 w-3.5 text-gold-700" /> INSIDER PROMPT LIBRARY
+              </span>
+              <h2 className="text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">Ready-to-use AI prompts.</h2>
+              <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
+                Copy and paste these into ChatGPT, Claude, or any AI tool. Each prompt is tuned for a specific platform and marketing goal.
+              </p>
+            </div>
+
+            <div className="mx-auto mt-10 max-w-2xl">
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  value={promptSearch}
+                  onChange={(e) => setPromptSearch(e.target.value)}
+                  placeholder="Search prompts by title, category, or platform..."
+                  className="w-full rounded-xl border border-slate-200 bg-white py-3.5 pl-12 pr-4 text-sm text-navy-900 placeholder-slate-400 transition-all focus:border-gold-400 focus:outline-none focus:ring-2 focus:ring-gold-400/20"
+                />
+              </div>
+            </div>
+
+            <div className="mt-6 flex flex-wrap justify-center gap-2">
+              {promptCategories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setActivePromptCategory(cat)}
+                  className={'rounded-full px-4 py-2 text-xs font-semibold transition-all ' + (
+                    activePromptCategory === cat
+                      ? 'bg-navy-900 text-white shadow-md'
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  )}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            <div className="mt-10 grid gap-5 lg:grid-cols-2">
+              {filteredPrompts.map((prompt) => {
+                const Icon = categoryIcons[prompt.category] || FileText;
+                return (
+                  <div key={prompt.id} className="group flex flex-col rounded-2xl border border-slate-200 bg-white p-6 transition-all duration-300 hover:border-gold-300 hover:shadow-lg sm:p-7">
+                    <div className="flex items-start justify-between gap-4 border-b border-slate-200 pb-4">
+                      <div className="flex items-start gap-3">
+                        <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gold-100 text-gold-700">
+                          <Icon className="h-5 w-5" />
+                        </span>
+                        <div>
+                          <h3 className="text-base font-bold text-navy-900">{prompt.title}</h3>
+                          <div className="mt-1.5 flex flex-wrap gap-2">
+                            <span className="rounded-full bg-navy-100 px-2.5 py-0.5 text-xs font-semibold text-navy-700">{prompt.category}</span>
+                            <span className="rounded-full bg-slate-200 px-2.5 py-0.5 text-xs font-semibold text-slate-600">{prompt.platform}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 rounded-xl border border-slate-200 bg-softgray p-4">
+                      <p className="text-sm leading-relaxed text-slate-700">{prompt.promptText}</p>
+                    </div>
+
+                    <div className="mt-4 rounded-lg bg-gold-50 px-4 py-3">
+                      <p className="text-xs leading-relaxed text-slate-600">
+                        <span className="font-semibold text-gold-700">When to use: </span>
+                        {prompt.useCase}
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={() => copyPrompt(prompt.id, prompt.promptText)}
+                      className={'mt-5 inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold transition-all ' + (
+                        copiedPrompt === prompt.id
+                          ? 'bg-emerald-500 text-white'
+                          : 'bg-navy-900 text-white hover:bg-navy-800'
+                      )}
+                    >
+                      {copiedPrompt === prompt.id ? (
+                        <><CheckCheck className="h-4 w-4" /> Copied!</>
+                      ) : (
+                        <><Copy className="h-4 w-4" /> Copy prompt</>
+                      )}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+
+            {filteredPrompts.length === 0 && (
+              <div className="mt-10 text-center">
+                <p className="text-sm text-slate-500">No prompts match your search. Try a different keyword.</p>
+              </div>
+            )}
+
+            <div className="mx-auto mt-12 max-w-2xl rounded-2xl border border-gold-200 bg-gold-50 p-6 text-center">
+              <p className="text-sm font-semibold text-navy-900">New prompts added every month as part of your Insider membership.</p>
+              <a href="https://buy.stripe.com/fZu14oe699z41dj8dAe3e08" target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-gold-500 px-5 py-3 text-sm font-bold text-navy-950 transition-all hover:-translate-y-0.5 hover:bg-gold-400">
+                Join the Insider group <ArrowRight className="h-4 w-4" />
+              </a>
             </div>
           </div>
         </section>
