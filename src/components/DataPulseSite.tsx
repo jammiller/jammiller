@@ -242,8 +242,8 @@ export function DataPulseSite() {
                   <p className="mt-4 text-sm leading-relaxed text-slate-300">A monthly membership for people who want a clearer plan, better content, and a community that keeps strategy practical.</p>
                 </div>
                 <div className="mt-8">
-                  <a href="#contact" className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gold-500 px-5 py-3.5 text-sm font-bold text-navy-950 transition-all hover:-translate-y-0.5 hover:bg-gold-400">Join the Insider group <ArrowRight className="h-4 w-4" /></a>
-                  <p className="mt-3 text-center text-xs text-slate-400">Secure Stripe checkout link coming soon</p>
+                  <a href="https://buy.stripe.com/fZu14oe699z41dj8dAe3e08" target="_blank" rel="noopener noreferrer" className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gold-500 px-5 py-3.5 text-sm font-bold text-navy-950 transition-all hover:-translate-y-0.5 hover:bg-gold-400">Join the Insider group <ArrowRight className="h-4 w-4" /></a>
+                  <p className="mt-3 text-center text-xs text-slate-400">Secure checkout via Stripe</p>
                 </div>
               </div>
             </div>
