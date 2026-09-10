@@ -274,6 +274,90 @@ export const insiderResources: InsiderResource[] = [
   },
 ];
 
+export interface InsiderTemplate {
+  id: string;
+  title: string;
+  type: string;
+  platform: string;
+  templateText: string;
+  useCase: string;
+}
+
+export const insiderTemplates: InsiderTemplate[] = [
+  {
+    id: 'social-seo-intent-caption',
+    title: 'Social SEO Intent Caption',
+    type: 'Caption',
+    platform: 'Instagram',
+    templateText: `Looking for the best [target keyword/phrase, e.g., low-tox laundry detergent for sensitive skin] in 2026? Here is the exact breakdown:
+
+1. [Key factor/ingredient to look for]
+2. [Common red flag/mistake to avoid]
+3. Why our [Product/Service Name] uses [unique feature or method]
+
+Bookmark this [target keyword] guide for your next shopping run, and drop '[keyword trigger]' below to get our full buyer's checklist sent straight to your DMs.`,
+    useCase: 'Optimizes Instagram and TikTok in-app search indexing by placing search-intent keywords directly in the first sentence while driving saves and DM triggers.',
+  },
+  {
+    id: 'raw-bts-story-hook',
+    title: 'Raw Behind-the-Scenes Story Hook',
+    type: 'Post Hook',
+    platform: 'TikTok',
+    templateText: `I almost didn't hit record, but we just lost $[dollar amount] on [specific mistake or failed project] because I ignored [key business lesson/red flag]. If you're building a [industry/niche business], do not make the same mistake I made today.`,
+    useCase: 'Uses low-production, conversational storytelling to immediately stop feed scrolling and build emotional authenticity around real small business lessons.',
+  },
+  {
+    id: 'b2b-document-playbook-carousel',
+    title: 'B2B Document Playbook Carousel',
+    type: 'Carousel',
+    platform: 'LinkedIn',
+    templateText: `[Slide 1: Cover]
+The 5-step playbook to solve [specific client problem] in under [timeframe] (without [common friction point]).
+
+[Slide 2: Diagnosis]
+Why [traditional approach] stopped working in 2026: [1-sentence explanation of current market shift].
+
+[Slide 3-5: The Steps]
+Step 1: [Actionable tactic + metric]
+Step 2: [Actionable tactic + metric]
+Step 3: [Actionable tactic + metric]
+
+[Slide 6: Summary & CTA]
+Save this PDF for your next [meeting/planning session]. Follow [Brand Name] for weekly frameworks on [core industry topic].`,
+    useCase: 'Designed for multi-page PDF document uploads to maximize dwell time, engagement, and algorithmic reach on LinkedIn.',
+  },
+  {
+    id: 'apology-ghosting-reveal',
+    title: 'The Apology & Ghosting Reveal',
+    type: 'Post Hook',
+    platform: 'Instagram',
+    templateText: `I owe an apology to anyone who asked why we went silent on [channel/topic] last month. We didn't abandon you—behind closed doors, our team was completely rebuilding [product/process] after [unexpected problem or surge in demand]. Here is the real reason why:`,
+    useCase: 'Capitalizes on high-curiosity apology framing to explain business updates or product restocks while restoring community intimacy.',
+  },
+  {
+    id: 'founder-vulnerability-journey',
+    title: 'Founder Vulnerability Journey',
+    type: 'Caption',
+    platform: 'Facebook',
+    templateText: `[Number] months ago, I was sitting on the floor of [location] wondering if launching [Business Name] was a massive mistake.
+
+We had zero [sales/clients], our first batch of [product] had [specific issue], and everyone told us to stick to [safe conventional alternative].
+
+Fast forward to today: [specific customer milestone or celebratory metric reached].
+
+To every small business supporter who bought from us when we were just an idea: thank you. Tell us in the comments—what dream are you taking a leap on this year?`,
+    useCase: 'Drives community engagement and shareability on Facebook through a raw problem-to-triumph narrative.',
+  },
+  {
+    id: 'social-search-qa-hook',
+    title: 'Social Search Question-and-Answer Hook',
+    type: 'Post Hook',
+    platform: 'YouTube',
+    templateText: `Why is everyone searching for [target keyword/phrase, e.g., budget kitchen cabinet refacing]? In this video, we break down what [industry professionals] aren't telling you about [specific solution], and the 3 questions you must ask before spending a single dollar.`,
+    useCase: 'Targets search-engine-oriented social queries across YouTube Shorts and long-form video to capture organic discovery traffic.',
+  },
+];
+
 export interface InsiderCategory {
   key: string;
   label: string;
