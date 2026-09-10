@@ -351,7 +351,7 @@ export function DataPulseSite() {
             </div>
             <div className="grid gap-6 max-w-3xl">
               <div className="group flex flex-col rounded-3xl border border-slate-200 bg-softgray p-7 text-left transition-all duration-300 hover:-translate-y-1 hover:border-navy-400 hover:shadow-xl sm:p-9">
-                <a href="https://tremonix.com" target="_blank" rel="noopener noreferrer" className="text-left">
+                <a href="/tremonix" className="text-left">
                   <div className="flex items-start justify-between"><span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700"><Droplets className="h-6 w-6" /></span><ArrowRight className="h-5 w-5 text-navy-700 transition-transform group-hover:translate-x-1" /></div>
                   <p className="mt-8 text-xs font-semibold uppercase tracking-[0.18em] text-navy-700">Revenue leak diagnostic</p>
                   <h3 className="mt-2 text-2xl font-bold text-navy-900">Tremonix</h3>
@@ -360,7 +360,7 @@ export function DataPulseSite() {
                 </a>
               </div>
               <div className="group flex flex-col rounded-3xl border border-slate-200 bg-softgray p-7 text-left transition-all duration-300 hover:-translate-y-1 hover:border-navy-400 hover:shadow-xl sm:p-9">
-                <a href="https://voltecho.app" target="_blank" rel="noopener noreferrer" className="text-left">
+                <a href="/voltecho" className="text-left">
                   <div className="flex items-start justify-between"><span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-100 text-cyan-700"><ZapIcon className="h-6 w-6" /></span><ArrowRight className="h-5 w-5 text-navy-700 transition-transform group-hover:translate-x-1" /></div>
                   <p className="mt-8 text-xs font-semibold uppercase tracking-[0.18em] text-navy-700">Smart algorithm hub</p>
                   <h3 className="mt-2 text-2xl font-bold text-navy-900">VoltEcho</h3>
@@ -1218,8 +1218,8 @@ export function DataPulseSite() {
       <footer className="bg-navy-950 px-4 py-8 text-slate-400 sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-7xl flex-col gap-6 text-xs">
           <div className="flex flex-wrap gap-x-5 gap-y-2">
-            <a href="https://tremonix.com" target="_blank" rel="noopener noreferrer" className="font-semibold text-slate-300 hover:text-gold-400">Tremonix</a>
-            <a href="https://voltecho.app" target="_blank" rel="noopener noreferrer" className="font-semibold text-slate-300 hover:text-gold-400">VoltEcho</a>
+            <a href="/tremonix" className="font-semibold text-slate-300 hover:text-gold-400">Tremonix</a>
+            <a href="/voltecho" className="font-semibold text-slate-300 hover:text-gold-400">VoltEcho</a>
             <a href="https://pulseosplatform.com" target="_blank" rel="noopener noreferrer" className="font-semibold text-slate-300 hover:text-gold-400">Pulse OS Platform</a>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
