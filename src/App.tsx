@@ -16,7 +16,7 @@ function App() {
   const appVariant = APP_VARIANT || import.meta.env.VITE_APP_VARIANT;
   const isSafetyDomain = appVariant === 'safety' || hostname === 'safetyapp.com' || hostname === 'www.safetyapp.com';
   const isStatsLabDomain = appVariant === 'statslab' || hostname === 'statslab.app' || hostname === 'www.statslab.app';
-  const isPulseOSDomain = appVariant === 'pulseos' || hostname === 'pulseosplatform.com' || hostname === 'www.pulseosplatform.com';
+  const isPulseOSDomain = appVariant === 'pulseos' || hostname === 'pulseosplatform.com' || hostname === 'www.pulseosplatform.com' || pathname === '/pulseos';
   const isHarborDomain = appVariant === 'harbor' || hostname === 'harborhush.website' || hostname === 'www.harborhush.website';
   const pathname = window.location.pathname.replace(/\/$/, '') || '/';
   const isTremonixDomain = appVariant === 'tremonix' || hostname === 'tremonix.com' || hostname === 'www.tremonix.com' || pathname === '/tremonix';
