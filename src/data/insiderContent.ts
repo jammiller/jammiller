@@ -358,6 +358,91 @@ To every small business supporter who bought from us when we were just an idea: 
   },
 ];
 
+export interface InsiderCalendarEntry {
+  id: string;
+  platform: string;
+  status: string;
+  title: string;
+  date: string;
+  topic: string;
+  description: string;
+}
+
+export const insiderCalendar: InsiderCalendarEntry[] = [
+  {
+    id: 'cal-tiktok-ghosted',
+    platform: 'TikTok',
+    status: 'Scheduled',
+    title: 'I\'m Sorry I Ghosted You: The Client Onboarding Confession',
+    date: 'Sep 12, 2026',
+    topic: 'Common customer communication pitfalls and transparent fixes',
+    description: 'A punchy TikTok video using the viral ghosting-apology opening hook: \'I\'m sorry I ghosted you...\'. The founder directly addresses the camera to admit how early-stage operations accidentally left prospective inquiries hanging before explaining the automated booking system introduced to prevent it. It leverages the comedic, high-retention breakup apology format to segue into operational accountability.',
+  },
+  {
+    id: 'cal-instagram-sso',
+    platform: 'Instagram',
+    status: 'Drafting',
+    title: 'Optimizing Your Social Profile For Buyer Search Intent',
+    date: 'Sep 14, 2026',
+    topic: 'Social search optimization (SSO) tips for local discovery',
+    description: 'A carousel post designed specifically for social search optimization, targeting keywords like \'small business marketing tips 2026\' in the opening slide, caption, and spoken alt-text. It outlines a 4-step checklist to replace aesthetic usernames with searchable industry keywords and geo-tags. The caption includes search-friendly phrases to capture in-app query traffic directly from the Explore tab.',
+  },
+  {
+    id: 'cal-linkedin-sop',
+    platform: 'LinkedIn',
+    status: 'Drafting',
+    title: 'The Step-by-Step SOP We Used to Cut Fulfillment Time in Half',
+    date: 'Sep 16, 2026',
+    topic: 'Small business operational efficiency and systems design',
+    description: 'A high-utility 9-slide PDF document carousel formatted for desktop and mobile swipe engagement on LinkedIn. It visually breaks down an internal order fulfillment checklist, highlighting tool stacks, batching hours, and automated handoffs. The deck provides plug-and-play templates designed to maximize dwell time and drive profile saves.',
+  },
+  {
+    id: 'cal-tiktok-inventory',
+    platform: 'TikTok',
+    status: 'Drafting',
+    title: 'We Lost $3,200 on an Inventory Mistake Last Week',
+    date: 'Sep 18, 2026',
+    topic: 'Vulnerable founder storytelling and financial risk management',
+    description: 'A raw, unpolished direct-to-camera storytelling video recorded on a phone with natural background noise in the studio warehouse. The founder speaks candidly without background music or jump cuts about a supplier miscommunication that caused a major inventory loss, detailing the exact recovery pivot. This unproduced visual aesthetic builds trust by rejecting glossy corporate PR tone.',
+  },
+  {
+    id: 'cal-blog-pricing',
+    platform: 'Blog',
+    status: 'Idea',
+    title: 'The Realities Behind Our Pricing Structure',
+    date: 'Sep 20, 2026',
+    topic: 'Radical transparency in independent business cost breakdown',
+    description: 'An in-depth article providing a transparent percentage breakdown of materials, fair labor, overhead, and profit margins behind the brand\'s core product line. Written using direct search-optimized subheadings to answer buyer queries like \'why does handmade cost more?\'. The post serves as a foundational evergreen asset distributed across the email newsletter and social channels.',
+  },
+  {
+    id: 'cal-linkedin-playbooks',
+    platform: 'LinkedIn',
+    status: 'Idea',
+    title: '5 Operating Playbooks That Built Our Brand in 2026',
+    date: 'Sep 21, 2026',
+    topic: 'B2B growth tactics and client retention frameworks',
+    description: 'A sleek document carousel featuring five clear schematic diagrams illustrating customer retention flows and onboarding roadmaps. Each slide delivers actionable frameworks that founders can screenshot and deploy within their own service businesses. The accompanying caption prompts a discussion on sustainable scale versus vanity metrics.',
+  },
+  {
+    id: 'cal-youtube-editorial',
+    platform: 'YouTube',
+    status: 'Idea',
+    title: 'Why We Threw Out Our 2026 Editorial Calendar',
+    date: 'Sep 23, 2026',
+    topic: 'Agile marketing versus rigid quarterly planning',
+    description: 'A 7-minute unscripted direct-to-camera studio breakdown analyzing why rigid long-term content plans fail compared to responsive trend adoption. The creator sits in their working workspace with minimal B-roll, detailing how tracking in-app search patterns and reactive formats drove higher conversions than polished brand commercials. The video targets search terms around agile content production for small teams.',
+  },
+  {
+    id: 'cal-instagram-chic',
+    platform: 'Instagram',
+    status: 'Scheduled',
+    title: 'Kinda Chic Small Business Realities',
+    date: 'Sep 10, 2026',
+    topic: 'Small business ownership quirks and boundary setting',
+    description: 'A 6-slide Instagram photo carousel using the viral \'kinda chic to...\' format with pale yellow serif text overlays. Slides highlight relatable behind-the-scenes small business ownership quirks and boundary-setting moments, pairing the trending butter-yellow aesthetic with Steve Lacy\'s track for maximum algorithmic reach.',
+  },
+];
+
 export interface InsiderCategory {
   key: string;
   label: string;
