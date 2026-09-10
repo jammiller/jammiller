@@ -216,6 +216,64 @@ export const insiderOptimizationSessions: InsiderOptimizationSession[] = [
   },
 ];
 
+export interface InsiderResource {
+  id: string;
+  title: string;
+  type: string;
+  category: string;
+  description: string;
+  link: string;
+  linkLabel: string;
+}
+
+export const insiderResources: InsiderResource[] = [
+  {
+    id: 'best-marketing-tools-2026',
+    title: 'Best Marketing Tools for Small Business in 2026: The Complete AI-Powered Toolkit',
+    type: 'Guide',
+    category: 'SEO',
+    description: 'A comprehensive guide outlining free tools like Google Search Console, Google Keyword Planner, and GA4 alongside budget-friendly AI alternatives for small businesses.',
+    link: 'https://blog.hubspot.com/marketing/best-marketing-tools',
+    linkLabel: 'Open resource',
+  },
+  {
+    id: 'free-marketing-tools-2026',
+    title: '15+ Free Marketing Tools Available in 2026',
+    type: 'Tool List',
+    category: 'Content',
+    description: 'Curated selection of zero-cost marketing applications covering content generation, design mockups, infographics, and email marketing for small teams.',
+    link: 'https://blog.hubspot.com/marketing/free-marketing-tools',
+    linkLabel: 'Open resource',
+  },
+  {
+    id: 'free-html-email-templates',
+    title: 'Free HTML Email Templates',
+    type: 'Template',
+    category: 'Email Marketing',
+    description: 'A library of over 1,000 customizable, responsive HTML email templates designed for outreach campaigns, newsletters, and lead follow-ups.',
+    link: 'https://www.mailmunch.com/blog/free-html-email-templates',
+    linkLabel: 'Open resource',
+  },
+  {
+    id: 'small-business-marketing-2026',
+    title: 'Small Business Marketing In 2026: The Ultimate Guide',
+    type: 'Guide',
+    category: 'Strategy',
+    description: 'Actionable strategic walkthrough providing small business owners with frameworks to define audiences and select high-ROI digital channels.',
+    link: 'https://blog.hubspot.com/marketing/small-business-marketing',
+    linkLabel: 'Open resource',
+  },
+  {
+    id: '25-marketing-ideas-2026',
+    title: '25 Small Business Marketing Ideas That Actually Work in 2026 (Most Are Free)',
+    type: 'Article',
+    category: 'Social Media',
+    description: 'Offers practical organic growth tactics such as carousel content frameworks, lead magnet creation, and zero-cost daily engagement routines.',
+    link: 'https://blog.hubspot.com/marketing/small-business-marketing-ideas',
+    linkLabel: 'Open resource',
+  },
+];
+
 export interface InsiderCategory {
   key: string;
   label: string;

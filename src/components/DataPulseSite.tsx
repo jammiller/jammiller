@@ -34,7 +34,7 @@ import { About } from './About';
 import { Blog } from './Blog';
 import { FAQ } from './FAQ';
 import { Portfolio } from './Portfolio';
-import { insiderPrompts, insiderCategories, insiderTrends, insiderTrainings, insiderOptimizationSessions } from '../data/insiderContent';
+import { insiderPrompts, insiderCategories, insiderTrends, insiderTrainings, insiderOptimizationSessions, insiderResources } from '../data/insiderContent';
 export function DataPulseSite() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [whyActive, setWhyActive] = useState(0);
@@ -77,6 +77,13 @@ export function DataPulseSite() {
     'Scheduled': 'bg-blue-100 text-blue-700',
     'Completed': 'bg-emerald-100 text-emerald-700',
     'Cancelled': 'bg-red-100 text-red-700',
+  };
+
+  const resourceTypeColors: Record<string, string> = {
+    'Guide': 'bg-blue-100 text-blue-700',
+    'Tool List': 'bg-emerald-100 text-emerald-700',
+    'Template': 'bg-amber-100 text-amber-700',
+    'Article': 'bg-purple-100 text-purple-700',
   };
 
   const promptCategories = ['All', ...Array.from(new Set(insiderPrompts.map((p) => p.category)))];
@@ -664,6 +671,56 @@ export function DataPulseSite() {
 
             <div className="mx-auto mt-12 max-w-2xl rounded-2xl border border-gold-200 bg-gold-50 p-6 text-center">
               <p className="text-sm font-semibold text-navy-900">Optimization sessions are included with your monthly Insider membership.</p>
+              <a href="https://buy.stripe.com/fZu14oe699z41dj8dAe3e08" target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-gold-500 px-5 py-3 text-sm font-bold text-navy-950 transition-all hover:-translate-y-0.5 hover:bg-gold-400">
+                Join the Insider group <ArrowRight className="h-4 w-4" />
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <section className="relative overflow-hidden bg-softgray py-24">
+          <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-3xl text-center">
+              <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-gold-300 bg-gold-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-navy-900">
+                <ClipboardCheck className="h-3.5 w-3.5 text-gold-700" /> MARKETING RESOURCES
+              </span>
+              <h2 className="text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">Your reference library.</h2>
+              <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
+                Guides, checklists, tool lists, and swipe files — everything you need to execute with confidence.
+              </p>
+            </div>
+
+            <div className="mt-12 grid gap-5 lg:grid-cols-2">
+              {insiderResources.map((resource) => (
+                <div key={resource.id} className="group flex flex-col rounded-2xl border border-slate-200 bg-white p-6 transition-all duration-300 hover:border-gold-300 hover:shadow-lg sm:p-7">
+                  <div className="flex items-start justify-between gap-4 border-b border-slate-200 pb-4">
+                    <div className="flex items-start gap-3">
+                      <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gold-100 text-gold-700">
+                        <ClipboardCheck className="h-5 w-5" />
+                      </span>
+                      <div>
+                        <h3 className="text-base font-bold text-navy-900">{resource.title}</h3>
+                        <div className="mt-1.5 flex flex-wrap gap-2">
+                          <span className={'rounded-full px-2.5 py-0.5 text-xs font-semibold ' + (resourceTypeColors[resource.type] || 'bg-slate-200 text-slate-700')}>{resource.type}</span>
+                          <span className="rounded-full bg-navy-100 px-2.5 py-0.5 text-xs font-semibold text-navy-700">{resource.category}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-4">
+                    <p className="text-sm leading-relaxed text-slate-700">{resource.description}</p>
+                  </div>
+
+                  <a href={resource.link} target="_blank" rel="noopener noreferrer" className="mt-5 inline-flex items-center justify-center gap-2 rounded-xl bg-navy-900 px-4 py-3 text-sm font-bold text-white transition-all hover:bg-navy-800">
+                    {resource.linkLabel} <ArrowRight className="h-4 w-4" />
+                  </a>
+                </div>
+              ))}
+            </div>
+
+            <div className="mx-auto mt-12 max-w-2xl rounded-2xl border border-gold-200 bg-gold-50 p-6 text-center">
+              <p className="text-sm font-semibold text-navy-900">New resources added every month as part of your Insider membership.</p>
               <a href="https://buy.stripe.com/fZu14oe699z41dj8dAe3e08" target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-gold-500 px-5 py-3 text-sm font-bold text-navy-950 transition-all hover:-translate-y-0.5 hover:bg-gold-400">
                 Join the Insider group <ArrowRight className="h-4 w-4" />
               </a>
