@@ -196,6 +196,26 @@ export const insiderTrainings: InsiderTraining[] = [
   },
 ];
 
+export interface InsiderOptimizationSession {
+  id: string;
+  title: string;
+  format: string;
+  status: string;
+  date: string;
+  agenda: string;
+}
+
+export const insiderOptimizationSessions: InsiderOptimizationSession[] = [
+  {
+    id: 'sept-optimization-review',
+    title: 'September monthly optimization review',
+    format: 'Video Call',
+    status: 'Scheduled',
+    date: 'September 27, 2026',
+    agenda: 'Review last month\'s content performance, identify top formats, and plan October\'s calendar. Bring analytics screenshots.',
+  },
+];
+
 export interface InsiderCategory {
   key: string;
   label: string;
