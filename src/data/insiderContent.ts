@@ -132,6 +132,70 @@ export const insiderTrends: InsiderTrend[] = [
   },
 ];
 
+export interface InsiderTraining {
+  id: string;
+  title: string;
+  category: string;
+  type: 'Course' | 'Guide' | 'Article';
+  description: string;
+  summary: string;
+  link: string;
+  linkLabel: string;
+}
+
+export const insiderTrainings: InsiderTraining[] = [
+  {
+    id: 'hubspot-social-cert',
+    title: 'Social Media Marketing Certification Course',
+    category: 'Strategy',
+    type: 'Course',
+    description: 'HubSpot Academy\'s free certification course covering foundational to advanced social media marketing and inbound strategy execution.',
+    summary: 'This certification program guides marketers through building an effective inbound social media framework. It teaches practical methods for creating engaging social content, measuring campaign ROI, and managing digital communities across channels.',
+    link: 'https://academy.hubspot.com/courses/social-media-marketing',
+    linkLabel: 'Open link',
+  },
+  {
+    id: 'social-strategy-2026',
+    title: 'Social Media Strategy: Step-by-Step Guide [2026]',
+    category: 'Strategy',
+    type: 'Guide',
+    description: 'An actionable guide providing a structured roadmap to design, execute, and scale modern social media marketing plans.',
+    summary: 'A tactical walkthrough focused on establishing actionable marketing frameworks and driving audience engagement. It outlines step-by-step processes to structure brand positioning, optimize multi-network publishing schedules, and track core conversion goals.',
+    link: 'https://blog.hubspot.com/marketing/social-media-strategy-guide',
+    linkLabel: 'Open link',
+  },
+  {
+    id: 'free-courses-certificates',
+    title: 'Free Social Media Marketing Courses with Certificates - The Only Guide You Actually Need',
+    category: 'Content Creation',
+    type: 'Guide',
+    description: 'A comprehensive 2026 tactical guide exploring social SEO, video formats, content repurposing workflows, and analytics.',
+    summary: 'This resource breaks down current operational tactics including social SEO captioning, long-form video, and cross-platform repurposing. It demonstrates how to transition vanity metrics into bottom-line conversions and social commerce sales.',
+    link: 'https://www.digitalmarketingcommunity.com/social-media-marketing-courses/',
+    linkLabel: 'Open link',
+  },
+  {
+    id: 'best-courses-2026',
+    title: '6 Best Social Media Marketing Courses for 2026 (Free & Paid)',
+    category: 'Other',
+    type: 'Article',
+    description: 'A curated review and breakdown of top-rated modern training programs for digital and social media marketing.',
+    summary: 'A detailed evaluation of professional training curricula covering audience targeting, paid social campaigns, and multimedia marketing capstones. It highlights specific coursework incorporating AI workflows such as ChatGPT for content ideation and campaign performance analysis.',
+    link: 'https://www.growthrocket.com/blog/best-social-media-marketing-courses',
+    linkLabel: 'Open link',
+  },
+  {
+    id: 'paid-ads-mastery',
+    title: 'Social Media Marketing MASTERY 2026 + 9 Social Ad Platforms!',
+    category: 'Paid Ads',
+    type: 'Course',
+    description: 'A deep-dive training course focused on paid advertising deployment, multi-platform media buying, and analytics.',
+    summary: 'This masterclass provides comprehensive training on paid ad setups across major platforms including Meta, LinkedIn, TikTok, and Pinterest. Marketers learn audience segmentation, performance tracking, ad copy optimization, and budget allocation to maximize campaign ROAS.',
+    link: 'https://www.udemy.com/course/social-media-marketing-mastery/',
+    linkLabel: 'Open link',
+  },
+];
+
 export interface InsiderCategory {
   key: string;
   label: string;
