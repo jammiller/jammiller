@@ -1,8 +1,6 @@
 import { useEffect } from 'react';
 import { DataPulseSite } from './components/DataPulseSite';
 import { PulseOS } from './components/PulseOS';
-import { SafetyApp } from './components/SafetyApp';
-import { StatsLab } from './components/StatsLab';
 import { VideoWalkthrough } from './components/VideoWalkthrough';
 import { CookieConsent } from './components/CookieConsent';
 import { InstallPrompt } from './components/InstallPrompt';
@@ -14,8 +12,6 @@ import { APP_VARIANT } from './config';
 function App() {
   const hostname = window.location.hostname.toLowerCase();
   const appVariant = APP_VARIANT || import.meta.env.VITE_APP_VARIANT;
-  const isSafetyDomain = appVariant === 'safety' || hostname === 'safetyapp.com' || hostname === 'www.safetyapp.com';
-  const isStatsLabDomain = appVariant === 'statslab' || hostname === 'statslab.app' || hostname === 'www.statslab.app';
   const isPulseOSDomain = appVariant === 'pulseos' || hostname === 'pulseosplatform.com' || hostname === 'www.pulseosplatform.com';
   const isHarborDomain = appVariant === 'harbor' || hostname === 'harborhush.website' || hostname === 'www.harborhush.website';
   const pathname = window.location.pathname.replace(/\/$/, '') || '/';
@@ -28,44 +24,24 @@ function App() {
   useEffect(() => {
     const isPulseOS = isPulseOSDomain;
     const isHarbor = isHarborDomain;
-    const title = isSafetyDomain ? 'Safety App'
-      : isStatsLabDomain ? 'StatsLab'
-      : isPulseOS ? 'PulseOS Platform'
+    const title = isPulseOS ? 'PulseOS Platform'
       : isHarbor ? 'Harbor — Wellness Community Platform'
       : isTremonixDomain ? 'Tremonix — Revenue Leak Diagnostic'
       : isVoltEchoDomain ? 'VoltEcho — Smart Algorithm Hub'
       : 'DATAPULSE SOCIAL';
-    const description = isSafetyDomain
-      ? 'Personal safety tools for emergency contacts, SOS support, location sharing, safety check-ins, and first aid guidance.'
-        : isStatsLabDomain
-          ? 'Interactive statistics tool for datasets, descriptive stats, visualizations, and inference tests.'
-          : isPulseOS
-            ? 'PulseOS — UbD-driven learning operations. Build curriculum units with Stage 1, 2, and 3 structure, assessments, and analytics.'
-            : isHarbor
-              ? 'A guided community experience platform designed to help wellness brands build intentional, supportive member communities.'
-              : isTremonixDomain
-                ? 'Tremonix — find the revenue your business is losing to slow response times, insufficient follow-up, and abandoned leads. Backed by published research.'
-                : isVoltEchoDomain
-                  ? 'VoltEcho — a single hub housing smart algorithms for data entry automation, customer churn prediction, and inventory forecasting.'
-                  : 'DATAPULSE SOCIAL creates practical learning experiences and focused digital tools.';
+    const description = isPulseOS
+      ? 'PulseOS — UbD-driven learning operations. Build curriculum units with Stage 1, 2, and 3 structure, assessments, and analytics.'
+      : isHarbor
+        ? 'A guided community experience platform designed to help wellness brands build intentional, supportive member communities.'
+        : isTremonixDomain
+          ? 'Tremonix — find the revenue your business is losing to slow response times, insufficient follow-up, and abandoned leads. Backed by published research.'
+          : isVoltEchoDomain
+            ? 'VoltEcho — a single hub housing smart algorithms for data entry automation, customer churn prediction, and inventory forecasting.'
+            : 'DATAPULSE SOCIAL creates practical learning experiences and focused digital tools.';
     document.title = title;
     document.querySelector('meta[name="description"]')?.setAttribute('content', description);
 
-    if (isSafetyDomain) {
-      document.querySelector('link[rel="icon"][sizes="32x32"]')?.setAttribute('href', '/safety-favicon-32.png');
-      document.querySelector('link[rel="icon"][sizes="16x16"]')?.setAttribute('href', '/safety-favicon-16.png');
-      document.querySelector('link[rel="apple-touch-icon"]')?.setAttribute('href', '/safety-apple-touch-icon.png');
-      document.querySelector('link[rel="manifest"]')?.setAttribute('href', '/safety-manifest.json');
-      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#07131f');
-      document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', 'Safety App');
-    } else if (isStatsLabDomain) {
-      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#0a1a2f');
-      document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', 'StatsLab');
-      document.querySelector('link[rel="manifest"]')?.setAttribute('href', '/statslab-manifest.json');
-      document.querySelector('link[rel="icon"][sizes="32x32"]')?.setAttribute('href', '/statslab-app-icon.webp');
-      document.querySelector('link[rel="icon"][sizes="16x16"]')?.setAttribute('href', '/statslab-app-icon.webp');
-      document.querySelector('link[rel="apple-touch-icon"]')?.setAttribute('href', '/statslab-app-icon.webp');
-    } else if (isPulseOS) {
+    if (isPulseOS) {
       document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#0a1a2f');
       document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', 'PulseOS');
       document.querySelector('link[rel="manifest"]')?.setAttribute('href', '/pulseos-manifest.json');
@@ -89,7 +65,7 @@ function App() {
       document.querySelector('link[rel="icon"][sizes="16x16"]')?.setAttribute('href', '/favicon-16.png');
       document.querySelector('link[rel="apple-touch-icon"]')?.setAttribute('href', '/apple-touch-icon.png');
     }
-  }, [isSafetyDomain, isStatsLabDomain, isPulseOSDomain, isHarborDomain, isTremonixDomain, isVoltEchoDomain]);
+  }, [isPulseOSDomain, isHarborDomain, isTremonixDomain, isVoltEchoDomain]);
 
 
   if (isWalkthroughPath) {
@@ -106,12 +82,6 @@ function App() {
   }
   if (isPulseOSDomain) {
     return <><PulseOS /><InstallPrompt /></>;
-  }
-  if (isSafetyDomain) {
-    return <><SafetyApp /><InstallPrompt /></>;
-  }
-  if (isStatsLabDomain) {
-    return <><StatsLab /><InstallPrompt /></>;
   }
 
   return (
