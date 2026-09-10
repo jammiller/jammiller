@@ -592,7 +592,12 @@ export function DataPulseSite() {
               })}
             </div>
 
-            {filteredPrompts.length === 0 && (
+            {contentLoading && (
+              <div className="mt-10 text-center">
+                <p className="text-sm text-slate-500">Loading prompts...</p>
+              </div>
+            )}
+            {!contentLoading && filteredPrompts.length === 0 && (
               <div className="mt-10 text-center">
                 <p className="text-sm text-slate-500">No prompts match your search. Try a different keyword.</p>
               </div>
@@ -694,7 +699,12 @@ export function DataPulseSite() {
               ))}
             </div>
 
-            {filteredTrends.length === 0 && (
+            {contentLoading && (
+              <div className="mt-10 text-center">
+                <p className="text-sm text-slate-500">Loading trends...</p>
+              </div>
+            )}
+            {!contentLoading && filteredTrends.length === 0 && (
               <div className="mt-10 text-center">
                 <p className="text-sm text-slate-500">No trends match your search. Try a different keyword.</p>
               </div>
@@ -977,7 +987,12 @@ export function DataPulseSite() {
               ))}
             </div>
 
-            {filteredTemplates.length === 0 && (
+            {contentLoading && (
+              <div className="mt-10 text-center">
+                <p className="text-sm text-slate-500">Loading templates...</p>
+              </div>
+            )}
+            {!contentLoading && filteredTemplates.length === 0 && (
               <div className="mt-10 text-center">
                 <p className="text-sm text-slate-500">No templates match your search. Try a different keyword.</p>
               </div>

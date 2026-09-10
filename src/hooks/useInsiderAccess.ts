@@ -55,7 +55,7 @@ export function useInsiderAccess() {
   const fetchContent = useCallback(async (token: string | null) => {
     setContentLoading(true);
     try {
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      const headers: Record<string, string> = {};
       if (token) headers['Authorization'] = `Bearer ${token}`;
 
       const res = await fetch(`${supabaseUrl}/functions/v1/insider-access`, { headers });
@@ -76,11 +76,21 @@ export function useInsiderAccess() {
   }, [supabaseUrl]);
 
   useEffect(() => {
-    let mounted = true;
+    let active = true;
 
-    (async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!mounted) return;
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!active) return;
+      if (session?.user) {
+        setAuth({ user: { id: session.user.id, email: session.user.email ?? '' }, isMember: false, loading: false });
+        fetchContent(session.access_token);
+      } else {
+        setAuth({ user: null, isMember: false, loading: false });
+        fetchContent(null);
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'INITIAL_SESSION') return;
 
       if (session?.user) {
         setAuth({ user: { id: session.user.id, email: session.user.email ?? '' }, isMember: false, loading: false });
@@ -89,21 +99,9 @@ export function useInsiderAccess() {
         setAuth({ user: null, isMember: false, loading: false });
         fetchContent(null);
       }
-    })();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      (async () => {
-        if (session?.user) {
-          setAuth({ user: { id: session.user.id, email: session.user.email ?? '' }, isMember: false, loading: false });
-          fetchContent(session.access_token);
-        } else {
-          setAuth({ user: null, isMember: false, loading: false });
-          fetchContent(null);
-        }
-      })();
     });
 
-    return () => { mounted = false; subscription.unsubscribe(); };
+    return () => { active = false; subscription.unsubscribe(); };
   }, [fetchContent]);
 
   const signIn = async (email: string, password: string) => {
