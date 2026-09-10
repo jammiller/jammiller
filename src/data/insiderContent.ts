@@ -58,6 +58,80 @@ export const insiderPrompts: InsiderPrompt[] = [
   },
 ];
 
+export interface InsiderTrend {
+  id: string;
+  title: string;
+  platform: string;
+  type: string;
+  priority: 'High' | 'Medium' | 'Low';
+  spottedDate: string;
+  description: string;
+  action: string;
+}
+
+export const insiderTrends: InsiderTrend[] = [
+  {
+    id: 'kinda-chic-reel',
+    title: '"Kinda chic to..." reel format',
+    platform: 'Instagram',
+    type: 'Format',
+    priority: 'High',
+    spottedDate: 'Sep 9',
+    description: 'Reframe mundane, unglamorous day-to-day business operations into relatable, stylish moments using the trending butter-yellow font template paired with Steve Lacy\'s track \'oh yeah?\'.',
+    action: 'Film a Reel showing behind-the-scenes tasks (hand-packing boxes, doing inventory) with the overlay \'kinda chic to [unpolished small business habit]\' to humanize your brand.',
+  },
+  {
+    id: 'different-hours-ghosting',
+    title: '"Different Hours" ghosting twist hook',
+    platform: 'TikTok',
+    type: 'Format',
+    priority: 'High',
+    spottedDate: 'Sep 9',
+    description: 'Hook viewers with tension and curiosity — start with a disappointing letdown or apology before revealing an exciting product launch or big order fulfillment.',
+    action: 'Film casual B-roll of work in progress, overlay text like \'Sorry I\'ve been ghosting you, I was busy...\', then cut to your finished product, restock, or major client win.',
+  },
+  {
+    id: 'reali-tea-raw',
+    title: '"Reali-Tea" raw production style',
+    platform: 'TikTok',
+    type: 'Insight',
+    priority: 'High',
+    spottedDate: 'Sep 9',
+    description: 'High-production marketing videos are losing organic reach to low-fidelity, unpolished, transparent storytelling that answers real buyer questions and builds trust.',
+    action: 'Record a direct-to-camera, unscripted 30-second response to a customer question — no studio lighting — and share a real mistake or hurdle you solved.',
+  },
+  {
+    id: 'social-search-optimization',
+    title: 'Social Search Optimization (SSO)',
+    platform: 'TikTok',
+    type: 'Topic',
+    priority: 'High',
+    spottedDate: 'Sep 9',
+    description: 'Users increasingly treat TikTok as a search engine, favoring keyword-rich educational clips with clear solutions over pure entertainment.',
+    action: 'Make a \'3 mistakes when buying [your product]\' video and include your primary search phrase in the spoken audio, on-screen captions, and the first two lines of your caption.',
+  },
+  {
+    id: 'b2b-document-carousels',
+    title: 'B2B document carousels & data teardowns',
+    platform: 'LinkedIn',
+    type: 'Format',
+    priority: 'Medium',
+    spottedDate: 'Sep 9',
+    description: 'Document-style PDF carousels outpace standard single-image posts by driving dwell time and giving people something saveable and reference-worthy.',
+    action: 'Repurpose one client success story into a 5-slide PDF breakdown — problem, failed attempt, the unexpected fix, data proof, and one implementation tip.',
+  },
+  {
+    id: 'realtime-commentary-threads',
+    title: 'Real-time direct commentary threads',
+    platform: 'X/Twitter',
+    type: 'Topic',
+    priority: 'Medium',
+    spottedDate: 'Sep 9',
+    description: 'Text-first platforms reward rapid, concise commentary and industry news breakdowns with zero production friction.',
+    action: 'Post a tight 4-tweet thread breaking down a recent industry development with your take and one actionable takeaway for your audience.',
+  },
+];
+
 export interface InsiderCategory {
   key: string;
   label: string;
