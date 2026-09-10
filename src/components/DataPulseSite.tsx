@@ -1,10 +1,8 @@
 import { useState } from 'react';
 import {
   ArrowRight,
-  BarChart3,
   Calendar,
   Cpu,
-  Download,
   Layers,
   Mail,
   Menu,
@@ -33,7 +31,6 @@ import {
 import { About } from './About';
 import { Blog } from './Blog';
 import { FAQ } from './FAQ';
-import { Portfolio } from './Portfolio';
 import { insiderPrompts, insiderCategories, insiderTrends, insiderTrainings, insiderOptimizationSessions, insiderResources, insiderTemplates, insiderCalendar } from '../data/insiderContent';
 export function DataPulseSite() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -217,7 +214,6 @@ export function DataPulseSite() {
           <nav className="hidden items-center gap-7 md:flex" aria-label="Primary navigation">
             <a href="#about" className="text-sm text-slate-300 transition-colors hover:text-white">About</a>
             <a href="#services" className="text-sm text-slate-300 transition-colors hover:text-white">Services</a>
-            <a href="#portfolio" className="text-sm text-slate-300 transition-colors hover:text-white">Portfolio</a>
             <a href="#insider" className="text-sm font-semibold text-gold-400 transition-colors hover:text-gold-300">Insider</a>
             <a href="#blog" className="text-sm text-slate-300 transition-colors hover:text-white">Insights</a>
             <a href="#contact" className="rounded-lg bg-gold-500 px-4 py-2 text-sm font-semibold text-navy-950 transition-colors hover:bg-gold-400">Let's Talk</a>
@@ -227,7 +223,7 @@ export function DataPulseSite() {
         {menuOpen && (
           <nav className="border-t border-white/10 px-4 py-4 md:hidden" aria-label="Mobile navigation">
             <div className="mx-auto flex max-w-7xl flex-col gap-1">
-              {['about', 'services', 'portfolio', 'insider', 'blog', 'contact'].map((section) => (
+              {['about', 'services', 'insider', 'blog', 'contact'].map((section) => (
                 <a key={section} href={'#' + section} onClick={closeMenu} className="rounded-lg px-3 py-3 text-sm font-medium capitalize text-slate-200 hover:bg-white/10">
                   {section === 'blog' ? 'Insights' : section === 'contact' ? "Let's Talk" : section === 'insider' ? 'Insider' : section}
                 </a>
@@ -321,15 +317,12 @@ export function DataPulseSite() {
                 </a>
               </div>
               <div className="group flex flex-col rounded-3xl border border-slate-200 bg-softgray p-7 text-left transition-all duration-300 hover:-translate-y-1 hover:border-navy-400 hover:shadow-xl sm:p-9">
-                <a href="https://statslab.app" target="_blank" rel="noopener noreferrer" className="text-left">
-                  <div className="flex items-start justify-between"><span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-navy-100 text-navy-900"><BarChart3 className="h-6 w-6" /></span><ArrowRight className="h-5 w-5 text-navy-700 transition-transform group-hover:translate-x-1" /></div>
-                  <p className="mt-8 text-xs font-semibold uppercase tracking-[0.18em] text-navy-700">Interactive statistics tool</p>
-                  <h3 className="mt-2 text-2xl font-bold text-navy-900">StatsLab</h3>
-                  <p className="mt-3 max-w-md text-sm leading-relaxed text-slate-600">Explore datasets, compute descriptive stats, visualize distributions, and run inference tests — all in your browser.</p>
-                  <span className="mt-7 inline-block text-sm font-semibold text-navy-900">Open StatsLab</span>
-                </a>
-                <a href="https://play.google.com/store/apps/details?id=com.statslab.app" target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl border border-navy-200 bg-white px-4 py-2.5 text-sm font-semibold text-navy-900 transition-colors hover:border-navy-400 hover:bg-navy-50 hover:text-navy-700">
-                  <Download className="h-4 w-4" /> Download on Google Play
+                <a href="#pulseos" className="text-left">
+                  <div className="flex items-start justify-between"><span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-navy-100 text-navy-900"><GraduationCap className="h-6 w-6" /></span><ArrowRight className="h-5 w-5 text-navy-700 transition-transform group-hover:translate-x-1" /></div>
+                  <p className="mt-8 text-xs font-semibold uppercase tracking-[0.18em] text-navy-700">UbD learning platform</p>
+                  <h3 className="mt-2 text-2xl font-bold text-navy-900">Pulse OS Platform</h3>
+                  <p className="mt-3 max-w-md text-sm leading-relaxed text-slate-600">Build, deliver, and assess competency-driven units with the UbD-aligned learning platform — unit builder, assessment engine, and analytics dashboard in one place.</p>
+                  <span className="mt-7 inline-block text-sm font-semibold text-navy-900">Open Pulse OS</span>
                 </a>
               </div>
             </div>
@@ -1049,6 +1042,9 @@ export function DataPulseSite() {
                         <div className="hidden h-px w-8 bg-gold-400/30 lg:block" />
                       </div>
                     )}
+                    {i === arr.length - 1 && (
+                      <div className="hidden lg:block w-12" aria-hidden="true" />
+                    )}
                   </div>
                 ))}
               </div>
@@ -1068,7 +1064,6 @@ export function DataPulseSite() {
           </div>
         </section>
 
-        <Portfolio />
         <Blog />
         <FAQ />
 
@@ -1094,7 +1089,7 @@ export function DataPulseSite() {
           <div className="flex flex-wrap gap-x-5 gap-y-2">
             <a href="https://tremonix.com" target="_blank" rel="noopener noreferrer" className="font-semibold text-slate-300 hover:text-gold-400">Tremonix</a>
             <a href="https://voltecho.app" target="_blank" rel="noopener noreferrer" className="font-semibold text-slate-300 hover:text-gold-400">VoltEcho</a>
-            <a href="https://statslab.app" target="_blank" rel="noopener noreferrer" className="font-semibold text-slate-300 hover:text-gold-400">StatsLab</a>
+            <a href="#pulseos" className="font-semibold text-slate-300 hover:text-gold-400">Pulse OS Platform</a>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p>© {new Date().getFullYear()} DATAPULSE SOCIAL. Built for better learning.</p>
