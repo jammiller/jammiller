@@ -27,11 +27,16 @@ import {
   Lightbulb,
   Repeat,
   Megaphone,
+  Lock,
+  LogOut,
+  UserCircle,
 } from 'lucide-react';
 import { About } from './About';
 import { Blog } from './Blog';
 import { FAQ } from './FAQ';
-import { insiderPrompts, insiderCategories, insiderTrends, insiderTrainings, insiderOptimizationSessions, insiderResources, insiderTemplates, insiderCalendar } from '../data/insiderContent';
+import { AuthModal } from './AuthModal';
+import { useInsiderAccess } from '../hooks/useInsiderAccess';
+import { insiderCategories, insiderTrainings, insiderOptimizationSessions, insiderResources, insiderCalendar } from '../data/insiderContent';
 export function DataPulseSite() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [whyActive, setWhyActive] = useState(0);
@@ -41,13 +46,16 @@ export function DataPulseSite() {
   const [trendSearch, setTrendSearch] = useState('');
   const [activeTrendPlatform, setActiveTrendPlatform] = useState('All');
 
-  const trendPlatforms = ['All', ...Array.from(new Set(insiderTrends.map((t) => t.platform)))];
-  const filteredTrends = insiderTrends.filter((t) => {
+  const insider = useInsiderAccess();
+  const { auth, prompts: dbPrompts, trends: dbTrends, templates: dbTemplates, contentLoading } = insider;
+
+  const trendPlatforms = ['All', ...Array.from(new Set(dbTrends.map((t) => t.platform)))];
+  const filteredTrends = dbTrends.filter((t) => {
     const matchesPlatform = activeTrendPlatform === 'All' || t.platform === activeTrendPlatform;
     const matchesSearch = trendSearch === '' ||
       t.title.toLowerCase().includes(trendSearch.toLowerCase()) ||
       t.type.toLowerCase().includes(trendSearch.toLowerCase()) ||
-      t.description.toLowerCase().includes(trendSearch.toLowerCase());
+      (t.previewDescription || '').toLowerCase().includes(trendSearch.toLowerCase());
     return matchesPlatform && matchesSearch;
   });
 
@@ -87,8 +95,8 @@ export function DataPulseSite() {
   const [activeTemplatePlatform, setActiveTemplatePlatform] = useState('All');
   const [copiedTemplate, setCopiedTemplate] = useState<string | null>(null);
 
-  const templatePlatforms = ['All', ...Array.from(new Set(insiderTemplates.map((t) => t.platform)))];
-  const filteredTemplates = insiderTemplates.filter((t) => {
+  const templatePlatforms = ['All', ...Array.from(new Set(dbTemplates.map((t) => t.platform)))];
+  const filteredTemplates = dbTemplates.filter((t) => {
     const matchesPlatform = activeTemplatePlatform === 'All' || t.platform === activeTemplatePlatform;
     const matchesSearch = templateSearch === '' ||
       t.title.toLowerCase().includes(templateSearch.toLowerCase()) ||
@@ -135,8 +143,8 @@ export function DataPulseSite() {
     'Published': 'bg-emerald-100 text-emerald-700',
   };
 
-  const promptCategories = ['All', ...Array.from(new Set(insiderPrompts.map((p) => p.category)))];
-  const filteredPrompts = insiderPrompts.filter((p) => {
+  const promptCategories = ['All', ...Array.from(new Set(dbPrompts.map((p) => p.category)))];
+  const filteredPrompts = dbPrompts.filter((p) => {
     const matchesCategory = activePromptCategory === 'All' || p.category === activePromptCategory;
     const matchesSearch = promptSearch === '' ||
       p.title.toLowerCase().includes(promptSearch.toLowerCase()) ||
@@ -169,6 +177,8 @@ export function DataPulseSite() {
     setTimeout(() => setCopiedPrompt(null), 2000);
   };
 
+  const stripeCheckoutUrl = 'https://buy.stripe.com/fZu14oe699z41dj8dAe3e08';
+
   const closeMenu = () => setMenuOpen(false);
 
   const whyItems = [
@@ -193,6 +203,16 @@ export function DataPulseSite() {
 
   return (
     <div className="bg-white text-navy-900">
+      <AuthModal
+        open={insider.authModalOpen}
+        mode={insider.authMode}
+        error={insider.authError}
+        loading={insider.authLoading}
+        onClose={() => insider.setAuthModalOpen(false)}
+        onModeChange={insider.setAuthMode}
+        onSignIn={insider.signIn}
+        onSignUp={insider.signUp}
+      />
       <header className="sticky top-0 z-40 border-b border-white/10 bg-navy-950/95 text-white backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <a href="#top" onClick={closeMenu} className="flex items-center gap-3" aria-label="DATAPULSE SOCIAL home">
@@ -216,6 +236,23 @@ export function DataPulseSite() {
             <a href="#services" className="text-sm text-slate-300 transition-colors hover:text-white">Services</a>
             <a href="#insider" className="text-sm font-semibold text-gold-400 transition-colors hover:text-gold-300">Insider</a>
             <a href="#blog" className="text-sm text-slate-300 transition-colors hover:text-white">Insights</a>
+            {auth.user && auth.isMember ? (
+              <div className="flex items-center gap-3">
+                <span className="flex items-center gap-1.5 text-xs font-semibold text-gold-400"><UserCircle className="h-4 w-4" /> Member</span>
+                <button onClick={insider.signOut} className="flex items-center gap-1.5 text-sm text-slate-300 transition-colors hover:text-white" aria-label="Sign out">
+                  <LogOut className="h-4 w-4" />
+                </button>
+              </div>
+            ) : auth.user ? (
+              <div className="flex items-center gap-3">
+                <a href={stripeCheckoutUrl} target="_blank" rel="noopener noreferrer" className="rounded-lg bg-gold-500 px-3 py-1.5 text-xs font-semibold text-navy-950 transition-colors hover:bg-gold-400">Activate membership</a>
+                <button onClick={insider.signOut} className="flex items-center gap-1.5 text-sm text-slate-300 transition-colors hover:text-white" aria-label="Sign out">
+                  <LogOut className="h-4 w-4" />
+                </button>
+              </div>
+            ) : (
+              <button onClick={() => insider.openAuth('signin')} className="text-sm text-slate-300 transition-colors hover:text-white">Sign in</button>
+            )}
             <a href="#contact" className="rounded-lg bg-gold-500 px-4 py-2 text-sm font-semibold text-navy-950 transition-colors hover:bg-gold-400">Let's Talk</a>
           </nav>
         </div>
@@ -228,6 +265,21 @@ export function DataPulseSite() {
                   {section === 'blog' ? 'Insights' : section === 'contact' ? "Let's Talk" : section === 'insider' ? 'Insider' : section}
                 </a>
               ))}
+              {auth.user && auth.isMember ? (
+                <div className="flex items-center gap-2 px-3 py-3 text-sm text-gold-400">
+                  <UserCircle className="h-4 w-4" /> Member
+                  <button onClick={insider.signOut} className="ml-auto text-slate-300 hover:text-white">Sign out</button>
+                </div>
+              ) : auth.user ? (
+                <div className="flex items-center gap-2 px-3 py-3">
+                  <a href={stripeCheckoutUrl} target="_blank" rel="noopener noreferrer" onClick={closeMenu} className="rounded-lg bg-gold-500 px-3 py-1.5 text-xs font-semibold text-navy-950">Activate membership</a>
+                  <button onClick={insider.signOut} className="text-xs text-slate-300 hover:text-white">Sign out</button>
+                </div>
+              ) : (
+                <button onClick={() => { closeMenu(); insider.openAuth('signin'); }} className="rounded-lg px-3 py-3 text-left text-sm font-medium text-slate-200 hover:bg-white/10">
+                  Sign in
+                </button>
+              )}
             </div>
           </nav>
         )}
@@ -484,31 +536,57 @@ export function DataPulseSite() {
                       </div>
                     </div>
 
-                    <div className="mt-4 rounded-xl border border-slate-200 bg-softgray p-4">
-                      <p className="text-sm leading-relaxed text-slate-700">{prompt.promptText}</p>
-                    </div>
+                    {prompt.promptText ? (
+                      <>
+                        <div className="mt-4 rounded-xl border border-slate-200 bg-softgray p-4">
+                          <p className="text-sm leading-relaxed text-slate-700">{prompt.promptText}</p>
+                        </div>
 
-                    <div className="mt-4 rounded-lg bg-gold-50 px-4 py-3">
-                      <p className="text-xs leading-relaxed text-slate-600">
-                        <span className="font-semibold text-gold-700">When to use: </span>
-                        {prompt.useCase}
-                      </p>
-                    </div>
+                        <div className="mt-4 rounded-lg bg-gold-50 px-4 py-3">
+                          <p className="text-xs leading-relaxed text-slate-600">
+                            <span className="font-semibold text-gold-700">When to use: </span>
+                            {prompt.useCase}
+                          </p>
+                        </div>
 
-                    <button
-                      onClick={() => copyPrompt(prompt.id, prompt.promptText)}
-                      className={'mt-5 inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold transition-all ' + (
-                        copiedPrompt === prompt.id
-                          ? 'bg-emerald-500 text-white'
-                          : 'bg-navy-900 text-white hover:bg-navy-800'
-                      )}
-                    >
-                      {copiedPrompt === prompt.id ? (
-                        <><CheckCheck className="h-4 w-4" /> Copied!</>
-                      ) : (
-                        <><Copy className="h-4 w-4" /> Copy prompt</>
-                      )}
-                    </button>
+                        <button
+                          onClick={() => copyPrompt(prompt.id, prompt.promptText!)}
+                          className={'mt-5 inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold transition-all ' + (
+                            copiedPrompt === prompt.id
+                              ? 'bg-emerald-500 text-white'
+                              : 'bg-navy-900 text-white hover:bg-navy-800'
+                          )}
+                        >
+                          {copiedPrompt === prompt.id ? (
+                            <><CheckCheck className="h-4 w-4" /> Copied!</>
+                          ) : (
+                            <><Copy className="h-4 w-4" /> Copy prompt</>
+                          )}
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <div className="mt-4 rounded-xl border border-slate-200 bg-softgray p-4">
+                          <p className="text-sm leading-relaxed text-slate-700">{prompt.previewText}...</p>
+                          <div className="mt-3 select-none blur-sm pointer-events-none">
+                            <p className="text-sm leading-relaxed text-slate-400">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
+                          </div>
+                        </div>
+                        <div className="mt-4 flex items-center gap-2 rounded-lg bg-navy-50 px-4 py-3">
+                          <Lock className="h-4 w-4 text-navy-600" />
+                          <p className="text-xs font-semibold text-navy-700">Full prompt locked</p>
+                        </div>
+                        {auth.user ? (
+                          <a href={stripeCheckoutUrl} target="_blank" rel="noopener noreferrer" className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gold-500 px-4 py-3 text-sm font-bold text-navy-950 transition-all hover:bg-gold-400">
+                            Activate membership <ArrowRight className="h-4 w-4" />
+                          </a>
+                        ) : (
+                          <button onClick={() => insider.openAuth('signup')} className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-navy-900 px-4 py-3 text-sm font-bold text-white transition-all hover:bg-navy-800">
+                            <Lock className="h-4 w-4" /> Sign up to unlock
+                          </button>
+                        )}
+                      </>
+                    )}
                   </div>
                 );
               })}
@@ -591,15 +669,27 @@ export function DataPulseSite() {
                   </div>
 
                   <div className="mt-4">
-                    <p className="text-sm leading-relaxed text-slate-700">{trend.description}</p>
+                    <p className="text-sm leading-relaxed text-slate-700">{trend.description || trend.previewDescription}</p>
+                    {!trend.description && (
+                      <div className="mt-2 select-none blur-sm pointer-events-none">
+                        <p className="text-sm leading-relaxed text-slate-400">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                      </div>
+                    )}
                   </div>
 
-                  <div className="mt-4 rounded-lg bg-gold-50 px-4 py-3">
-                    <p className="text-xs leading-relaxed text-slate-600">
-                      <span className="font-semibold text-gold-700">Action: </span>
-                      {trend.action}
-                    </p>
-                  </div>
+                  {trend.action ? (
+                    <div className="mt-4 rounded-lg bg-gold-50 px-4 py-3">
+                      <p className="text-xs leading-relaxed text-slate-600">
+                        <span className="font-semibold text-gold-700">Action: </span>
+                        {trend.action}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="mt-4 flex items-center gap-2 rounded-lg bg-navy-50 px-4 py-3">
+                      <Lock className="h-4 w-4 text-navy-600" />
+                      <p className="text-xs font-semibold text-navy-700">Action plan locked</p>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -832,31 +922,57 @@ export function DataPulseSite() {
                     </div>
                   </div>
 
-                  <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4">
-                    <p className="whitespace-pre-line text-sm leading-relaxed text-slate-700">{template.templateText}</p>
-                  </div>
+                  {template.templateText ? (
+                    <>
+                      <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4">
+                        <p className="whitespace-pre-line text-sm leading-relaxed text-slate-700">{template.templateText}</p>
+                      </div>
 
-                  <div className="mt-4 rounded-lg bg-gold-50 px-4 py-3">
-                    <p className="text-xs leading-relaxed text-slate-600">
-                      <span className="font-semibold text-gold-700">When to use: </span>
-                      {template.useCase}
-                    </p>
-                  </div>
+                      <div className="mt-4 rounded-lg bg-gold-50 px-4 py-3">
+                        <p className="text-xs leading-relaxed text-slate-600">
+                          <span className="font-semibold text-gold-700">When to use: </span>
+                          {template.useCase}
+                        </p>
+                      </div>
 
-                  <button
-                    onClick={() => copyTemplate(template.id, template.templateText)}
-                    className={'mt-5 inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold transition-all ' + (
-                      copiedTemplate === template.id
-                        ? 'bg-emerald-500 text-white'
-                        : 'bg-navy-900 text-white hover:bg-navy-800'
-                    )}
-                  >
-                    {copiedTemplate === template.id ? (
-                      <><CheckCheck className="h-4 w-4" /> Copied!</>
-                    ) : (
-                      <><Copy className="h-4 w-4" /> Copy template</>
-                    )}
-                  </button>
+                      <button
+                        onClick={() => copyTemplate(template.id, template.templateText!)}
+                        className={'mt-5 inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold transition-all ' + (
+                          copiedTemplate === template.id
+                            ? 'bg-emerald-500 text-white'
+                            : 'bg-navy-900 text-white hover:bg-navy-800'
+                        )}
+                      >
+                        {copiedTemplate === template.id ? (
+                          <><CheckCheck className="h-4 w-4" /> Copied!</>
+                        ) : (
+                          <><Copy className="h-4 w-4" /> Copy template</>
+                        )}
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4">
+                        <p className="text-sm leading-relaxed text-slate-700">{template.previewText}...</p>
+                        <div className="mt-3 select-none blur-sm pointer-events-none">
+                          <p className="whitespace-pre-line text-sm leading-relaxed text-slate-400">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                        </div>
+                      </div>
+                      <div className="mt-4 flex items-center gap-2 rounded-lg bg-navy-50 px-4 py-3">
+                        <Lock className="h-4 w-4 text-navy-600" />
+                        <p className="text-xs font-semibold text-navy-700">Full template locked</p>
+                      </div>
+                      {auth.user ? (
+                        <a href={stripeCheckoutUrl} target="_blank" rel="noopener noreferrer" className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gold-500 px-4 py-3 text-sm font-bold text-navy-950 transition-all hover:bg-gold-400">
+                          Activate membership <ArrowRight className="h-4 w-4" />
+                        </a>
+                      ) : (
+                        <button onClick={() => insider.openAuth('signup')} className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-navy-900 px-4 py-3 text-sm font-bold text-white transition-all hover:bg-navy-800">
+                          <Lock className="h-4 w-4" /> Sign up to unlock
+                        </button>
+                      )}
+                    </>
+                  )}
                 </div>
               ))}
             </div>
