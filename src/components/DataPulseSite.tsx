@@ -238,7 +238,7 @@ export function DataPulseSite() {
             <a href="#services" className="text-sm text-slate-300 transition-colors hover:text-white">Services</a>
             <a href="#assessment" className="text-sm text-slate-300 transition-colors hover:text-white">Assessment</a>
             <a href="#insider" className="text-sm font-semibold text-gold-400 transition-colors hover:text-gold-300">Insider</a>
-            <a href="#blog" className="text-sm text-slate-300 transition-colors hover:text-white">Insights</a>
+            <a href="#blog" className="text-sm text-slate-300 transition-colors hover:text-white">Articles</a>
             {auth.user && auth.isMember ? (
               <div className="flex items-center gap-3">
                 <span className="flex items-center gap-1.5 text-xs font-semibold text-gold-400"><UserCircle className="h-4 w-4" /> Member</span>
@@ -265,7 +265,7 @@ export function DataPulseSite() {
             <div className="mx-auto flex max-w-7xl flex-col gap-1">
               {['about', 'services', 'assessment', 'insider', 'blog', 'contact'].map((section) => (
                 <a key={section} href={'#' + section} onClick={closeMenu} className="rounded-lg px-3 py-3 text-sm font-medium capitalize text-slate-200 hover:bg-white/10">
-                  {section === 'blog' ? 'Insights' : section === 'contact' ? "Let's Talk" : section === 'insider' ? 'Insider' : section === 'assessment' ? 'Assessment' : section}
+                  {section === 'blog' ? 'Articles' : section === 'contact' ? "Let's Talk" : section === 'insider' ? 'Insider' : section === 'assessment' ? 'Assessment' : section}
                 </a>
               ))}
               {auth.user && auth.isMember ? (
