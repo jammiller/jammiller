@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import {
   ArrowRight,
+  BarChart3,
   Calendar,
   Cpu,
   Layers,
@@ -35,6 +36,7 @@ import { About } from './About';
 import { Blog } from './Blog';
 import { FAQ } from './FAQ';
 import { AuthModal } from './AuthModal';
+import { SocialGrowthAssessment } from './SocialGrowthAssessment';
 import { useInsiderAccess } from '../hooks/useInsiderAccess';
 import { insiderCategories, insiderTrainings, insiderOptimizationSessions, insiderResources, insiderCalendar } from '../data/insiderContent';
 export function DataPulseSite() {
@@ -234,6 +236,7 @@ export function DataPulseSite() {
           <nav className="hidden items-center gap-7 md:flex" aria-label="Primary navigation">
             <a href="#about" className="text-sm text-slate-300 transition-colors hover:text-white">About</a>
             <a href="#services" className="text-sm text-slate-300 transition-colors hover:text-white">Services</a>
+            <a href="#assessment" className="text-sm text-slate-300 transition-colors hover:text-white">Assessment</a>
             <a href="#insider" className="text-sm font-semibold text-gold-400 transition-colors hover:text-gold-300">Insider</a>
             <a href="#blog" className="text-sm text-slate-300 transition-colors hover:text-white">Insights</a>
             {auth.user && auth.isMember ? (
@@ -260,9 +263,9 @@ export function DataPulseSite() {
         {menuOpen && (
           <nav className="border-t border-white/10 px-4 py-4 md:hidden" aria-label="Mobile navigation">
             <div className="mx-auto flex max-w-7xl flex-col gap-1">
-              {['about', 'services', 'insider', 'blog', 'contact'].map((section) => (
+              {['about', 'services', 'assessment', 'insider', 'blog', 'contact'].map((section) => (
                 <a key={section} href={'#' + section} onClick={closeMenu} className="rounded-lg px-3 py-3 text-sm font-medium capitalize text-slate-200 hover:bg-white/10">
-                  {section === 'blog' ? 'Insights' : section === 'contact' ? "Let's Talk" : section === 'insider' ? 'Insider' : section}
+                  {section === 'blog' ? 'Insights' : section === 'contact' ? "Let's Talk" : section === 'insider' ? 'Insider' : section === 'assessment' ? 'Assessment' : section}
                 </a>
               ))}
               {auth.user && auth.isMember ? (
@@ -378,6 +381,22 @@ export function DataPulseSite() {
                 </a>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section id="assessment" className="relative overflow-hidden bg-softgray py-24">
+          <div className="absolute -left-40 top-16 h-96 w-96 rounded-full bg-gold-400/10 blur-3xl" />
+          <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto mb-12 max-w-3xl text-center">
+              <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-gold-300 bg-gold-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-navy-900">
+                <BarChart3 className="h-3.5 w-3.5 text-gold-700" /> FREE GROWTH ASSESSMENT
+              </span>
+              <h2 className="text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">Discover What's Limiting Your Social Media Growth</h2>
+              <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
+                In less than 3 minutes, get your personalized Social Growth Score, identify missed opportunities, and receive actionable recommendations designed to help your business attract more customers online.
+              </p>
+            </div>
+            <SocialGrowthAssessment />
           </div>
         </section>
 
