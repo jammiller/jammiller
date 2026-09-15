@@ -293,20 +293,20 @@ export function DataPulseSite() {
           <div className="relative z-10 mx-auto grid max-w-7xl gap-12 px-4 py-24 sm:px-6 sm:py-32 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:px-8">
             <div>
               <p className="mb-6 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-gold-400">
-                <span className="pulse-line inline-block w-12" /> UbD-Engineered Learning Systems
+                <span className="pulse-line inline-block w-12" /> Social Media Marketing That Works
               </p>
               <h1 className="max-w-3xl text-4xl font-bold leading-tight tracking-tight sm:text-6xl">
-                We engineer learning systems that <span className="text-gold-400">build workforce competencies.</span>
+                We help businesses <span className="text-gold-400">attract more customers</span> through social media.
               </h1>
               <p className="mt-6 max-w-xl text-base leading-relaxed text-slate-300 sm:text-lg">
-                We engineer UbD-driven learning systems that reduce cognitive overload and build workforce competencies for technology-driven environments.
+                Practical marketing direction, fresh content ideas, and the resources to turn strategy into consistent action — all in one place.
               </p>
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                <a href="#services" className="inline-flex items-center justify-center gap-2 rounded-xl bg-gold-500 px-5 py-3 text-sm font-semibold text-navy-950 transition-all hover:-translate-y-0.5 hover:bg-gold-400">
-                  Explore our curriculum systems <ArrowRight className="h-4 w-4" />
+                <a href="#assessment" className="inline-flex items-center justify-center gap-2 rounded-xl bg-gold-500 px-5 py-3 text-sm font-semibold text-navy-950 transition-all hover:-translate-y-0.5 hover:bg-gold-400">
+                  Get your free growth score <ArrowRight className="h-4 w-4" />
                 </a>
-                <a href="#apps" className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 px-5 py-3 text-sm font-semibold text-white transition-colors hover:border-gold-400 hover:text-gold-300">
-                  Explore our tools
+                <a href="#insider" className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 px-5 py-3 text-sm font-semibold text-white transition-colors hover:border-gold-400 hover:text-gold-300">
+                  Explore the Insider group
                 </a>
               </div>
             </div>
@@ -316,16 +316,16 @@ export function DataPulseSite() {
               <div className="relative rounded-3xl border border-white/15 bg-white/[0.07] p-6 shadow-2xl backdrop-blur-sm sm:p-8">
                 <div className="mb-8 flex items-center justify-between border-b border-white/10 pb-5">
                   <div>
-                    <p className="text-xs uppercase tracking-[0.18em] text-slate-400">The learning pulse</p>
-                    <p className="mt-1 text-lg font-semibold">From idea to impact</p>
+                    <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Your marketing pulse</p>
+                    <p className="mt-1 text-lg font-semibold">Strategy to action</p>
                   </div>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gold-500 text-navy-950"><Target className="h-5 w-5" /></div>
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gold-500 text-navy-950"><TrendingUp className="h-5 w-5" /></div>
                 </div>
                 <div className="space-y-5">
                   {[
-                    { label: 'UbD-driven design', desc: 'Stage 1, 2, and 3 structure that builds every unit toward real workforce competencies.' },
-                    { label: 'Reduced cognitive overload', desc: 'Streamlined content design that helps learners absorb, retain, and apply skills.' },
-                    { label: 'Assessment-driven outcomes', desc: 'Assessments that measure real workforce readiness — not just test scores.' },
+                    { label: 'Content that converts', desc: 'Monthly calendars, templates, and AI prompts built to drive real engagement.' },
+                    { label: 'Trends you can act on', desc: 'Track what is working right now across platforms — with a concrete next step.' },
+                    { label: 'Strategy that sticks', desc: 'Training, optimization sessions, and resources that keep your plan practical.' },
                   ].map((item, index) => (
                     <div key={item.label} className="flex items-start gap-4">
                       <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-gold-400/50 text-xs font-bold text-gold-300">0{index + 1}</span>
@@ -338,7 +338,7 @@ export function DataPulseSite() {
                 </div>
                 <div className="mt-8 rounded-2xl bg-white/10 p-4">
                   <p className="text-xs text-slate-400">Our approach</p>
-                  <p className="mt-1 text-sm leading-relaxed text-slate-200">We don't create curriculum — we engineer structured learning infrastructure designed to develop workforce-ready talent.</p>
+                  <p className="mt-1 text-sm leading-relaxed text-slate-200">We do not just post content — we help you build a marketing system that consistently turns followers into customers.</p>
                 </div>
               </div>
             </div>
@@ -372,7 +372,7 @@ export function DataPulseSite() {
                 </a>
               </div>
               <div className="group flex flex-col rounded-3xl border border-slate-200 bg-softgray p-7 text-left transition-all duration-300 hover:-translate-y-1 hover:border-navy-400 hover:shadow-xl sm:p-9">
-                <a href="https://pulseosplatform.com" target="_blank" rel="noopener noreferrer" className="text-left">
+                <a href="/pulseos" className="text-left">
                   <div className="flex items-start justify-between"><span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-navy-100 text-navy-900"><GraduationCap className="h-6 w-6" /></span><ArrowRight className="h-5 w-5 text-navy-700 transition-transform group-hover:translate-x-1" /></div>
                   <p className="mt-8 text-xs font-semibold uppercase tracking-[0.18em] text-navy-700">UbD learning platform</p>
                   <h3 className="mt-2 text-2xl font-bold text-navy-900">Pulse OS Platform</h3>

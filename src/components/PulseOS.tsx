@@ -225,14 +225,13 @@ function Dashboard({
         <div className="relative">
           <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-gold-500/30 bg-gold-500/10 px-4 py-1.5 text-xs font-semibold text-gold-400">
             <Sparkles className="h-3.5 w-3.5" />
-            Understanding by Design
+            UbD-Engineered Learning Systems
           </div>
-          <h1 className="text-3xl font-bold text-white sm:text-5xl">
-            PulseOS <span className="text-gold-400">Dashboard</span>
+          <h1 className="max-w-3xl text-3xl font-bold leading-tight text-white sm:text-5xl">
+            We engineer learning systems that <span className="text-gold-400">build workforce competencies.</span>
           </h1>
-          <p className="mt-3 max-w-2xl text-sm text-slate-300 sm:text-base">
-            Build, assess, and measure curriculum with real instructional design structure.
-            Drag and drop units, sequence lessons, and track UbD integrity — all in one workspace.
+          <p className="mt-4 max-w-2xl text-sm text-slate-300 sm:text-base">
+            We engineer UbD-driven learning systems that reduce cognitive overload and build workforce competencies for technology-driven environments.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <button
@@ -250,6 +249,21 @@ function Dashboard({
               <ClipboardList className="h-4 w-4" />
               Create Assessments
             </button>
+          </div>
+          <div className="mt-8 grid gap-4 sm:grid-cols-3">
+            {[
+              { label: 'UbD-driven design', desc: 'Stage 1, 2, and 3 structure that builds every unit toward real workforce competencies.' },
+              { label: 'Reduced cognitive overload', desc: 'Streamlined content design that helps learners absorb, retain, and apply skills.' },
+              { label: 'Assessment-driven outcomes', desc: 'Assessments that measure real workforce readiness — not just test scores.' },
+            ].map((item, index) => (
+              <div key={item.label} className="flex items-start gap-3">
+                <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-gold-400/50 text-xs font-bold text-gold-300">0{index + 1}</span>
+                <div>
+                  <span className="text-sm font-semibold text-slate-100">{item.label}</span>
+                  <p className="mt-1 text-xs leading-relaxed text-slate-400">{item.desc}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
