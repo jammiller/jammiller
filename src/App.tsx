@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { DataPulseSite } from './components/DataPulseSite';
 import { PulseOS } from './components/PulseOS';
+import { WorkforceMode } from './components/pulseos/WorkforceMode';
 import { SafetyApp } from './components/SafetyApp';
 import { StatsLab } from './components/StatsLab';
 import { VideoWalkthrough } from './components/VideoWalkthrough';
@@ -105,7 +106,7 @@ function App() {
     return <VoltEcho />;
   }
   if (isPulseOSDomain) {
-    return <><PulseOS /><InstallPrompt /></>;
+    return <><WorkforceMode /><InstallPrompt /></>;
   }
   if (isSafetyDomain) {
     return <><SafetyApp /><InstallPrompt /></>;
