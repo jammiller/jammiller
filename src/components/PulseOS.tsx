@@ -4,7 +4,7 @@ import {
   ChevronRight, FileText, Target, CheckCircle2, Clock,
   TrendingUp, Award, ListChecks, Zap, Brain, Calendar, Phone, Check,
   Sparkles, ArrowRight, Activity, Users, GraduationCap,
-  CircleDot, LayoutGrid, FolderTree,
+  CircleDot, LayoutGrid, FolderTree, HardHat,
 } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import type {
@@ -14,11 +14,12 @@ import { usePulseOSData } from './pulseos/usePulseOSData';
 import { UnitBuilder } from './pulseos/UnitBuilder';
 import { AssessmentEngine } from './pulseos/AssessmentEngine';
 import { AnalyticsDashboard } from './pulseos/AnalyticsDashboard';
+import { WorkforceMode } from './pulseos/WorkforceMode';
 
-type View = 'dashboard' | 'builder' | 'assessments' | 'analytics';
+type View = 'dashboard' | 'builder' | 'assessments' | 'analytics' | 'workforce';
 
 export function PulseOS() {
-  const [view, setView] = useState<View>('dashboard');
+  const [view, setView] = useState<View>('workforce');
   const [selectedUnitId, setSelectedUnitId] = useState<string | null>(null);
   const {
     programs, courses, units, lessons, assessments, submissions,
@@ -53,7 +54,8 @@ export function PulseOS() {
   };
 
   const navItems: { key: View; label: string; icon: typeof BookOpen }[] = [
-    { key: 'dashboard', label: 'Dashboard', icon: LayoutGrid },
+    { key: 'workforce', label: 'Workforce Mode', icon: HardHat },
+    { key: 'dashboard', label: 'Education Mode', icon: LayoutGrid },
     { key: 'builder', label: 'UbD Units', icon: BookOpen },
     { key: 'assessments', label: 'Assessments', icon: ClipboardList },
     { key: 'analytics', label: 'Analytics', icon: BarChart3 },
@@ -123,6 +125,7 @@ export function PulseOS() {
             {error}
           </div>
         )}
+        {!loading && !error && view === 'workforce' && <WorkforceMode />}
         {!loading && !error && view === 'dashboard' && (
           <Dashboard
             programs={programs}
