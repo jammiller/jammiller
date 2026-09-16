@@ -1,68 +1,20 @@
-import { useState } from 'react';
-import {
-  ArrowRight, BriefcaseBusiness, CheckCircle2, ChevronRight, ClipboardCheck,
-  FileUp, HardHat, ShieldCheck, Sparkles, Wrench,
-} from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { Award, CheckCircle2, ClipboardCheck, FileCheck2, HardHat, Layers3, ShieldCheck, Users, Wrench } from 'lucide-react';
+import { competencies, roles, workers, type CompetencyDomain } from '../../lib/competency-foundation';
 
-type SetupStep = 'role' | 'competencies' | 'tasks' | 'evidence' | 'assets';
+type WorkforceView = 'library' | 'roles' | 'passport';
 
-const steps: { key: SetupStep; label: string; prompt: string; placeholder: string }[] = [
-  { key: 'role', label: 'Job role', prompt: 'What role needs to be qualified?', placeholder: 'e.g. Concrete Finisher' },
-  { key: 'competencies', label: 'Competencies', prompt: 'What must this employee do safely and consistently?', placeholder: 'e.g. Read foundation layout plans and verify elevations' },
-  { key: 'tasks', label: 'Tasks', prompt: 'What tools, procedures, and common mistakes matter?', placeholder: 'e.g. Set forms, place concrete, finish surfaces, inspect defects' },
-  { key: 'evidence', label: 'Field verification', prompt: 'How will a supervisor know the employee is competent?', placeholder: 'e.g. Supervisor observation against a safety and quality checklist' },
-  { key: 'assets', label: 'Training assets', prompt: 'What existing material should PulseOS build from?', placeholder: 'e.g. SOPs, safety manuals, job descriptions, or contractor specifications' },
-];
+const domains: CompetencyDomain[] = ['Safety', 'Technical', 'Quality', 'Productivity', 'Leadership', 'Professional Behaviors'];
 
 export function WorkforceMode() {
-  const [stepIndex, setStepIndex] = useState(0);
-  const [values, setValues] = useState<Record<SetupStep, string>>({
-    role: '', competencies: '', tasks: '', evidence: '', assets: '',
-  });
-  const [generated, setGenerated] = useState(false);
-  const current = steps[stepIndex];
-  const complete = values[current.key].trim().length > 0;
-
-  const next = () => {
-    if (!complete) return;
-    if (stepIndex === steps.length - 1) setGenerated(true);
-    else setStepIndex(stepIndex + 1);
-  };
-
-  if (generated) {
-    return (
-      <div className="space-y-6">
-        <section className="relative overflow-hidden rounded-3xl bg-navy-950 p-8 text-white sm:p-10">
-          <div className="absolute inset-0 bg-grid-dark bg-grid opacity-30" />
-          <div className="relative">
-            <div className="inline-flex items-center gap-2 rounded-full border border-gold-500/30 bg-gold-500/10 px-3 py-1 text-xs font-bold text-gold-300">
-              <Sparkles className="h-3.5 w-3.5" /> Training pathway draft
-            </div>
-            <h1 className="mt-4 text-3xl font-bold sm:text-4xl">{values.role || 'New role'} qualification package</h1>
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">Review the proposed framework, then prepare the training pathway for supervisors and learners.</p>
-          </div>
-        </section>
-        <div className="grid gap-4 md:grid-cols-2">
-          {[
-            { title: 'Competency framework', description: values.competencies, icon: BriefcaseBusiness },
-            { title: 'Task simulations', description: values.tasks, icon: Wrench },
-            { title: 'Supervisor field verification', description: values.evidence, icon: ClipboardCheck },
-            { title: 'Training assets', description: values.assets, icon: FileUp },
-          ].map(card => (
-            <article key={card.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-              <card.icon className="h-5 w-5 text-gold-600" />
-              <h2 className="mt-4 font-bold text-navy-900">{card.title}</h2>
-              <p className="mt-2 text-sm leading-6 text-slate-600">{card.description}</p>
-            </article>
-          ))}
-        </div>
-        <div className="flex flex-wrap gap-3">
-          <button className="inline-flex items-center gap-2 rounded-xl bg-gold-500 px-5 py-3 text-sm font-bold text-navy-950">Approve draft <ArrowRight className="h-4 w-4" /></button>
-          <button onClick={() => { setGenerated(false); setStepIndex(0); }} className="rounded-xl border border-slate-300 px-5 py-3 text-sm font-bold text-navy-800">Start another package</button>
-        </div>
-      </div>
-    );
-  }
+  const [view, setView] = useState<WorkforceView>('library');
+  const [domain, setDomain] = useState<CompetencyDomain | 'All'>('All');
+  const [selectedId, setSelectedId] = useState(competencies[0].id);
+  const selected = competencies.find(item => item.id === selectedId) ?? competencies[0];
+  const visible = domain === 'All' ? competencies : competencies.filter(item => item.domain === domain);
+  const worker = workers[0];
+  const verified = worker.competencies.filter(item => item.verified).length;
+  const selectedRole = useMemo(() => roles.find(role => role.title === worker.role) ?? roles[0], [worker.role]);
 
   return (
     <div className="space-y-6">
@@ -70,38 +22,53 @@ export function WorkforceMode() {
         <div className="absolute inset-0 bg-grid-dark bg-grid opacity-30" />
         <div className="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-gold-500/10 blur-3xl" />
         <div className="relative max-w-3xl">
-          <div className="inline-flex items-center gap-2 rounded-full border border-gold-500/30 bg-gold-500/10 px-3 py-1 text-xs font-bold text-gold-300"><HardHat className="h-3.5 w-3.5" /> Workforce Mode</div>
-          <h1 className="mt-4 text-3xl font-bold leading-tight sm:text-5xl">Build job-ready training in 15 minutes.</h1>
-          <p className="mt-4 text-sm leading-6 text-slate-300 sm:text-base">Start with the work people need to perform. PulseOS turns existing job knowledge into competency packages, task simulations, field verifications, and training assets.</p>
+          <div className="inline-flex items-center gap-2 rounded-full border border-gold-500/30 bg-gold-500/10 px-3 py-1 text-xs font-bold text-gold-300"><HardHat className="h-3.5 w-3.5" /> Competency-First Workforce OS</div>
+          <h1 className="mt-4 text-3xl font-bold leading-tight sm:text-5xl">Readiness is proven by evidence, not course completion.</h1>
+          <p className="mt-4 text-sm leading-6 text-slate-300 sm:text-base">Industry → Occupation → Role → Competency → Task. Build reusable competency requirements, verify them in the field, and see the workforce gaps that affect delivery.</p>
         </div>
       </section>
 
-      <div className="grid gap-6 lg:grid-cols-[0.9fr_1.6fr]">
-        <aside className="rounded-2xl border border-slate-200 bg-white p-5">
-          <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Qualification flow</p>
-          <ol className="mt-4 space-y-1">
-            {steps.map((step, index) => {
-              const active = index === stepIndex;
-              const done = index < stepIndex;
-              return <li key={step.key} className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold ${active ? 'bg-navy-50 text-navy-900' : 'text-slate-500'}`}>
-                <span className={`flex h-7 w-7 items-center justify-center rounded-full text-xs ${done ? 'bg-emerald-500 text-white' : active ? 'bg-gold-500 text-navy-950' : 'bg-slate-100 text-slate-500'}`}>{done ? <CheckCircle2 className="h-4 w-4" /> : index + 1}</span>{step.label}
-              </li>;
-            })}
-          </ol>
-          <div className="mt-6 rounded-xl bg-gold-50 p-4 text-xs leading-5 text-navy-800"><ShieldCheck className="mb-2 h-4 w-4 text-gold-700" />No instructional-design terminology required. UbD rigor stays behind the workflow.</div>
-        </aside>
-
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
-          <p className="text-xs font-bold uppercase tracking-wider text-gold-700">Step {stepIndex + 1} of {steps.length}</p>
-          <h2 className="mt-3 text-2xl font-bold text-navy-900">{current.prompt}</h2>
-          <textarea value={values[current.key]} onChange={event => setValues({ ...values, [current.key]: event.target.value })} placeholder={current.placeholder} rows={6} className="mt-6 w-full rounded-xl border border-slate-200 p-4 text-sm text-slate-700 outline-none transition focus:border-gold-400 focus:ring-2 focus:ring-gold-100" />
-          {current.key === 'assets' && <p className="mt-3 inline-flex items-center gap-2 text-xs font-medium text-slate-500"><FileUp className="h-4 w-4" /> Document extraction will be connected to a secure upload workflow.</p>}
-          <div className="mt-6 flex items-center justify-between gap-3">
-            <button onClick={() => setStepIndex(Math.max(0, stepIndex - 1))} disabled={stepIndex === 0} className="text-sm font-bold text-slate-500 disabled:opacity-40">Back</button>
-            <button onClick={next} disabled={!complete} className="inline-flex items-center gap-2 rounded-xl bg-gold-500 px-5 py-3 text-sm font-bold text-navy-950 disabled:cursor-not-allowed disabled:opacity-40">{stepIndex === steps.length - 1 ? 'Create pathway draft' : 'Continue'} <ChevronRight className="h-4 w-4" /></button>
-          </div>
-        </section>
+      <div className="grid gap-4 sm:grid-cols-3">
+        <Metric icon={Layers3} label="Competency library" value={competencies.length} detail="Construction accelerator" />
+        <Metric icon={ShieldCheck} label="Verified for James Carter" value={`${verified}/${worker.competencies.length}`} detail="Evidence-backed competencies" />
+        <Metric icon={Users} label="Role readiness" value="75%" detail={`${selectedRole.title} requirements met`} />
       </div>
+
+      <nav className="flex flex-wrap gap-2 border-b border-slate-200 pb-4">
+        {([
+          ['library', 'Competency Library', Layers3],
+          ['roles', 'Role Builder', Wrench],
+          ['passport', 'Competency Passport', Award],
+        ] as const).map(([key, label, Icon]) => <button key={key} onClick={() => setView(key)} className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition ${view === key ? 'bg-navy-900 text-white shadow-lg' : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:text-navy-900'}`}><Icon className="h-4 w-4" />{label}</button>)}
+      </nav>
+
+      {view === 'library' && <section className="grid gap-6 lg:grid-cols-[0.95fr_1.35fr]">
+        <aside className="rounded-2xl border border-slate-200 bg-white p-5">
+          <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Construction taxonomy</p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {(['All', ...domains] as const).map(item => <button key={item} onClick={() => setDomain(item)} className={`rounded-full px-3 py-1.5 text-xs font-bold ${domain === item ? 'bg-gold-500 text-navy-950' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>{item}</button>)}
+          </div>
+          <div className="mt-5 space-y-2">
+            {visible.map(item => <button key={item.id} onClick={() => setSelectedId(item.id)} className={`w-full rounded-xl border p-4 text-left transition ${selected.id === item.id ? 'border-gold-400 bg-gold-50' : 'border-slate-200 hover:border-slate-300'}`}><p className="text-xs font-bold uppercase tracking-wide text-gold-700">{item.domain}</p><p className="mt-1 font-bold text-navy-900">{item.title}</p><p className="mt-1 text-xs text-slate-500">{item.id} · Level {item.proficiencyLevel}</p></button>)}
+          </div>
+        </aside>
+        <CompetencyDetail />
+      </section>}
+
+      {view === 'roles' && <section className="grid gap-4 lg:grid-cols-3">{roles.map(role => <article key={role.id} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><p className="text-xs font-bold uppercase tracking-wider text-gold-700">{role.occupation}</p><h2 className="mt-2 text-xl font-bold text-navy-900">{role.title}</h2><p className="mt-2 text-sm text-slate-500">A role is a collection of competency requirements—not a static job description.</p><div className="mt-5 space-y-3">{role.requirements.map(requirement => { const competency = competencies.find(item => item.id === requirement.competencyId); return <div key={requirement.competencyId} className="flex items-center justify-between rounded-xl bg-slate-50 p-3"><span className="text-sm font-semibold text-navy-900">{competency?.title}</span><span className="rounded-full bg-navy-900 px-2.5 py-1 text-xs font-bold text-white">Level {requirement.level}</span></div>; })}</div></article>)}</section>}
+
+      {view === 'passport' && <section className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]"><article className="rounded-2xl bg-navy-950 p-7 text-white"><div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gold-500 text-navy-950"><Users className="h-6 w-6" /></div><h2 className="mt-5 text-2xl font-bold">{worker.name}</h2><p className="mt-1 text-sm text-slate-300">{worker.role} · Construction</p><div className="mt-7 rounded-xl border border-white/10 bg-white/5 p-4"><p className="text-3xl font-bold text-gold-400">{verified}</p><p className="mt-1 text-xs font-bold uppercase tracking-wider text-slate-300">Verified competencies</p></div><p className="mt-6 text-sm leading-6 text-slate-300">Portable competency transcript with evidence and verification status attached to every qualification.</p></article><article className="rounded-2xl border border-slate-200 bg-white p-6"><p className="text-xs font-bold uppercase tracking-wider text-slate-500">Evidence-backed readiness</p><div className="mt-5 space-y-3">{worker.competencies.map(record => { const competency = competencies.find(item => item.id === record.competencyId); return <div key={record.competencyId} className="flex items-center gap-4 rounded-xl border border-slate-200 p-4"><span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${record.verified ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>{record.verified ? <CheckCircle2 className="h-5 w-5" /> : <ClipboardCheck className="h-5 w-5" />}</span><div className="min-w-0 flex-1"><p className="font-bold text-navy-900">{competency?.title}</p><p className="text-xs text-slate-500">Level {record.level} · {record.evidenceCount} evidence item{record.evidenceCount === 1 ? '' : 's'}</p></div><span className={`text-xs font-bold ${record.verified ? 'text-emerald-700' : 'text-amber-700'}`}>{record.verified ? 'Verified' : 'In review'}</span></div>; })}</div></article></section>}
     </div>
   );
+
+  function CompetencyDetail() {
+    const dimensions = [
+      ['Knowledge', selected.knowledge], ['Skills', selected.skills], ['Experience', selected.experience], ['Behaviors', selected.behaviors], ['Tasks', selected.tasks], ['Accepted evidence', selected.evidence],
+    ];
+    return <article className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-xs font-bold uppercase tracking-wider text-gold-700">{selected.industry} · {selected.domain}</p><h2 className="mt-2 text-2xl font-bold text-navy-900">{selected.title}</h2></div><span className="rounded-full bg-navy-900 px-3 py-1.5 text-xs font-bold text-white">Target level {selected.proficiencyLevel}</span></div><p className="mt-4 max-w-2xl text-sm leading-6 text-slate-600">{selected.description}</p><div className="mt-7 grid gap-4 sm:grid-cols-2">{dimensions.map(([label, items]) => <div key={label as string} className="rounded-xl bg-slate-50 p-4"><p className="text-xs font-bold uppercase tracking-wider text-slate-500">{label as string}</p><ul className="mt-3 space-y-2">{(items as string[]).map(item => <li key={item} className="flex gap-2 text-sm text-navy-900"><FileCheck2 className="mt-0.5 h-4 w-4 shrink-0 text-gold-600" />{item}</li>)}</ul></div>)}</div></article>;
+  }
+}
+
+function Metric({ icon: Icon, label, value, detail }: { icon: typeof Layers3; label: string; value: string | number; detail: string }) {
+  return <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gold-50 text-gold-700"><Icon className="h-5 w-5" /></div><p className="mt-4 text-3xl font-bold text-navy-900">{value}</p><p className="mt-1 text-sm font-bold text-slate-700">{label}</p><p className="mt-1 text-xs text-slate-500">{detail}</p></article>;
 }
