@@ -77,12 +77,26 @@ export const competencies: Competency[] = [
     experience: ['Coordinates work with adjacent crews'], behaviors: ['Raises concerns respectfully'],
     tasks: ['Conduct a toolbox talk', 'Document a work handoff'], evidence: ['Observation checklist', 'Peer feedback'],
   },
+  {
+    id: 'COMP-006', title: 'Quality Control', domain: 'Quality', industry: 'Construction', proficiencyLevel: 3,
+    description: 'Inspect completed work against plans, specifications, and workmanship standards before it moves downstream.',
+    knowledge: ['Project specifications', 'Acceptance criteria'], skills: ['Inspect work', 'Document deficiencies'],
+    experience: ['Participates in quality walks'], behaviors: ['Owns defects through resolution'],
+    tasks: ['Verify work against plans', 'Create a punch-list item'], evidence: ['Inspection record', 'Supervisor observation'],
+  },
+  {
+    id: 'COMP-007', title: 'Production Planning', domain: 'Productivity', industry: 'Construction', proficiencyLevel: 3,
+    description: 'Organize daily work to maintain flow, reduce waste, and meet planned production targets safely.',
+    knowledge: ['Production rates', 'Material staging principles'], skills: ['Sequence work', 'Track daily output'],
+    experience: ['Works to a daily production plan'], behaviors: ['Flags constraints before they delay work'],
+    tasks: ['Stage materials', 'Report production against plan'], evidence: ['Daily report', 'Field observation'],
+  },
 ];
 
 export const roles: CompetencyRole[] = [
-  { id: 'ROLE-CARP-1', title: 'Carpenter I', occupation: 'Carpenter', requirements: [{ competencyId: 'COMP-001', level: 2 }, { competencyId: 'COMP-002', level: 2 }, { competencyId: 'COMP-003', level: 2 }, { competencyId: 'COMP-005', level: 2 }] },
-  { id: 'ROLE-CARP-2', title: 'Carpenter II', occupation: 'Carpenter', requirements: [{ competencyId: 'COMP-001', level: 3 }, { competencyId: 'COMP-002', level: 3 }, { competencyId: 'COMP-003', level: 3 }, { competencyId: 'COMP-005', level: 3 }] },
-  { id: 'ROLE-FOREMAN', title: 'Foreman', occupation: 'Construction Supervisor', requirements: [{ competencyId: 'COMP-001', level: 4 }, { competencyId: 'COMP-004', level: 4 }, { competencyId: 'COMP-005', level: 4 }] },
+  { id: 'ROLE-CARP-1', title: 'Carpenter I', occupation: 'Carpenter', requirements: [{ competencyId: 'COMP-001', level: 2 }, { competencyId: 'COMP-002', level: 2 }, { competencyId: 'COMP-003', level: 2 }, { competencyId: 'COMP-005', level: 2 }, { competencyId: 'COMP-006', level: 2 }, { competencyId: 'COMP-007', level: 2 }] },
+  { id: 'ROLE-CARP-2', title: 'Carpenter II', occupation: 'Carpenter', requirements: [{ competencyId: 'COMP-001', level: 3 }, { competencyId: 'COMP-002', level: 3 }, { competencyId: 'COMP-003', level: 3 }, { competencyId: 'COMP-005', level: 3 }, { competencyId: 'COMP-006', level: 3 }, { competencyId: 'COMP-007', level: 3 }] },
+  { id: 'ROLE-FOREMAN', title: 'Foreman', occupation: 'Construction Supervisor', requirements: [{ competencyId: 'COMP-001', level: 4 }, { competencyId: 'COMP-004', level: 4 }, { competencyId: 'COMP-005', level: 4 }, { competencyId: 'COMP-006', level: 4 }, { competencyId: 'COMP-007', level: 4 }] },
 ];
 
 export const workers: WorkerProfile[] = [
