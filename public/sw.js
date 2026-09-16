@@ -1,4 +1,4 @@
-const CACHE_NAME = 'datapulse-social-v8';
+const CACHE_NAME = 'datapulse-social-v9';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
