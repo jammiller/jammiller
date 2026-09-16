@@ -5,7 +5,7 @@ import App from './App.tsx';
 import './index.css';
 
 const hostname = window.location.hostname.toLowerCase();
-const isPulseOS = hostname === 'pulseosplatform.com' || hostname === 'www.pulseosplatform.com';
+const isPulseOS = hostname === 'pulseosplatform.com' || hostname === 'www.pulseosplatform.com' || hostname.startsWith('pulse-os-') || hostname === 'pulse-os-datapulse-social.vercel.app';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
