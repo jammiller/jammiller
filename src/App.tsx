@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { DataPulseSite } from './components/DataPulseSite';
-import { PulseOS } from './components/PulseOS';
 import { WorkforceMode } from './components/pulseos/WorkforceMode';
 import { SafetyApp } from './components/SafetyApp';
 import { StatsLab } from './components/StatsLab';
