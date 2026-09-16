@@ -10,100 +10,11 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="DATAPULSE SOCIAL" />
-    <script>
-      (function () {
-        var h = window.location.hostname.toLowerCase();
-        var p = window.location.pathname.replace(/\/$/, '') || '/';
-        var isSafety = h === 'safetyapp.com' || h === 'www.safetyapp.com';
-        var isStatsLab = h === 'statslab.app' || h === 'www.statslab.app';
-        var isPulseOS = h === 'pulseosplatform.com' || h === 'www.pulseosplatform.com' || p === '/pulseos';
-        var isHarbor = h === 'harborhush.website' || h === 'www.harborhush.website';
-        var isTremonix = h === 'tremonix.com' || h === 'www.tremonix.com';
-        var isVoltEcho = h === 'voltecho.app' || h === 'www.voltecho.app';
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
 
-        var manifestHref = '/manifest.json';
-        var appleHref = '/apple-touch-icon.png';
-        var fav32Href = '/favicon-32.png';
-        var fav16Href = '/favicon-16.png';
-        var themeColor = '#0a1a2f';
-        var appTitle = 'DATAPULSE SOCIAL';
-
-        if (isSafety) {
-          manifestHref = '/safety-manifest.json';
-          appleHref = '/safety-apple-touch-icon.png';
-          fav32Href = '/safety-favicon-32.png';
-          fav16Href = '/safety-favicon-16.png';
-          themeColor = '#07131f';
-          appTitle = 'Safety App';
-        } else if (isStatsLab) {
-          manifestHref = '/statslab-manifest.json';
-          appleHref = '/statslab-app-icon.webp';
-          fav32Href = '/statslab-app-icon.webp';
-          fav16Href = '/statslab-app-icon.webp';
-          appTitle = 'StatsLab';
-        } else if (isPulseOS) {
-          manifestHref = '/pulseos-manifest.json';
-          appleHref = '/pulseos-icon-512.webp';
-          fav32Href = '/pulseos-icon-512.webp';
-          fav16Href = '/pulseos-icon-512.webp';
-          appTitle = 'PulseOS';
-        } else if (isHarbor) {
-          themeColor = '#1a3a42';
-          appTitle = 'Harbor';
-        } else if (isTremonix) {
-          themeColor = '#0a1f1a';
-          appTitle = 'Tremonix';
-        } else if (isVoltEcho) {
-          themeColor = '#000000';
-          appTitle = 'VoltEcho';
-        }
-
-        function createLink(rel, href, attrs) {
-          var link = document.createElement('link');
-          link.setAttribute('rel', rel);
-          link.setAttribute('href', href);
-          if (attrs) {
-            for (var k in attrs) link.setAttribute(k, attrs[k]);
-          }
-          document.head.appendChild(link);
-        }
-
-        createLink('manifest', manifestHref);
-        createLink('apple-touch-icon', appleHref);
-        createLink('icon', fav32Href, { type: 'image/png', sizes: '32x32' });
-        createLink('icon', fav16Href, { type: 'image/png', sizes: '16x16' });
-
-        document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColor);
-        document.querySelector('meta[name="apple-mobile-web-app-title"]').setAttribute('content', appTitle);
-
-        var dynTitle = 'DATAPULSE SOCIAL';
-        var dynDesc = 'We engineer UbD-driven learning systems that reduce cognitive overload and build the workforce competencies needed for a tech-savvy, machine-ready, high-performance workforce.';
-
-        if (isSafety) {
-          dynTitle = 'Safety App';
-          dynDesc = 'Personal safety tools for emergency contacts, SOS support, location sharing, safety check-ins, and first aid guidance.';
-        } else if (isStatsLab) {
-          dynTitle = 'StatsLab';
-          dynDesc = 'Interactive statistics tool for datasets, descriptive stats, visualizations, and inference tests.';
-        } else if (isPulseOS) {
-          dynTitle = 'PulseOS Platform';
-          dynDesc = 'PulseOS — UbD-driven learning operations. Build curriculum units with Stage 1, 2, and 3 structure, assessments, and analytics.';
-        } else if (isHarbor) {
-          dynTitle = 'Harbor — Wellness Community Platform';
-          dynDesc = 'A guided community experience platform designed to help wellness brands build intentional, supportive member communities.';
-        } else if (isTremonix) {
-          dynTitle = 'Tremonix — Revenue Leak Diagnostic';
-          dynDesc = 'Tremonix — find the revenue your business is losing to slow response times, insufficient follow-up, and abandoned leads. Backed by published research.';
-        } else if (isVoltEcho) {
-          dynTitle = 'VoltEcho — Smart Algorithm Hub';
-          dynDesc = 'VoltEcho — a single hub housing smart algorithms for data entry automation, customer churn prediction, and inventory forecasting.';
-        }
-
-        document.title = dynTitle;
-        var descEl = document.querySelector('meta[name="description"]');
-        if (descEl) descEl.setAttribute('content', dynDesc);
-      })();
-    </script>
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="google-site-verification" content="wgURdOvCdUKE-2-qbxiy1JWsIzIhvaiECh2wIicFm3w" />
 
@@ -161,6 +72,73 @@
     </script>
 
 
+    <script>
+      (function () {
+        var h = window.location.hostname.toLowerCase();
+        var p = window.location.pathname.replace(/\/$/, '') || '/';
+        var variants = {
+          datapulse: {
+            title: 'DATAPULSE SOCIAL',
+            description: 'We engineer UbD-driven learning systems that reduce cognitive overload and build the workforce competencies needed for a tech-savvy, machine-ready, high-performance workforce.',
+            canonical: 'https://www.datapulsesocial.com/',
+            manifest: '/manifest.json', icon: '/favicon-32.png', apple: '/apple-touch-icon.png', theme: '#0a1a2f'
+          },
+          safety: {
+            title: 'Safety App', description: 'Personal safety tools for emergency contacts, SOS support, location sharing, safety check-ins, and first aid guidance.',
+            canonical: 'https://www.safetyapp.com/', manifest: '/safety-manifest.json', icon: '/safety-favicon-32.png', apple: '/safety-apple-touch-icon.png', theme: '#07131f'
+          },
+          statslab: {
+            title: 'StatsLab', description: 'Interactive statistics tool for datasets, descriptive stats, visualizations, and inference tests.',
+            canonical: 'https://www.statslab.app/', manifest: '/statslab-manifest.json', icon: '/statslab-app-icon.webp', apple: '/statslab-app-icon.webp', theme: '#0a1a2f'
+          },
+          pulseos: {
+            title: 'PulseOS Platform', description: 'PulseOS — UbD-driven learning operations. Build curriculum units with Stage 1, 2, and 3 structure, assessments, and analytics.',
+            canonical: 'https://www.pulseosplatform.com/', manifest: '/pulseos-manifest.json', icon: '/pulseos-icon-512.webp', apple: '/pulseos-icon-512.webp', theme: '#0a1a2f'
+          },
+          harbor: {
+            title: 'Harbor — Wellness Community Platform', description: 'A guided community experience platform designed to help wellness brands build intentional, supportive member communities.',
+            canonical: 'https://www.harborhush.website/', manifest: '/manifest.json', icon: '/favicon-32.png', apple: '/apple-touch-icon.png', theme: '#1a3a42'
+          },
+          tremonix: {
+            title: 'Tremonix — Revenue Leak Diagnostic', description: 'Tremonix — find the revenue your business is losing to slow response times, insufficient follow-up, and abandoned leads.',
+            canonical: 'https://www.tremonix.com/', manifest: '/tremonix-manifest.json', icon: '/tremonix-icon.svg', apple: '/tremonix-icon.svg', theme: '#0a1f1a'
+          },
+          voltecho: {
+            title: 'VoltEcho — Smart Algorithm Hub', description: 'VoltEcho — a single hub housing smart algorithms for data entry automation, customer churn prediction, and inventory forecasting.',
+            canonical: 'https://www.voltecho.app/', manifest: '/voltecho-manifest.json', icon: '/voltecho-icon.svg', apple: '/voltecho-icon.svg', theme: '#000000'
+          }
+        };
+        var key = h === 'safetyapp.com' || h === 'www.safetyapp.com' ? 'safety'
+          : h === 'statslab.app' || h === 'www.statslab.app' ? 'statslab'
+          : h === 'pulseosplatform.com' || h === 'www.pulseosplatform.com' || p === '/pulseos' ? 'pulseos'
+          : h === 'harborhush.website' || h === 'www.harborhush.website' ? 'harbor'
+          : h === 'tremonix.com' || h === 'www.tremonix.com' || p === '/tremonix' ? 'tremonix'
+          : h === 'voltecho.app' || h === 'www.voltecho.app' || p === '/voltecho' ? 'voltecho'
+          : 'datapulse';
+        var variant = variants[key];
+        function setLink(selector, href, type) {
+          var link = document.querySelector(selector) || document.head.appendChild(document.createElement('link'));
+          if (!link.rel) link.rel = selector.includes('manifest') ? 'manifest' : selector.includes('apple') ? 'apple-touch-icon' : 'icon';
+          link.href = href;
+          if (type) link.type = type;
+        }
+        setLink('link[rel="manifest"]', variant.manifest);
+        setLink('link[rel="apple-touch-icon"]', variant.apple, variant.apple.endsWith('.svg') ? 'image/svg+xml' : undefined);
+        setLink('link[rel="icon"][sizes="32x32"]', variant.icon, variant.icon.endsWith('.svg') ? 'image/svg+xml' : 'image/png');
+        setLink('link[rel="icon"][sizes="16x16"]', variant.icon, variant.icon.endsWith('.svg') ? 'image/svg+xml' : 'image/png');
+        document.title = variant.title;
+        document.querySelector('meta[name="description"]')?.setAttribute('content', variant.description);
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', variant.theme);
+        document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', variant.title);
+        document.querySelector('link[rel="canonical"]')?.setAttribute('href', variant.canonical);
+        document.querySelector('meta[property="og:site_name"]')?.setAttribute('content', variant.title);
+        document.querySelector('meta[property="og:title"]')?.setAttribute('content', variant.title);
+        document.querySelector('meta[property="og:description"]')?.setAttribute('content', variant.description);
+        document.querySelector('meta[property="og:url"]')?.setAttribute('content', variant.canonical);
+        document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', variant.title);
+        document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', variant.description);
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
