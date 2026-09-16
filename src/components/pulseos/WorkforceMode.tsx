@@ -25,7 +25,20 @@ export function WorkforceMode() {
           <div className="inline-flex items-center gap-2 rounded-full border border-gold-500/30 bg-gold-500/10 px-3 py-1 text-xs font-bold text-gold-300"><HardHat className="h-3.5 w-3.5" /> Competency-First Workforce OS</div>
           <h1 className="mt-4 text-3xl font-bold leading-tight sm:text-5xl">Readiness is proven by evidence, not course completion.</h1>
           <p className="mt-4 text-sm leading-6 text-slate-300 sm:text-base">Industry → Occupation → Role → Competency → Task. Build reusable competency requirements, verify them in the field, and see the workforce gaps that affect delivery.</p>
+          <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              ['OSHA-aligned qualification', 'Competent-person and training requirements translated into practical work requirements.'],
+              ['SKEB competency model', 'Skills, knowledge, experience, and behaviors are defined for each competency.'],
+              ['Evidence-based validation', 'Training alone is not verification—field evidence and assessment establish readiness.'],
+              ['Role-to-task design', 'Roles are built from the competencies and tasks people must perform.'],
+              ['Workforce intelligence', 'Verified competency data exposes readiness gaps by role, crew, and project.'],
+            ].map(([title, detail]) => <div key={title} className="rounded-xl border border-white/10 bg-white/5 p-3"><p className="text-xs font-bold text-gold-300">{title}</p><p className="mt-1 text-xs leading-5 text-slate-300">{detail}</p></div>)}
+          </div>
         </div>
+      </section>
+
+      <section className="rounded-2xl border border-gold-200 bg-gold-50 p-5 sm:p-6">
+        <div className="flex items-start gap-3"><ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-gold-700" /><div><p className="text-xs font-bold uppercase tracking-wider text-gold-800">PulseOS Competency-First Workforce Design Framework (CFWD™)</p><p className="mt-2 max-w-4xl text-sm leading-6 text-navy-900">A regulatory-aligned workforce design architecture that connects OSHA-informed qualification concepts, SKEB competency definitions, evidence-based validation, role-to-task design, and workforce intelligence. CFWD™ is an operational readiness framework; customers remain responsible for their site-specific compliance obligations and competent-person designations.</p></div></div>
       </section>
 
       <div className="grid gap-4 sm:grid-cols-3">
@@ -41,6 +54,16 @@ export function WorkforceMode() {
           ['passport', 'Competency Passport', Award],
         ] as const).map(([key, label, Icon]) => <button key={key} onClick={() => setView(key)} className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition ${view === key ? 'bg-navy-900 text-white shadow-lg' : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:text-navy-900'}`}><Icon className="h-4 w-4" />{label}</button>)}
       </nav>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
+        <div className="flex items-center gap-3"><ClipboardCheck className="h-5 w-5 text-gold-700" /><div><p className="font-bold text-navy-900">Foreman field-validation checklist</p><p className="text-xs text-slate-500">Use this review before representing the accelerator as field-validated.</p></div></div>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{[
+          ['Work relevance', 'Do the tasks match how the crew actually performs the work?'],
+          ['Level accuracy', 'Are proficiency levels appropriate for the role and experience band?'],
+          ['Evidence standard', 'Would the stated evidence prove capability—not only course completion?'],
+          ['Site alignment', 'What site, trade, owner, union, or customer requirements must be added?'],
+        ].map(([title, detail]) => <div key={title} className="rounded-xl bg-slate-50 p-4"><CheckCircle2 className="h-4 w-4 text-emerald-600" /><p className="mt-2 text-sm font-bold text-navy-900">{title}</p><p className="mt-1 text-xs leading-5 text-slate-600">{detail}</p></div>)}</div>
+      </section>
 
       {view === 'library' && <section className="grid gap-6 lg:grid-cols-[0.95fr_1.35fr]">
         <aside className="rounded-2xl border border-slate-200 bg-white p-5">
