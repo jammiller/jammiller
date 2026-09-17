@@ -73,7 +73,7 @@ export function PulseOS() {
             </span>
             <div className="flex flex-col">
               <span className="text-sm font-bold tracking-wide leading-none">PulseOS</span>
-              <span className="mt-0.5 text-[10px] font-medium uppercase tracking-wider text-gold-400/80">UbD Platform</span>
+              <span className="mt-0.5 text-[10px] font-medium uppercase tracking-wider text-gold-400/80">Standards & Evidence</span>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -170,7 +170,7 @@ export function PulseOS() {
 
       <footer className="border-t border-slate-200 bg-white py-6">
         <div className="mx-auto flex max-w-7xl flex-col items-center gap-3 px-4 sm:flex-row sm:justify-between sm:px-6">
-          <p className="text-xs text-slate-500">PulseOS — UbD-driven learning operations. Built for real instructional design.</p>
+          <p className="text-xs text-slate-500">PulseOS — The standards-to-evidence layer for workforce training.</p>
           <div className="flex gap-3">
             <a href="https://calendar.app.google/8otEDsChvouw51aaA" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-lg bg-gold-500 px-3 py-1.5 text-xs font-semibold text-navy-950 transition-colors hover:bg-gold-400">
               <Calendar className="h-3.5 w-3.5" /> Book a Demo

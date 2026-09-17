@@ -23,23 +23,23 @@ export function WorkforceMode() {
         <div className="absolute inset-0 bg-grid-dark bg-grid opacity-30" />
         <div className="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-gold-500/10 blur-3xl" />
         <div className="relative max-w-3xl">
-          <div className="inline-flex items-center gap-2 rounded-full border border-gold-500/30 bg-gold-500/10 px-3 py-1 text-xs font-bold text-gold-300"><HardHat className="h-3.5 w-3.5" /> Competency-First Workforce OS</div>
-          <h1 className="mt-4 text-3xl font-bold leading-tight sm:text-5xl">Readiness is proven by evidence, not course completion.</h1>
-          <p className="mt-4 text-sm leading-6 text-slate-300 sm:text-base">Industry → Occupation → Role → Competency → Task. Build reusable competency requirements, verify them in the field, and see the workforce gaps that affect delivery.</p>
+          <div className="inline-flex items-center gap-2 rounded-full border border-gold-500/30 bg-gold-500/10 px-3 py-1 text-xs font-bold text-gold-300"><HardHat className="h-3.5 w-3.5" /> The Design-and-Evidence Layer</div>
+          <h1 className="mt-4 text-3xl font-bold leading-tight sm:text-5xl">Design training against the standards you are accountable to—and prove readiness with evidence.</h1>
+          <p className="mt-4 text-sm leading-6 text-slate-300 sm:text-base">PulseOS connects standards, curriculum, OJT, assessments, and field evidence so workforce programs can measure readiness—not just completion.</p>
           <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {[
-              ['OSHA-aligned qualification', 'Competent-person and training requirements translated into practical work requirements.'],
-              ['SKEB competency model', 'Skills, knowledge, experience, and behaviors are defined for each competency.'],
-              ['Evidence-based validation', 'Training alone is not verification—field evidence and assessment establish readiness.'],
-              ['Role-to-task design', 'Roles are built from the competencies and tasks people must perform.'],
-              ['Workforce intelligence', 'Verified competency data exposes readiness gaps by role, crew, and project.'],
+              ['Standards-to-curriculum map', 'Translate the standards, program outcomes, and job requirements you own into an intentional learning design.'],
+              ['Design across classroom and OJT', 'Connect instruction, assessments, work activities, and competency milestones in one curriculum architecture.'],
+              ['Evidence of readiness', 'Capture assessments, observations, approved OJT hours, and supervisor validation—not just completion.'],
+              ['Accountability visibility', 'See which standards have evidence, where gaps remain, and what needs attention before review.'],
+              ['Complements your stack', 'Use PulseOS alongside content libraries, engagement platforms, and compliance systems—the design and evidence layer they lack.'],
             ].map(([title, detail]) => <div key={title} className="rounded-xl border border-white/10 bg-white/5 p-3"><p className="text-xs font-bold text-gold-300">{title}</p><p className="mt-1 text-xs leading-5 text-slate-300">{detail}</p></div>)}
           </div>
         </div>
       </section>
 
       <section className="rounded-2xl border border-gold-200 bg-gold-50 p-5 sm:p-6">
-        <div className="flex items-start gap-3"><ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-gold-700" /><div><p className="text-xs font-bold uppercase tracking-wider text-gold-800">PulseOS Competency-First Workforce Design Framework (CFWD™)</p><p className="mt-2 max-w-4xl text-sm leading-6 text-navy-900">A regulatory-aligned workforce design architecture that connects OSHA-informed qualification concepts, SKEB competency definitions, evidence-based validation, role-to-task design, and workforce intelligence. CFWD™ is an operational readiness framework; customers remain responsible for their site-specific compliance obligations and competent-person designations.</p></div></div>
+        <div className="flex items-start gap-3"><ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-gold-700" /><div><p className="text-xs font-bold uppercase tracking-wider text-gold-800">PulseOS standards-to-evidence framework</p><p className="mt-2 max-w-4xl text-sm leading-6 text-navy-900">PulseOS is the design-and-evidence layer for workforce programs: align curriculum to accountable standards, define what proficiency looks like, and retain evidence that learners are ready. It complements—not replaces—content providers, engagement tools, and compliance systems. Customers remain responsible for their applicable compliance obligations and competent-person designations.</p></div></div>
       </section>
 
       <div className="grid gap-4 sm:grid-cols-3">
