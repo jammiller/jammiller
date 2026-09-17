@@ -394,34 +394,37 @@ function Dashboard({
       <div>
         <div className="mb-5 flex items-center gap-2">
           <GraduationCap className="h-5 w-5 text-navy-700" />
-          <h2 className="text-xl font-bold text-navy-900">Pricing</h2>
+          <div>
+            <h2 className="text-xl font-bold text-navy-900">Simple pricing for workforce readiness</h2>
+            <p className="mt-1 text-sm text-slate-500">Start with one crew, then scale the operating model across your organization.</p>
+          </div>
         </div>
         <div className="grid gap-5 md:grid-cols-3">
           <PricingCard
-            name="Educator"
-            price="$0"
-            tagline="For individual teachers and instructional designers"
+            name="Pilot"
+            price="$149"
+            tagline="For one crew or program proving evidence-based readiness"
             features={[
-              'Unlimited UbD units',
-              'Stage 1, 2, 3 editor',
-              'Assessment engine',
-              'Basic analytics',
-              'Shared workspace',
+              'Up to 15 active workers',
+              'Construction competency library',
+              'Role builder and competency passports',
+              'Field-validation evidence tracking',
+              'OJT & compliance workspace',
             ]}
-            ctaLabel="Start free"
+            ctaLabel="Book a pilot"
             ctaHref="https://calendar.app.google/8otEDsChvouw51aaA"
             highlighted={false}
           />
           <PricingCard
-            name="Team"
-            price="$49"
-            tagline="For schools and small teams building curriculum together"
+            name="Operations"
+            price="$399"
+            tagline="For teams standardizing workforce readiness across projects"
             features={[
-              'Everything in Educator',
-              'Program and course hierarchy',
-              'Workflow and review status',
-              'UbD integrity scoring',
-              'Per-unit analytics dashboard',
+              'Up to 75 active workers',
+              'Everything in Pilot',
+              'Multi-role readiness tracking',
+              'Workforce gap visibility',
+              'Program setup support',
               'Priority support',
             ]}
             ctaLabel="Book a demo"
@@ -429,19 +432,19 @@ function Dashboard({
             highlighted={true}
           />
           <PricingCard
-            name="District"
+            name="Enterprise"
             price="Custom"
-            tagline="For districts scaling aligned curriculum across schools"
+            tagline="For multi-site employers, workforce partners, and public programs"
             features={[
-              'Everything in Team',
-              'Multi-school programs',
-              'District-level analytics',
-              'UbD alignment reporting',
-              'Custom onboarding',
-              'Dedicated support',
+              'Everything in Operations',
+              'Multi-site reporting',
+              'Custom competency frameworks',
+              'Implementation and data migration',
+              'Dedicated success partner',
+              'Security and procurement support',
             ]}
-            ctaLabel="Contact us"
-            ctaHref="tel:8508309910"
+            ctaLabel="Talk to us"
+            ctaHref="https://calendar.app.google/8otEDsChvouw51aaA"
             highlighted={false}
           />
         </div>
