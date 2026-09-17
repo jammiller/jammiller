@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
-import { Award, CheckCircle2, ClipboardCheck, FileCheck2, HardHat, Layers3, ShieldCheck, Users, Wrench } from 'lucide-react';
+import { Award, CheckCircle2, ClipboardCheck, FileCheck2, HardHat, Layers3, ShieldCheck, Users, Wrench, Clock3 } from 'lucide-react';
+import { OJTCompliance } from './OJTCompliance';
 import { competencies, roles, workers, type CompetencyDomain } from '../../lib/competency-foundation';
 
-type WorkforceView = 'library' | 'roles' | 'passport';
+type WorkforceView = 'library' | 'roles' | 'passport' | 'ojt';
 
 const domains: CompetencyDomain[] = ['Safety', 'Technical', 'Quality', 'Productivity', 'Leadership', 'Professional Behaviors'];
 
@@ -52,6 +53,7 @@ export function WorkforceMode() {
           ['library', 'Competency Library', Layers3],
           ['roles', 'Role Builder', Wrench],
           ['passport', 'Competency Passport', Award],
+          ['ojt', 'OJT & Compliance', Clock3],
         ] as const).map(([key, label, Icon]) => <button key={key} onClick={() => setView(key)} className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition ${view === key ? 'bg-navy-900 text-white shadow-lg' : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:text-navy-900'}`}><Icon className="h-4 w-4" />{label}</button>)}
       </nav>
 
@@ -79,6 +81,8 @@ export function WorkforceMode() {
       </section>}
 
       {view === 'roles' && <section className="grid gap-4 lg:grid-cols-3">{roles.map(role => <article key={role.id} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><p className="text-xs font-bold uppercase tracking-wider text-gold-700">{role.occupation}</p><h2 className="mt-2 text-xl font-bold text-navy-900">{role.title}</h2><p className="mt-2 text-sm text-slate-500">A role is a collection of competency requirements—not a static job description.</p><div className="mt-5 space-y-3">{role.requirements.map(requirement => { const competency = competencies.find(item => item.id === requirement.competencyId); return <div key={requirement.competencyId} className="flex items-center justify-between rounded-xl bg-slate-50 p-3"><span className="text-sm font-semibold text-navy-900">{competency?.title}</span><span className="rounded-full bg-navy-900 px-2.5 py-1 text-xs font-bold text-white">Level {requirement.level}</span></div>; })}</div></article>)}</section>}
+
+      {view === 'ojt' && <OJTCompliance />}
 
       {view === 'passport' && <section className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]"><article className="rounded-2xl bg-navy-950 p-7 text-white"><div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gold-500 text-navy-950"><Users className="h-6 w-6" /></div><h2 className="mt-5 text-2xl font-bold">{worker.name}</h2><p className="mt-1 text-sm text-slate-300">{worker.role} · Construction</p><div className="mt-7 rounded-xl border border-white/10 bg-white/5 p-4"><p className="text-3xl font-bold text-gold-400">{verified}</p><p className="mt-1 text-xs font-bold uppercase tracking-wider text-slate-300">Verified competencies</p></div><p className="mt-6 text-sm leading-6 text-slate-300">Portable competency transcript with evidence and verification status attached to every qualification.</p></article><article className="rounded-2xl border border-slate-200 bg-white p-6"><p className="text-xs font-bold uppercase tracking-wider text-slate-500">Evidence-backed readiness</p><div className="mt-5 space-y-3">{worker.competencies.map(record => { const competency = competencies.find(item => item.id === record.competencyId); return <div key={record.competencyId} className="flex items-center gap-4 rounded-xl border border-slate-200 p-4"><span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${record.verified ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>{record.verified ? <CheckCircle2 className="h-5 w-5" /> : <ClipboardCheck className="h-5 w-5" />}</span><div className="min-w-0 flex-1"><p className="font-bold text-navy-900">{competency?.title}</p><p className="text-xs text-slate-500">Level {record.level} · {record.evidenceCount} evidence item{record.evidenceCount === 1 ? '' : 's'}</p></div><span className={`text-xs font-bold ${record.verified ? 'text-emerald-700' : 'text-amber-700'}`}>{record.verified ? 'Verified' : 'In review'}</span></div>; })}</div></article></section>}
     </div>
