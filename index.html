@@ -108,13 +108,7 @@
             canonical: 'https://www.voltecho.app/', manifest: '/voltecho-manifest.json', icon: '/voltecho-icon.svg', apple: '/voltecho-icon.svg', theme: '#000000'
           }
         };
-        var key = h === 'safetyapp.com' || h === 'www.safetyapp.com' ? 'safety'
-          : h === 'statslab.app' || h === 'www.statslab.app' ? 'statslab'
-          : h === 'pulseosplatform.com' || h === 'www.pulseosplatform.com' || p === '/pulseos' ? 'pulseos'
-          : h === 'harborhush.website' || h === 'www.harborhush.website' ? 'harbor'
-          : h === 'tremonix.com' || h === 'www.tremonix.com' || p === '/tremonix' ? 'tremonix'
-          : h === 'voltecho.app' || h === 'www.voltecho.app' || p === '/voltecho' ? 'voltecho'
-          : 'datapulse';
+        var key = 'tremonix';
         var variant = variants[key];
         function setLink(selector, href, type) {
           var link = document.querySelector(selector) || document.head.appendChild(document.createElement('link'));
