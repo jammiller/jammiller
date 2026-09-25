@@ -3,26 +3,71 @@
   "outputDirectory": "dist",
   "installCommand": "npm install",
   "rewrites": [
-    { "source": "/((?!sw\\.js|manifest\\.json|safety-manifest\\.json|pulseos-manifest\\.json|statslab-manifest\\.json|robots\\.txt|sitemap\\.xml|llms\\.txt|_redirects|google.*|privacy-policy\\.html).*)", "destination": "/index.html" }
+    {
+      "source": "/robots.txt",
+      "has": [
+        {
+          "type": "host",
+          "value": "tremonix.com"
+        }
+      ],
+      "destination": "/tremonix/robots.txt"
+    },
+    {
+      "source": "/sitemap.xml",
+      "has": [
+        {
+          "type": "host",
+          "value": "tremonix.com"
+        }
+      ],
+      "destination": "/tremonix/sitemap.xml"
+    },
+    {
+      "source": "/((?!sw\\.js|manifest\\.json|safety-manifest\\.json|pulseos-manifest\\.json|statslab-manifest\\.json|robots\\.txt|sitemap\\.xml|llms\\.txt|_redirects|google.*|privacy-policy\\.html).*)",
+      "destination": "/index.html"
+    }
   ],
   "headers": [
     {
       "source": "/sw.js",
       "headers": [
-        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
       ]
     },
     {
       "source": "/index.html",
       "headers": [
-        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
       ]
     },
     {
       "source": "/assets/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.tremonix.com"
+        }
+      ],
+      "destination": "https://tremonix.com/:path*",
+      "statusCode": 301
     }
   ]
 }
