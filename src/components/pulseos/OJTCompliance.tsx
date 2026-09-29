@@ -9,13 +9,15 @@ const today = () => new Date().toISOString().slice(0, 10);
 const evidenceStatuses: EvidenceStatus[] = ['missing', 'in_review', 'verified', 'expired', 'waived'];
 
 export function OJTCompliance() {
-  const { user, role, loading: authLoading, signIn, signOut } = usePulseOSAuth();
+  const { user, role, loading: authLoading, signIn, signUp, claimFirstAdmin, canClaimAdmin, signOut } = usePulseOSAuth();
   const isAdmin = role === 'admin';
   const data = useOJTData(isAdmin);
   const [message, setMessage] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [resettingPassword, setResettingPassword] = useState(false);
   const [selectedEnrollmentId, setSelectedEnrollmentId] = useState<string | null>(null);
 
   const notify = (text: string) => { setMessage(text); window.setTimeout(() => setMessage(null), 4500); };
@@ -40,11 +42,15 @@ export function OJTCompliance() {
       <LockKeyhole className="h-6 w-6 text-gold-700" />
       <h2 className="mt-3 text-xl font-bold text-navy-900">Secure OJT workspace</h2>
       <p className="mt-2 text-sm leading-6 text-slate-600">OJT records include trainee, wage, approval, and evidence data. Only a provisioned PulseOS administrator can access this workspace.</p>
-      {!user ? <form className="mt-5 space-y-3" onSubmit={async (event) => { event.preventDefault(); const result = await signIn(email, password); if (result.error) notify(result.error); }}>
-        <input required type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Administrator email" className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
-        <input required type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
-        <button className="w-full rounded-xl bg-navy-900 px-4 py-2.5 text-sm font-bold text-white">Sign in</button>
-      </form> : <><p className="mt-4 rounded-xl bg-amber-50 p-3 text-sm text-amber-900">This account is not an OJT administrator. Ask a PulseOS administrator to provision access.</p><button onClick={signOut} className="mt-4 text-sm font-bold text-navy-800 underline">Sign out</button></>}
+      {!user ? <>
+        <div className="mt-5 grid grid-cols-2 rounded-xl bg-slate-100 p-1 text-sm font-bold text-slate-600"><button type="button" onClick={() => setAuthMode('signin')} className={`rounded-lg px-3 py-2 ${authMode === 'signin' ? 'bg-white text-navy-900 shadow-sm' : ''}`}>Sign in</button><button type="button" onClick={() => setAuthMode('signup')} className={`rounded-lg px-3 py-2 ${authMode === 'signup' ? 'bg-white text-navy-900 shadow-sm' : ''}`}>Create account</button></div>
+        <form className="mt-4 space-y-3" onSubmit={async (event) => { event.preventDefault(); const result = await (authMode === 'signin' ? signIn : signUp)(email, password); if (result.error) notify(result.error); else if (authMode === 'signup') notify('Account created. Complete the administrator setup prompt after sign-in.'); }}>
+          <input required type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Administrator email" className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+          <input required minLength={6} type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password (6+ characters)" className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+          <button className="w-full rounded-xl bg-navy-900 px-4 py-2.5 text-sm font-bold text-white">{authMode === 'signin' ? 'Sign in' : 'Create account'}</button>
+        </form>
+        {authMode === 'signin' && <button type="button" disabled={resettingPassword} onClick={async () => { if (!email.trim()) { notify('Enter your email address first.'); return; } setResettingPassword(true); const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin }); setResettingPassword(false); notify(error?.message ?? 'Password reset link sent. Check your email.'); }} className="mt-3 text-sm font-bold text-navy-800 underline disabled:opacity-50">{resettingPassword ? 'Sending reset link...' : 'Reset password by email'}</button>}
+      </> : <><p className="mt-4 rounded-xl bg-amber-50 p-3 text-sm text-amber-900">This account is not an OJT administrator.</p>{canClaimAdmin ? <button onClick={async () => { const claimed = await claimFirstAdmin(); notify(claimed ? 'Administrator access enabled.' : 'Administrator access is already assigned.'); }} className="mt-4 w-full rounded-xl bg-navy-900 px-4 py-2.5 text-sm font-bold text-white">Claim administrator access</button> : <p className="mt-3 text-sm text-slate-600">Ask an existing PulseOS administrator to provision your account.</p>}<button onClick={signOut} className="mt-4 text-sm font-bold text-navy-800 underline">Sign out</button></>}
       {message && <p className="mt-3 text-sm text-rose-700">{message}</p>}
     </section>;
   }
