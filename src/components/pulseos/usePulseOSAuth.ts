@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
 import { supabase } from '../../lib/supabaseClient';
 
-export type PulseOSRole = 'admin' | 'client' | null;
+export type PulseOSRole = 'admin' | 'client' | 'foreman' | null;
 
 export interface PulseOSAuthState {
   user: User | null;
