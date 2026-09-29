@@ -7,8 +7,8 @@ type WorkforceView = 'library' | 'roles' | 'passport' | 'ojt';
 
 const domains: CompetencyDomain[] = ['Safety', 'Technical', 'Quality', 'Productivity', 'Leadership', 'Professional Behaviors'];
 
-export function WorkforceMode() {
-  const [view, setView] = useState<WorkforceView>('library');
+export function WorkforceMode({ initialView = 'library' }: { initialView?: WorkforceView }) {
+  const [view, setView] = useState<WorkforceView>(initialView);
   const [domain, setDomain] = useState<CompetencyDomain | 'All'>('All');
   const [selectedId, setSelectedId] = useState(competencies[0].id);
   const selected = competencies.find(item => item.id === selectedId) ?? competencies[0];
