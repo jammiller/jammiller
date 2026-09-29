@@ -27,7 +27,10 @@ export function OJTCompliance() {
       notify(success);
       await data.refetch();
     } catch (error) {
-      notify(error instanceof Error ? error.message : 'Unable to save this record.');
+      const message = typeof error === 'object' && error !== null && 'message' in error && typeof (error as { message: unknown }).message === 'string'
+        ? (error as { message: string }).message
+        : 'Unable to save this record.';
+      notify(message);
     } finally { setSaving(false); }
   };
 
