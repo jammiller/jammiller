@@ -23,6 +23,7 @@ export interface OJTEnrollment {
   trainee_name: string;
   employer_name: string;
   supervisor_name: string;
+  supervisor_email: string | null;
   start_date: string;
   end_date: string | null;
   wage_at_start: number | null;
