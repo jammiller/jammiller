@@ -1,5 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { WorkforceMode } from './components/pulseos/WorkforceMode';
 import App from './App.tsx';
 import './index.css';
@@ -10,6 +11,7 @@ const isPulseOS = hostname === 'pulseosplatform.com' || hostname === 'www.pulseo
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     {isPulseOS ? <WorkforceMode /> : <App />}
+    <SpeedInsights />
   </StrictMode>
 );
 
