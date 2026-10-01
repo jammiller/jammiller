@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import {
   ArrowRight,
   Clock,
@@ -15,6 +15,7 @@ import {
   Phone,
   Mail,
   ChevronDown,
+  Loader,
 } from 'lucide-react';
 
 const leakCategories = [
@@ -63,29 +64,29 @@ const leakCategories = [
 const processSteps = [
   {
     number: '01',
-    title: 'Take the free diagnostic',
-    description: 'Answer questions about your sales process — response speed, follow-up habits, lead nurturing, churn recovery. Takes 3 minutes. No email required.',
-    icon: Target,
+    title: 'Book your audit',
+    description: 'Schedule a 15-minute call. We\'ll ask about your response times, follow-up process, lead tracking, and retention strategy.',
+    icon: Calendar,
   },
   {
     number: '02',
-    title: 'Get your leak report',
-    description: 'We calculate where revenue is being lost, broken down by category. You see specific areas, not vague scores.',
+    title: 'We diagnose your leaks',
+    description: 'We analyze your answers against industry benchmarks and show you exactly where revenue is being lost in your pipeline.',
     icon: BarChart3,
   },
   {
     number: '03',
-    title: 'Fix what matters most',
-    description: 'Get a prioritized action plan showing which leaks to fix first. Fix them yourself or have us help.',
+    title: 'Get your fix plan',
+    description: 'You receive a prioritized action plan with specific, implementable steps to plug your revenue leaks and recover lost revenue.',
     icon: CheckCircle2,
   },
 ];
 
 const funnelStages = [
-  { label: 'Diagnostic', detail: 'Questions, 3 min', icon: Target },
-  { label: 'Leak Report', detail: 'Areas revealed', icon: BarChart3 },
+  { label: '15-min Audit', detail: 'Book your call', icon: Calendar },
+  { label: 'Leak Report', detail: 'See your hidden leaks', icon: BarChart3 },
   { label: 'Fix Plan', detail: 'Prioritized by impact', icon: CheckCircle2 },
-  { label: 'Implementation', detail: 'We help plug the leaks', icon: Zap },
+  { label: 'Implementation', detail: 'We help you plug them', icon: Zap },
 ];
 
 const researchStats = [
@@ -129,28 +130,51 @@ const researchStats = [
 
 const faqItems = [
   {
-    question: 'Where do these statistics come from?',
-    answer: 'All statistics cited on this page come from published research by InsideSales, Harvard Business Review, Forbes, Velocify, and sales performance data compiled by SPOTIO and LeadResponse. We cite our sources next to each figure. We do not fabricate numbers.',
+    question: 'How long does the audit take?',
+    answer: 'The initial call is 15 minutes. We ask about your sales process, response speed, follow-up discipline, and retention. After the call, we send you a detailed leak report.',
   },
   {
-    question: 'Is the diagnostic really free?',
-    answer: 'Yes. The diagnostic takes about 3 minutes and requires no email. You get your leak report immediately after completing the questions.',
+    question: 'Who should attend the call?',
+    answer: 'Ideally someone who understands your sales process — a sales manager, ops lead, or business owner. You don\'t need to prepare anything.',
   },
   {
-    question: 'What does "revenue leak" mean?',
-    answer: 'A revenue leak is any point in your sales process where potential revenue is being lost due to process gaps — slow response times, insufficient follow-up, abandoned leads, or unmanaged churn. These are measurable, fixable problems.',
+    question: 'What will I learn?',
+    answer: 'You\'ll get specific numbers: the exact percentage of leads lost to slow response, how much revenue is leaking due to weak follow-up, and your churn recovery gaps. Then a concrete action plan.',
   },
   {
-    question: 'Can I fix the leaks myself?',
-    answer: 'Yes. The leak report includes a prioritized action plan. You can implement the fixes yourself, or we can help with implementation if you prefer.',
+    question: 'Is this a sales pitch?',
+    answer: 'No. The audit and report are for your benefit. If you want help fixing the leaks, we\'ll discuss options. But the audit stands alone.',
+  },
+  {
+    question: 'How much does it cost?',
+    answer: 'The 15-minute audit is $397. The detailed leak report (with action plan) is included. Implementation help is optional and quoted separately.',
   },
 ];
+
+interface FormData {
+  name: string;
+  email: string;
+  company: string;
+  phone: string;
+}
+
+interface FormErrors {
+  name?: string;
+  email?: string;
+  company?: string;
+  phone?: string;
+}
 
 export function Tremonix() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [quizStarted, setQuizStarted] = useState(false);
   const [quizAnswers, setQuizAnswers] = useState<Record<number, string>>({});
   const [quizComplete, setQuizComplete] = useState(false);
+  const [formOpen, setFormOpen] = useState(false);
+  const [formData, setFormData] = useState<FormData>({ name: '', email: '', company: '', phone: '' });
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
+  const [formSubmitting, setFormSubmitting] = useState(false);
+  const [formSuccess, setFormSuccess] = useState(false);
 
   const quizQuestions = [
     {
@@ -230,7 +254,7 @@ export function Tremonix() {
 
   const leakSeverity = leakScore >= 60 ? 'critical' : leakScore >= 40 ? 'moderate' : 'manageable';
   const leakSeverityColor = leakSeverity === 'critical' ? 'text-rose-400' : leakSeverity === 'moderate' ? 'text-amber-400' : 'text-emerald-400';
-  const leakSeverityLabel = leakSeverity === 'critical' ? 'Critical — significant revenue at risk' : leakSeverity === 'moderate' ? 'Moderate — fixable leaks detected' : 'Manageable — minor improvements needed';
+  const leakSeverityLabel = leakSeverity === 'critical' ? 'Critical — significant revenue at risk' : leakSeverity === 'moderate' ? 'Moderate — fixable leaks detected' : 'Manageable — minor improvements available';
 
   const recommendations = quizComplete
     ? Object.entries(quizAnswers)
@@ -240,16 +264,58 @@ export function Tremonix() {
           const severity = optIdx >= 2 ? 'high' : optIdx === 1 ? 'medium' : 'low';
           const priority = optIdx >= 2 ? 1 : optIdx === 1 ? 2 : 3;
           const actions: Record<string, string> = {
-            '0': optIdx >= 2 ? 'Implement automated lead routing so inbound leads are contacted within 5 minutes. Use tools like Calendly, HubSpot, or Slack alerts to notify your team instantly.' : optIdx === 1 ? 'Set a 15-minute SLA for lead response. Add a shared inbox or CRM alert so no lead sits waiting.' : 'Your response speed is strong. Maintain it and consider automating follow-up sequences for scale.',
-            '1': optIdx >= 2 ? 'Build a 5-touch follow-up cadence (email, call, LinkedIn, email, call) spread over 2 weeks. Use a CRM sequence or outreach tool to enforce it.' : optIdx === 1 ? 'Extend your follow-up to 5 touches minimum. Create a template sequence so reps can execute it in under 10 minutes per lead.' : 'Your follow-up discipline is solid. Track touch counts in your CRM to ensure consistency as you scale.',
-            '2': optIdx >= 2 ? 'Audit your lead pipeline weekly. Assign every lead to a rep within 24 hours. Set up a dashboard showing uncontacted leads so nothing falls through.' : optIdx === 1 ? 'Create a weekly lead audit. Assign ownership at lead capture time so every lead has an accountable rep.' : 'Your lead contact rate is healthy. Keep monitoring with a weekly uncontacted-leads report.',
-            '3': optIdx >= 2 ? 'Build a churn recovery campaign: reach out to churned customers with a win-back offer (discount, new feature, or check-in call). Start with the 10 most recent churns this month.' : optIdx === 1 ? 'Formalize your win-back process. Create a template email and call script for churned customers, and schedule outreach 30 days after churn.' : 'You have a churn recovery process in place. Measure its win-back rate quarterly to optimize.',
-            '4': optIdx >= 2 ? 'Start measuring training impact with post-training quizzes (Learning) and a 30-day behavior survey (Behavior). Track at least one revenue metric tied to each training program.' : optIdx === 1 ? 'Add a Learning-level quiz after each training session, and survey participants 30 days later to check if behavior changed.' : 'Your training measurement is comprehensive. Consider tying results to compensation or performance reviews for accountability.',
+            '0': optIdx >= 2 ? 'Implement automated lead routing so inbound leads are contacted within 5 minutes. Use tools like Calendly, HubSpot, or Slack alerts to notify your team instantly.' : optIdx === 1 ? 'Establish a 1-hour response SLA and hold the team accountable. Track response time daily.' : 'You\'re doing well. Protect this with a documented response SLA.',
+            '1': optIdx >= 2 ? 'Build a 5-touch follow-up cadence (email, call, LinkedIn, email, call) spread over 2 weeks. Use a CRM sequence or outreach tool to enforce it.' : optIdx === 1 ? 'Expand to 5 touches. Document the sequence in your CRM and track completion rates.' : 'Excellent. Document this process and measure adherence weekly.',
+            '2': optIdx >= 2 ? 'Audit your lead pipeline weekly. Assign every lead to a rep within 24 hours. Set up a dashboard showing uncontacted leads so nothing falls through.' : optIdx === 1 ? 'Improve your lead assignment process. Create a routing rule or weekly check-in.' : 'Keep monitoring. Track this metric monthly.',
+            '3': optIdx >= 2 ? 'Build a churn recovery campaign: reach out to churned customers with a win-back offer (discount, new feature, or check-in call). Start with the 10 most recent churned customers.' : optIdx === 1 ? 'Formalize your churn recovery. Create a template email or call script and assign ownership.' : 'As you scale, you\'ll need this. Plan it now.',
+            '4': optIdx >= 2 ? 'Start measuring training impact with post-training quizzes (Learning) and a 30-day behavior survey (Behavior). Track at least one revenue metric tied to each training session.' : optIdx === 1 ? 'Add Behavior and Results measurement. A 30-day follow-up survey is simple and powerful.' : 'Build a simple feedback loop. Track one metric per training.',
           };
           return { qIdx, question: q.question, answer, severity, priority, action: actions[qIdx] || '' };
         })
         .sort((a, b) => a.priority - b.priority)
     : [];
+
+  const validateForm = (): boolean => {
+    const errors: FormErrors = {};
+    if (!formData.name.trim()) errors.name = 'Name is required';
+    if (!formData.email.trim()) errors.email = 'Email is required';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) errors.email = 'Invalid email';
+    if (!formData.company.trim()) errors.company = 'Company is required';
+    if (!formData.phone.trim()) errors.phone = 'Phone is required';
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    setFormSubmitting(true);
+    try {
+      const response = await fetch('https://formspree.io/f/xpzvwqnj', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          company: formData.company,
+          phone: formData.phone,
+          message: `New audit request from ${formData.company}`,
+        }),
+      });
+
+      if (response.ok) {
+        setFormSuccess(true);
+        setFormData({ name: '', email: '', company: '', phone: '' });
+        setFormOpen(false);
+        setTimeout(() => setFormSuccess(false), 5000);
+      }
+    } catch (error) {
+      console.error('Form submission error:', error);
+    } finally {
+      setFormSubmitting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-navy-950 text-white antialiased">
@@ -265,9 +331,8 @@ export function Tremonix() {
           <nav className="hidden items-center gap-7 md:flex">
             <a href="#how" className="text-sm text-slate-300 transition-colors hover:text-white">How it works</a>
             <a href="#leaks" className="text-sm text-slate-300 transition-colors hover:text-white">Revenue leaks</a>
-            <a href="#stats" className="text-sm text-slate-300 transition-colors hover:text-white">Research</a>
             <a href="#faq" className="text-sm text-slate-300 transition-colors hover:text-white">FAQ</a>
-            <a href="#diagnostic" className="rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-navy-950 transition-colors hover:bg-emerald-400">Start diagnostic</a>
+            <button onClick={() => setFormOpen(true)} className="rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-navy-950 transition-colors hover:bg-emerald-400">Book audit</button>
           </nav>
         </div>
       </header>
@@ -280,22 +345,26 @@ export function Tremonix() {
           <div className="relative z-10 mx-auto grid max-w-7xl gap-12 px-4 py-24 sm:px-6 sm:py-32 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:px-8">
             <div>
               <p className="mb-6 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400">
-                <span className="inline-block h-px w-12 bg-emerald-400" /> Revenue Leak Diagnostic
+                <span className="inline-block h-px w-12 bg-emerald-400" /> Revenue Leak Audit
               </p>
               <h1 className="max-w-3xl text-4xl font-bold leading-tight tracking-tight sm:text-6xl">
-                Find the revenue you're losing <span className="text-emerald-400">before your competitors do.</span>
+                Your sales process is <span className="text-emerald-400">leaking revenue.</span> We'll show you where.
               </h1>
               <p className="mt-6 max-w-xl text-base leading-relaxed text-slate-300 sm:text-lg">
-                Research from InsideSales, Harvard Business Review, and Forbes shows that most businesses are losing significant revenue to slow response times, insufficient follow-up, and abandoned leads. Our diagnostic shows you exactly where.
+                Book a 15-minute call. We'll audit your response speed, follow-up discipline, and retention process. You'll get a detailed report showing exactly where revenue is being lost — and how to fix it.
               </p>
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                <a href="#diagnostic" className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-navy-950 transition-all hover:-translate-y-0.5 hover:bg-emerald-400">
-                  Start the free diagnostic <ArrowRight className="h-4 w-4" />
-                </a>
-                <a href="#stats" className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 px-5 py-3 text-sm font-semibold text-white transition-colors hover:border-emerald-400 hover:text-emerald-300">
-                  See the research
+                <button
+                  onClick={() => setFormOpen(true)}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-navy-950 transition-all hover:-translate-y-0.5 hover:shadow-lg"
+                >
+                  Book your $397 audit <ArrowRight className="h-4 w-4" />
+                </button>
+                <a href="#leaks" className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-white/40">
+                  See the leaks
                 </a>
               </div>
+              <p className="mt-4 text-xs text-slate-400">No credit card required. 15-minute call. Actionable report included.</p>
             </div>
 
             {/* Stats card */}
@@ -304,7 +373,7 @@ export function Tremonix() {
               <div className="relative rounded-3xl border border-white/15 bg-white/[0.07] p-6 shadow-2xl backdrop-blur-sm sm:p-8">
                 <div className="mb-8 flex items-center justify-between border-b border-white/10 pb-5">
                   <div>
-                    <p className="text-xs uppercase tracking-[0.18em] text-slate-400">The research says</p>
+                    <p className="text-xs uppercase tracking-[0.18em] text-slate-400">The research shows</p>
                     <p className="mt-1 text-lg font-semibold">Revenue is being lost</p>
                   </div>
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500 text-navy-950"><BarChart3 className="h-5 w-5" /></div>
@@ -324,10 +393,6 @@ export function Tremonix() {
                     </div>
                   ))}
                 </div>
-                <div className="mt-8 rounded-2xl bg-white/10 p-4">
-                  <p className="text-xs text-slate-400">Our approach</p>
-                  <p className="mt-1 text-sm leading-relaxed text-slate-200">We diagnose before we prescribe. No doctor prescribes medication without running tests first. We do the same for your revenue.</p>
-                </div>
               </div>
             </div>
           </div>
@@ -337,15 +402,15 @@ export function Tremonix() {
         <section id="how" className="bg-white py-24 text-navy-900">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mb-14 text-center">
-              <span className="mb-5 inline-flex rounded-full border border-navy-200 bg-navy-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-navy-900">How it works</span>
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Diagnose before you prescribe.</h2>
-              <p className="mx-auto mt-4 max-w-2xl leading-relaxed text-slate-600">No doctor prescribes medication without running tests first. We do the same for your revenue. Here's the exact process.</p>
+              <span className="mb-5 inline-flex rounded-full border border-navy-200 bg-navy-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-navy-900">The Process</span>
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">How the audit works.</h2>
+              <p className="mx-auto mt-4 max-w-2xl leading-relaxed text-slate-600">Three simple steps to identify and fix your revenue leaks.</p>
             </div>
 
             <div className="grid gap-6 md:grid-cols-3">
               {processSteps.map((step) => (
-                <div key={step.number} className="group rounded-2xl border border-slate-200 bg-softgray p-8 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-lg">
-                  <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl border border-navy-200 bg-navy-100 text-navy-900 transition-colors group-hover:bg-emerald-100 group-hover:text-emerald-700">
+                <div key={step.number} className="group rounded-2xl border border-slate-200 bg-softgray p-8 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-md">
+                  <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl border border-navy-200 bg-navy-100 text-navy-900 transition-colors group-hover:bg-emerald-100 group-hover:text-emerald-600">
                     <step.icon className="h-6 w-6" />
                   </div>
                   <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-600">{step.number}</p>
@@ -373,6 +438,15 @@ export function Tremonix() {
                   </div>
                 ))}
               </div>
+            </div>
+
+            <div className="mt-12 text-center">
+              <button
+                onClick={() => setFormOpen(true)}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-navy-950 transition-all hover:-translate-y-0.5 hover:shadow-lg"
+              >
+                Ready? Book your audit <ArrowRight className="h-4 w-4" />
+              </button>
             </div>
           </div>
         </section>
@@ -441,136 +515,11 @@ export function Tremonix() {
                 <div>
                   <p className="text-sm font-bold text-navy-900">About these statistics</p>
                   <p className="mt-1 text-sm leading-relaxed text-slate-600">
-                    These figures come from research published by InsideSales, Harvard Business Review, Forbes, and Velocify, compiled by sales performance platforms including SPOTIO and LeadResponse. Individual results vary by industry, company size, and sales process maturity. The diagnostic uses these benchmarks to estimate where your revenue may be leaking — not to guarantee specific dollar amounts.
+                    These figures come from research published by InsideSales, Harvard Business Review, Forbes, and Velocify, compiled by sales performance platforms including SPOTIO and LeadResponse. We cite sources for every stat so you can verify.
                   </p>
                 </div>
               </div>
             </div>
-          </div>
-        </section>
-
-        {/* Interactive diagnostic */}
-        <section id="diagnostic" className="bg-navy-950 py-24">
-          <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-            <div className="mb-14 text-center">
-              <span className="mb-5 inline-flex rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-emerald-400">Free diagnostic</span>
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Find your leaks now.</h2>
-              <p className="mx-auto mt-4 max-w-2xl leading-relaxed text-slate-300">Answer 5 questions about your sales process. Takes 3 minutes. No email required.</p>
-            </div>
-
-            {!quizStarted && !quizComplete && (
-              <div className="rounded-3xl border border-white/10 bg-white/[0.05] p-8 text-center sm:p-12">
-                <Target className="mx-auto h-16 w-16 text-emerald-400" />
-                <h3 className="mt-6 text-2xl font-bold">Ready to find your revenue leaks?</h3>
-                <p className="mt-3 text-sm leading-relaxed text-slate-300">You'll answer 5 quick questions about your sales process. We'll show you where revenue may be leaking based on research benchmarks.</p>
-                <button
-                  onClick={() => setQuizStarted(true)}
-                  className="mt-8 inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-navy-950 transition-all hover:-translate-y-0.5 hover:bg-emerald-400"
-                >
-                  Start the diagnostic <ArrowRight className="h-4 w-4" />
-                </button>
-              </div>
-            )}
-
-            {quizStarted && !quizComplete && (
-              <div className="rounded-3xl border border-white/10 bg-white/[0.05] p-8 sm:p-12">
-                <div className="mb-6">
-                  <div className="flex items-center justify-between text-xs text-slate-400">
-                    <span>Question {quizCurrent + 1} of {quizQuestions.length}</span>
-                    <span>{Math.round((quizCurrent / quizQuestions.length) * 100)}% complete</span>
-                  </div>
-                  <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
-                    <div className="h-full rounded-full bg-emerald-500 transition-all duration-500" style={{ width: `${(quizCurrent / quizQuestions.length) * 100}%` }} />
-                  </div>
-                </div>
-                <h3 className="text-xl font-bold tracking-tight">{quizQuestions[quizCurrent].question}</h3>
-                <div className="mt-6 space-y-3">
-                  {quizQuestions[quizCurrent].options.map((option, i) => (
-                    <button
-                      key={i}
-                      onClick={() => handleQuizAnswer(quizCurrent, option)}
-                      className="flex w-full items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-5 py-4 text-left text-sm font-medium text-slate-200 transition-all hover:border-emerald-400/40 hover:bg-emerald-500/10 hover:text-white"
-                    >
-                      <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-white/20 text-xs font-bold text-slate-400">
-                        {String.fromCharCode(65 + i)}
-                      </span>
-                      {option}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {quizComplete && (
-              <div className="rounded-3xl border border-white/10 bg-white/[0.05] p-8 text-center sm:p-12">
-                <CheckCircle2 className="mx-auto h-16 w-16 text-emerald-400" />
-                <h3 className="mt-6 text-2xl font-bold">Your diagnostic is complete</h3>
-                <p className="mt-3 text-sm leading-relaxed text-slate-300">Based on your answers, here's your revenue leak assessment with prioritized recommendations.</p>
-
-                <div className="mt-8 rounded-2xl bg-white/10 p-6">
-                  <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                    <div className="text-left">
-                      <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Leak score</p>
-                      <p className="mt-1 text-3xl font-bold text-white">{leakScore}<span className="text-lg text-slate-400">/100</span></p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Assessment</p>
-                      <p className={`mt-1 text-sm font-bold ${leakSeverityColor}`}>{leakSeverityLabel}</p>
-                    </div>
-                  </div>
-
-                  <div className="mt-4">
-                    <div className="h-2.5 w-full overflow-hidden rounded-full bg-white/10">
-                      <div
-                        className={`h-full rounded-full transition-all duration-1000 ${leakSeverity === 'critical' ? 'bg-rose-500' : leakSeverity === 'moderate' ? 'bg-amber-500' : 'bg-emerald-500'}`}
-                        style={{ width: `${leakScore}%` }}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-6 text-left">
-                  <p className="text-xs uppercase tracking-[0.18em] text-slate-400 mb-3">Prioritized recommendations</p>
-                  <div className="space-y-4">
-                    {recommendations.map((rec, i) => {
-                      const colors = { high: { border: 'border-rose-400/30', bg: 'bg-rose-500/10', text: 'text-rose-400', label: 'HIGH PRIORITY' }, medium: { border: 'border-amber-400/30', bg: 'bg-amber-500/10', text: 'text-amber-400', label: 'MEDIUM PRIORITY' }, low: { border: 'border-emerald-400/30', bg: 'bg-emerald-500/10', text: 'text-emerald-400', label: 'LOW PRIORITY' } };
-                      const c = colors[rec.severity as keyof typeof colors];
-                      return (
-                        <div key={rec.qIdx} className={`rounded-2xl border ${c.border} ${c.bg} p-5`}>
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="flex items-center gap-2">
-                              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 text-xs font-bold text-white">{i + 1}</span>
-                              <span className={`text-xs font-bold uppercase tracking-wider ${c.text}`}>{c.label}</span>
-                            </div>
-                          </div>
-                          <p className="mt-3 text-sm font-semibold text-slate-100">{rec.question}</p>
-                          <p className="mt-1 text-xs text-slate-400">Your answer: {rec.answer}</p>
-                          <div className="mt-3 flex items-start gap-2 border-t border-white/10 pt-3">
-                            <Zap className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-400" />
-                            <p className="text-sm leading-relaxed text-slate-200">{rec.action}</p>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div className="mt-8 rounded-2xl border border-amber-400/20 bg-amber-400/5 p-4">
-                  <p className="text-xs leading-relaxed text-slate-300">
-                    This assessment is based on research benchmarks from InsideSales, Harvard Business Review, Forbes, and Velocify. For a detailed revenue leak analysis with specific dollar figures and implementation support, book a consultation.
-                  </p>
-                </div>
-
-                <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-                  <a href="#contact" className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-navy-950 transition-colors hover:bg-emerald-400">
-                    Book a consultation <ArrowRight className="h-4 w-4" />
-                  </a>
-                  <button onClick={resetQuiz} className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 px-5 py-3 text-sm font-semibold text-white transition-colors hover:border-emerald-400 hover:text-emerald-300">
-                    Retake diagnostic
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
         </section>
 
@@ -603,23 +552,26 @@ export function Tremonix() {
           </div>
         </section>
 
-        {/* Contact */}
-        <section id="contact" className="relative overflow-hidden bg-navy-950 py-20 text-white">
+        {/* CTA Section */}
+        <section className="relative overflow-hidden bg-navy-950 py-20 text-white">
           <div className="absolute -left-40 bottom-0 h-96 w-96 rounded-full bg-emerald-500/10 blur-3xl" />
           <div className="relative z-10 mx-auto flex max-w-7xl flex-col gap-8 px-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-400">Start a conversation</p>
-              <h2 className="mt-3 max-w-xl text-3xl font-bold tracking-tight sm:text-4xl">Found your leaks? Let's fix them.</h2>
-              <p className="mt-4 max-w-xl leading-relaxed text-slate-300">Book a consultation to get a detailed revenue leak analysis with specific recommendations.</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-400">Find Your Revenue Leaks</p>
+              <h2 className="mt-3 max-w-xl text-3xl font-bold tracking-tight sm:text-4xl">Ready to recover lost revenue?</h2>
+              <p className="mt-4 max-w-xl leading-relaxed text-slate-300">Book a 15-minute audit call. We'll show you where your business is leaking revenue and give you a clear action plan.</p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
-              <a href="https://calendar.app.google.com/8otEDsChvouw51aaA" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-navy-950 transition-colors hover:bg-emerald-400">
-                <Calendar className="h-4 w-4" /> Book a call
-              </a>
-              <a href="tel:8508309910" className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 px-5 py-3 text-sm font-semibold text-white transition-colors hover:border-emerald-400 hover:text-emerald-300">
+              <button
+                onClick={() => setFormOpen(true)}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-navy-950 transition-all hover:-translate-y-0.5 hover:shadow-lg"
+              >
+                <Calendar className="h-4 w-4" /> Book your audit
+              </button>
+              <a href="tel:8508309910" className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-white/40">
                 <Phone className="h-4 w-4" /> 850-830-9910
               </a>
-              <a href="mailto:contact@tremonix.com" className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 px-5 py-3 text-sm font-semibold text-white transition-colors hover:border-emerald-400 hover:text-emerald-300">
+              <a href="mailto:contact@tremonix.com" className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-white/40">
                 <Mail className="h-4 w-4" /> contact@tremonix.com
               </a>
             </div>
@@ -627,14 +579,107 @@ export function Tremonix() {
         </section>
       </main>
 
+      {/* Audit Booking Modal */}
+      {formOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-2xl bg-navy-950 p-8 shadow-2xl border border-white/10">
+            <h3 className="text-2xl font-bold text-white">Book Your Audit</h3>
+            <p className="mt-2 text-sm text-slate-300">15-minute call + detailed leak report. $397.</p>
+
+            {formSuccess && (
+              <div className="mt-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 p-4">
+                <p className="text-sm text-emerald-300">✓ Thanks! We'll send you a calendar link and next steps shortly.</p>
+              </div>
+            )}
+
+            <form onSubmit={handleFormSubmit} className="mt-6 space-y-4">
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">Your name</label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2.5 text-white placeholder-slate-500 transition-colors hover:border-white/20 focus:border-emerald-500 focus:outline-none"
+                  placeholder="John Doe"
+                />
+                {formErrors.name && <p className="mt-1 text-xs text-rose-400">{formErrors.name}</p>}
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">Email</label>
+                <input
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2.5 text-white placeholder-slate-500 transition-colors hover:border-white/20 focus:border-emerald-500 focus:outline-none"
+                  placeholder="you@company.com"
+                />
+                {formErrors.email && <p className="mt-1 text-xs text-rose-400">{formErrors.email}</p>}
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">Company</label>
+                <input
+                  type="text"
+                  value={formData.company}
+                  onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2.5 text-white placeholder-slate-500 transition-colors hover:border-white/20 focus:border-emerald-500 focus:outline-none"
+                  placeholder="Acme Corp"
+                />
+                {formErrors.company && <p className="mt-1 text-xs text-rose-400">{formErrors.company}</p>}
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">Phone</label>
+                <input
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2.5 text-white placeholder-slate-500 transition-colors hover:border-white/20 focus:border-emerald-500 focus:outline-none"
+                  placeholder="(850) 830-9910"
+                />
+                {formErrors.phone && <p className="mt-1 text-xs text-rose-400">{formErrors.phone}</p>}
+              </div>
+
+              <button
+                type="submit"
+                disabled={formSubmitting}
+                className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-navy-950 transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-50"
+              >
+                {formSubmitting ? (
+                  <>
+                    <Loader className="h-4 w-4 animate-spin" />
+                    Booking...
+                  </>
+                ) : (
+                  <>
+                    <Calendar className="h-4 w-4" />
+                    Book Audit ($397)
+                  </>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setFormOpen(false)}
+                className="w-full rounded-xl border border-white/20 px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-white/40"
+              >
+                Cancel
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
       <footer className="bg-navy-950 px-4 py-8 text-slate-400 sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-7xl flex-col gap-6 text-xs">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p>&copy; {new Date().getFullYear()} Tremonix. Revenue leak diagnostics backed by published research.</p>
             <div className="flex gap-4">
               <a href="#how" className="hover:text-white">How it works</a>
+              <a href="#leaks" className="hover:text-white">Leaks</a>
+              <a href="#faq" className="hover:text-white">FAQ</a>
               <a href="#stats" className="hover:text-white">Research</a>
-              <a href="#contact" className="hover:text-white">Contact</a>
             </div>
           </div>
           <p className="text-xs text-slate-600">Statistics sourced from InsideSales, Harvard Business Review, Forbes, and Velocify research. Individual results vary by industry and sales process.</p>
