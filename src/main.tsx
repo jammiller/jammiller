@@ -13,18 +13,16 @@ const isPasswordRecovery = new URLSearchParams(window.location.hash.slice(1)).ge
   || new URLSearchParams(window.location.search).get('type') === 'recovery';
 const pathname = window.location.pathname.replace(/\/$/, '') || '/';
 const isForemanRoute = pathname === '/foreman';
-const isCourseBuilderRoute = pathname === '/course-builder';
+const courseBuilderView = pathname === '/course-builder/assessments' ? 'assessments'
+  : pathname === '/course-builder/analytics' ? 'analytics'
+    : pathname === '/course-builder' ? 'builder'
+      : null;
 const isLearningIntelligenceRoute = pathname === '/learning-intelligence' || pathname.startsWith('/learning-intelligence/');
-const learningTool = pathname === '/learning-intelligence/lvi' ? 'lvi'
-  : pathname === '/learning-intelligence/course-design' ? 'course-design'
-    : pathname === '/learning-intelligence/assessment' ? 'assessment'
-      : pathname === '/learning-intelligence/accessibility' ? 'accessibility'
-        : pathname === '/learning-intelligence/analytics' ? 'analytics'
-          : 'overview';
+const learningTool = pathname === '/learning-intelligence/lvi' ? 'lvi' : 'overview';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    {isForemanRoute ? <ForemanPortal /> : isCourseBuilderRoute ? <PulseOS initialView="builder" /> : isLearningIntelligenceRoute ? <LearningIntelligence initialTool={learningTool} /> : isPulseOS || isPasswordRecovery ? <WorkforceMode initialView={isPasswordRecovery ? 'ojt' : 'library'} /> : <App />}
+    {isForemanRoute ? <ForemanPortal /> : courseBuilderView ? <PulseOS initialView={courseBuilderView} /> : isLearningIntelligenceRoute ? <LearningIntelligence initialTool={learningTool} /> : isPulseOS || isPasswordRecovery ? <WorkforceMode initialView={isPasswordRecovery ? 'ojt' : 'library'} /> : <App />}
   </StrictMode>
 );
 

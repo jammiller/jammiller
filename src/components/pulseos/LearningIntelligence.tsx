@@ -11,12 +11,12 @@ type Profile = {
   assessment: string;
 };
 
-const tools: { key: LearningTool; label: string; description: string; icon: typeof Brain }[] = [
-  { key: 'lvi', label: 'Learner Variability Intelligence', description: 'Design for learner strengths, needs, and access.', icon: Brain },
-  { key: 'course-design', label: 'Course Design Copilot', description: 'Connect learner profiles to UbD course design.', icon: BookOpenCheck },
-  { key: 'assessment', label: 'Assessment Architect', description: 'Plan aligned, flexible demonstrations of learning.', icon: ClipboardList },
-  { key: 'accessibility', label: 'Accessibility Planner', description: 'Remove barriers before learning begins.', icon: Accessibility },
-  { key: 'analytics', label: 'Learning Analytics', description: 'Monitor engagement, progress, and outcomes.', icon: BarChart3 },
+const tools: { label: string; description: string; href: string; icon: typeof Brain }[] = [
+  { label: 'Learner Variability Intelligence', description: 'Build an LVI profile and design recommendations.', href: '/learning-intelligence/lvi', icon: Brain },
+  { label: 'Course Design Copilot', description: 'Open the working UbD course builder.', href: '/course-builder', icon: BookOpenCheck },
+  { label: 'Assessment Architect', description: 'Open PulseOS assessments for the current course.', href: '/course-builder/assessments', icon: ClipboardList },
+  { label: 'Accessibility Planner', description: 'Use the guided LVI intake to remove barriers.', href: '/learning-intelligence/lvi', icon: Accessibility },
+  { label: 'Learning Analytics', description: 'Open learning analytics for the current course.', href: '/course-builder/analytics', icon: BarChart3 },
 ];
 
 const initialProfile: Profile = {
@@ -56,12 +56,11 @@ export function LearningIntelligence({ initialTool = 'overview' }: { initialTool
     </header>
 
     <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-      {tools.map(({ key, label, description, icon: Icon }) => <button key={key} onClick={() => navigate(key)} className={`rounded-2xl border p-5 text-left transition ${tool === key ? 'border-gold-400 bg-gold-50 shadow-sm' : 'border-slate-200 bg-white hover:border-gold-300'}`}><Icon className="h-5 w-5 text-gold-700" /><p className="mt-4 text-sm font-bold text-navy-900">{label}</p><p className="mt-2 text-xs leading-5 text-slate-600">{description}</p></button>)}
+      {tools.map(({ label, description, href, icon: Icon }) => <a key={label} href={href} className={`rounded-2xl border p-5 text-left transition ${href === '/learning-intelligence/lvi' && tool === 'lvi' ? 'border-gold-400 bg-gold-50 shadow-sm' : 'border-slate-200 bg-white hover:border-gold-300'}`}><Icon className="h-5 w-5 text-gold-700" /><p className="mt-4 text-sm font-bold text-navy-900">{label}</p><p className="mt-2 text-xs leading-5 text-slate-600">{description}</p><span className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-navy-900">Open <ArrowRight className="h-3.5 w-3.5" /></span></a>)}
     </section>
 
     {tool === 'overview' && <Overview onOpenLvi={() => navigate('lvi')} />}
     {tool === 'lvi' && <LviWorkspace profile={profile} onChange={setProfile} recommendations={recommendations} />}
-    {tool !== 'overview' && tool !== 'lvi' && <ComingSoon tool={tools.find(item => item.key === tool)!} onOpenLvi={() => navigate('lvi')} />}
   </div>;
 }
 
@@ -90,7 +89,7 @@ function LviWorkspace({ profile, onChange, recommendations }: { profile: Profile
     {showIntake && <LviIntake onComplete={(nextProfile) => { onChange(nextProfile); setShowIntake(false); }} />}
     <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
       <article className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><div className="flex items-start justify-between gap-4"><div className="flex items-start gap-3"><div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gold-50 text-gold-700"><Brain className="h-5 w-5" /></div><div><p className="text-xs font-bold uppercase tracking-wider text-gold-700">Learner Variability Intelligence</p><h2 className="mt-1 text-2xl font-bold text-navy-900">Learner Variability Profile</h2><p className="mt-2 text-sm leading-6 text-slate-600">Use observable learning preferences and support requirements—not diagnoses—to guide design choices.</p></div></div><button onClick={() => setShowIntake(!showIntake)} className="shrink-0 rounded-xl border border-slate-300 px-3 py-2 text-xs font-bold text-navy-900 hover:bg-slate-50">{showIntake ? 'Hide intake' : 'Redo guided intake'}</button></div><div className="mt-7 grid gap-5">{fields.map(({ key, label, hint }) => <label key={key} className="block"><span className="text-sm font-bold text-navy-900">{label}</span><span className="mt-1 block text-xs text-slate-500">{hint}</span><textarea value={profile[key]} onChange={event => onChange({ ...profile, [key]: event.target.value })} rows={2} className="field mt-2 resize-y" /></label>)}</div></article>
-      <aside className="space-y-6"><article className="rounded-2xl bg-navy-950 p-6 text-white"><Sparkles className="h-5 w-5 text-gold-400" /><p className="mt-4 text-xs font-bold uppercase tracking-wider text-gold-300">Course design recommendations</p><h2 className="mt-2 text-xl font-bold">Design choices based on this profile</h2><ul className="mt-5 space-y-4">{recommendations.map(recommendation => <li key={recommendation} className="flex gap-3 text-sm leading-6 text-slate-200"><CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-gold-400" />{recommendation}</li>)}</ul></article><article className="rounded-2xl border border-gold-200 bg-gold-50 p-6"><BookOpenCheck className="h-5 w-5 text-gold-700" /><p className="mt-3 text-sm font-bold text-navy-900">Use this in UbD Course Design</p><p className="mt-2 text-sm leading-6 text-slate-700">Bring the profile into Stage 3 learning experiences, then check that Stage 2 assessments allow equitable demonstrations of understanding.</p></article></aside>
+      <aside className="space-y-6"><article className="rounded-2xl bg-navy-950 p-6 text-white"><Sparkles className="h-5 w-5 text-gold-400" /><p className="mt-4 text-xs font-bold uppercase tracking-wider text-gold-300">Course design recommendations</p><h2 className="mt-2 text-xl font-bold">Design choices based on this profile</h2><ul className="mt-5 space-y-4">{recommendations.map(recommendation => <li key={recommendation} className="flex gap-3 text-sm leading-6 text-slate-200"><CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-gold-400" />{recommendation}</li>)}</ul></article><article className="rounded-2xl border border-gold-200 bg-gold-50 p-6"><BookOpenCheck className="h-5 w-5 text-gold-700" /><p className="mt-3 text-sm font-bold text-navy-900">Ready to build the course?</p><p className="mt-2 text-sm leading-6 text-slate-700">Open the UbD course builder and use this profile in Stage 3 learning experiences and Stage 2 assessments.</p><a href="/course-builder" className="mt-4 inline-flex items-center gap-2 rounded-xl bg-navy-900 px-4 py-2.5 text-sm font-bold text-white hover:bg-navy-800">Open course builder <ArrowRight className="h-4 w-4" /></a></article></aside>
     </div>
   </section>;
 }
@@ -108,9 +107,4 @@ function LviIntake({ onComplete }: { onComplete: (profile: Profile) => void }) {
   const [answers, setAnswers] = useState<Partial<Profile>>({});
   const current = questions[step - 1];
   return <article className="rounded-2xl border-2 border-gold-400 bg-gold-50 p-6 sm:p-8"><div className="flex items-start gap-3"><div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-navy-900 text-gold-400"><Compass className="h-5 w-5" /></div><div><p className="text-xs font-bold uppercase tracking-wider text-gold-700">Guided LVI intake</p><h2 className="mt-1 text-xl font-bold text-navy-900">Answer five plain-language questions</h2><p className="mt-1 text-sm text-slate-600">This is a course-design intake, not a diagnostic or assessment of an individual learner.</p></div></div>{step === 0 && <label className="mt-6 block"><span className="text-sm font-bold text-navy-900">Who is this course for?</span><input value={audience} onChange={event => setAudience(event.target.value)} className="field mt-2" placeholder="For example: first-year college students" /><button onClick={() => setStep(1)} disabled={!audience.trim()} className="button mt-4">Start questions <ArrowRight className="h-4 w-4" /></button></label>}{step > 0 && <div className="mt-6"><p className="text-xs font-bold uppercase tracking-wider text-gold-700">Question {step} of {questions.length}</p><h3 className="mt-2 text-lg font-bold text-navy-900">{current.question}</h3><div className="mt-4 grid gap-3">{current.options.map(option => <button key={option} onClick={() => { const nextAnswers = { ...answers, [current.key]: option }; setAnswers(nextAnswers); if (step === questions.length) onComplete({ ...initialProfile, audience, ...nextAnswers }); else setStep(step + 1); }} className="rounded-xl border border-slate-300 bg-white p-4 text-left text-sm font-semibold text-navy-900 hover:border-gold-400 hover:bg-gold-50">{option}</button>)}</div><button onClick={() => setStep(step - 1)} className="mt-4 text-sm font-bold text-slate-600 hover:text-navy-900">Back</button></div>}</article>;
-}
-
-function ComingSoon({ tool, onOpenLvi }: { tool: { label: string; description: string; icon: typeof Brain }; onOpenLvi: () => void }) {
-  const Icon = tool.icon;
-  return <section className="rounded-2xl border border-slate-200 bg-white p-8 text-center sm:p-12"><div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-gold-50 text-gold-700"><Icon className="h-6 w-6" /></div><h2 className="mt-5 text-2xl font-bold text-navy-900">{tool.label}</h2><p className="mx-auto mt-3 max-w-lg text-sm leading-6 text-slate-600">{tool.description} This MVP establishes the section and navigation; Learner Variability Intelligence is the first working workspace.</p><button onClick={onOpenLvi} className="mt-6 inline-flex items-center gap-2 rounded-xl bg-navy-900 px-4 py-2.5 text-sm font-bold text-white hover:bg-navy-800">Open Learner Variability Intelligence <ArrowRight className="h-4 w-4" /></button></section>;
 }
