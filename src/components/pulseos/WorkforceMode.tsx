@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Award, CheckCircle2, ClipboardCheck, FileCheck2, HardHat, Layers3, ShieldCheck, Users, Wrench, Clock3 } from 'lucide-react';
+import { Award, CheckCircle2, ClipboardCheck, HardHat, Layers3, ShieldCheck, Users, Wrench, Clock3 } from 'lucide-react';
 import { OJTCompliance } from './OJTCompliance';
 import { competencies, roles, workers, type CompetencyDomain } from '../../lib/competency-foundation';
 
@@ -26,7 +26,7 @@ export function WorkforceMode({ initialView = 'library' }: { initialView?: Workf
           <div className="inline-flex items-center gap-2 rounded-full border border-gold-500/30 bg-gold-500/10 px-3 py-1 text-xs font-bold text-gold-300"><HardHat className="h-3.5 w-3.5" /> Competency-First Workforce OS</div>
           <h1 className="mt-4 text-3xl font-bold leading-tight sm:text-5xl">Readiness is proven by evidence, not course completion.</h1>
           <p className="mt-4 text-sm leading-6 text-slate-300 sm:text-base">Industry → Occupation → Role → Competency → Task. Build reusable competency requirements, verify them in the field, and see the workforce gaps that affect delivery.</p>
-          <div className="mt-6 flex flex-wrap gap-3"><a href="/course-builder" className="rounded-xl bg-gold-500 px-4 py-2.5 text-sm font-bold text-navy-950 hover:bg-gold-400">Build a course</a><a href="/pulseos" className="rounded-xl border border-white/20 bg-white/5 px-4 py-2.5 text-sm font-bold text-white hover:bg-white/10">Explore PulseOS learning tools</a></div>
+          <div className="mt-6 flex flex-wrap gap-3"><a href="/course-builder" className="rounded-xl bg-gold-500 px-4 py-2.5 text-sm font-bold text-navy-950 hover:bg-gold-400">Develop Courses with DATAPULSE SOCIAL</a><a href="/learning-intelligence" className="rounded-xl border border-white/20 bg-white/5 px-4 py-2.5 text-sm font-bold text-white hover:bg-white/10">Explore PulseOS Tools</a></div>
           <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {[
               ['OSHA-aligned qualification', 'Competent-person and training requirements translated into practical work requirements.'],
