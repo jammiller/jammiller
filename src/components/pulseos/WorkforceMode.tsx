@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Award, CheckCircle2, ClipboardCheck, FileCheck2, HardHat, Layers3, ShieldCheck, Users, Wrench, Clock3 } from 'lucide-react';
+import { Award, CheckCircle2, ClipboardCheck, HardHat, Layers3, ShieldCheck, Users, Wrench, Clock3 } from 'lucide-react';
 import { OJTCompliance } from './OJTCompliance';
 import { competencies, roles, workers, type CompetencyDomain } from '../../lib/competency-foundation';
 
@@ -26,7 +26,7 @@ export function WorkforceMode({ initialView = 'library' }: { initialView?: Workf
           <div className="inline-flex items-center gap-2 rounded-full border border-gold-500/30 bg-gold-500/10 px-3 py-1 text-xs font-bold text-gold-300"><HardHat className="h-3.5 w-3.5" /> Competency-First Workforce OS</div>
           <h1 className="mt-4 text-3xl font-bold leading-tight sm:text-5xl">Readiness is proven by evidence, not course completion.</h1>
           <p className="mt-4 text-sm leading-6 text-slate-300 sm:text-base">Industry → Occupation → Role → Competency → Task. Build reusable competency requirements, verify them in the field, and see the workforce gaps that affect delivery.</p>
-          <div className="mt-6 flex flex-wrap gap-3"><a href="/course-builder" className="rounded-xl bg-gold-500 px-4 py-2.5 text-sm font-bold text-navy-950 hover:bg-gold-400">Build a course</a><a href="/pulseos" className="rounded-xl border border-white/20 bg-white/5 px-4 py-2.5 text-sm font-bold text-white hover:bg-white/10">Explore PulseOS learning tools</a></div>
+          <div className="mt-6 flex flex-wrap gap-3"><a href="/" className="rounded-xl border border-white/20 bg-white/5 px-4 py-2.5 text-sm font-bold text-white hover:bg-white/10">Workforce Intelligence</a></div>
           <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {[
               ['OSHA-aligned qualification', 'Competent-person and training requirements translated into practical work requirements.'],
@@ -75,13 +75,13 @@ export function WorkforceMode({ initialView = 'library' }: { initialView?: Workf
             {(['All', ...domains] as const).map(item => <button key={item} onClick={() => setDomain(item)} className={`rounded-full px-3 py-1.5 text-xs font-bold ${domain === item ? 'bg-gold-500 text-navy-950' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>{item}</button>)}
           </div>
           <div className="mt-5 space-y-2">
-            {visible.map(item => <button key={item.id} onClick={() => setSelectedId(item.id)} className={`w-full rounded-xl border p-4 text-left transition ${selected.id === item.id ? 'border-gold-500 bg-gold-50' : 'border-slate-200 bg-white hover:border-slate-300'}`}><p className="text-sm font-bold text-navy-900">{item.name}</p><p className="text-xs text-slate-500">{item.domain}</p></button>)}
+            {visible.map(item => <button key={item.id} onClick={() => setSelectedId(item.id)} className={`w-full rounded-xl border p-4 text-left transition ${selected.id === item.id ? 'border-gold-500 bg-gold-50' : 'border-slate-200 bg-white hover:border-slate-300'}`}><p className="text-sm font-bold text-navy-900">{item.title}</p><p className="text-xs text-slate-500">{item.domain}</p></button>)}
           </div>
         </aside>
         <CompetencyDetail />
       </section>}
 
-      {view === 'roles' && <section className="grid gap-4 lg:grid-cols-3">{roles.map(role => <article key={role.id} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><p className="text-xs font-bold uppercase tracking-wider text-gold-700">{role.title}</p><p className="mt-3 text-sm font-bold text-navy-900">{role.description}</p><div className="mt-4 flex flex-wrap gap-2">{role.competencies.slice(0, 3).map(c => <span key={c} className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700">{competencies.find(comp => comp.id === c)?.name}</span>)}</div></article>)}</section>}
+      {view === 'roles' && <section className="grid gap-4 lg:grid-cols-3">{roles.map(role => <article key={role.id} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><p className="text-xs font-bold uppercase tracking-wider text-gold-700">{role.title}</p><p className="mt-3 text-sm font-bold text-navy-900">{role.occupation}</p><div className="mt-4 flex flex-wrap gap-2">{role.requirements.slice(0, 3).map(({ competencyId }) => <span key={competencyId} className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700">{competencies.find(comp => comp.id === competencyId)?.title}</span>)}</div></article>)}</section>}
 
       {view === 'ojt' && <OJTCompliance />}
 
@@ -91,9 +91,9 @@ export function WorkforceMode({ initialView = 'library' }: { initialView?: Workf
 
   function CompetencyDetail() {
     const dimensions = [
-      ['Knowledge', selected.knowledge], ['Skills', selected.skills], ['Experience', selected.experience], ['Behaviors', selected.behaviors], ['Tasks', selected.tasks], ['Accepted evidence', selected.acceptedEvidence],
+      ['Knowledge', selected.knowledge], ['Skills', selected.skills], ['Experience', selected.experience], ['Behaviors', selected.behaviors], ['Tasks', selected.tasks], ['Accepted evidence', selected.evidence],
     ];
-    return <article className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-xs font-bold uppercase tracking-wider text-gold-700">{selected.domain}</p><h2 className="mt-2 text-2xl font-bold text-navy-900">{selected.name}</h2></div><span className="rounded-full bg-gold-50 px-3 py-1 text-xs font-bold text-gold-700">{selected.level}</span></div><p className="mt-4 text-sm leading-6 text-slate-700">{selected.description}</p><div className="mt-8 space-y-6">{dimensions.map(([label, content]) => <div key={label}><p className="text-xs font-bold uppercase tracking-wider text-slate-500">{label}</p><p className="mt-2 text-sm leading-6 text-slate-700">{content}</p></div>)}</div></article>;
+    return <article className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-xs font-bold uppercase tracking-wider text-gold-700">{selected.domain}</p><h2 className="mt-2 text-2xl font-bold text-navy-900">{selected.title}</h2></div><span className="rounded-full bg-gold-50 px-3 py-1 text-xs font-bold text-gold-700">Level {selected.proficiencyLevel}</span></div><p className="mt-4 text-sm leading-6 text-slate-700">{selected.description}</p><div className="mt-8 space-y-6">{dimensions.map(([label, content]) => <div key={label}><p className="text-xs font-bold uppercase tracking-wider text-slate-500">{label}</p><ul className="mt-2 space-y-1 text-sm leading-6 text-slate-700">{content.map(item => <li key={item}>• {item}</li>)}</ul></div>)}</div></article>;
   }
 }
 
