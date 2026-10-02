@@ -55,6 +55,15 @@
           "value": "public, max-age=31536000, immutable"
         }
       ]
+    },
+    {
+      "source": "/articles/:path*",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
     }
   ],
   "redirects": [
@@ -68,6 +77,16 @@
       ],
       "destination": "https://tremonix.com/:path*",
       "statusCode": 301
+    },
+    {
+      "source": "/articles",
+      "destination": "/",
+      "statusCode": 308
+    },
+    {
+      "source": "/articles/:path*",
+      "destination": "/",
+      "statusCode": 308
     }
   ]
 }
