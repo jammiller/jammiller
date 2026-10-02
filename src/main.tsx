@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { WorkforceMode } from './components/pulseos/WorkforceMode';
+import { PulseOS } from './components/PulseOS';
 import { LearningIntelligence } from './components/pulseos/LearningIntelligence';
 import { ForemanPortal } from './components/pulseos/ForemanPortal';
 import App from './App.tsx';
@@ -12,6 +13,7 @@ const isPasswordRecovery = new URLSearchParams(window.location.hash.slice(1)).ge
   || new URLSearchParams(window.location.search).get('type') === 'recovery';
 const pathname = window.location.pathname.replace(/\/$/, '') || '/';
 const isForemanRoute = pathname === '/foreman';
+const isCourseBuilderRoute = pathname === '/course-builder';
 const isLearningIntelligenceRoute = pathname === '/learning-intelligence' || pathname.startsWith('/learning-intelligence/');
 const learningTool = pathname === '/learning-intelligence/lvi' ? 'lvi'
   : pathname === '/learning-intelligence/course-design' ? 'course-design'
@@ -22,7 +24,7 @@ const learningTool = pathname === '/learning-intelligence/lvi' ? 'lvi'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    {isForemanRoute ? <ForemanPortal /> : isLearningIntelligenceRoute ? <LearningIntelligence initialTool={learningTool} /> : isPulseOS || isPasswordRecovery ? <WorkforceMode initialView={isPasswordRecovery ? 'ojt' : 'library'} /> : <App />}
+    {isForemanRoute ? <ForemanPortal /> : isCourseBuilderRoute ? <PulseOS initialView="builder" /> : isLearningIntelligenceRoute ? <LearningIntelligence initialTool={learningTool} /> : isPulseOS || isPasswordRecovery ? <WorkforceMode initialView={isPasswordRecovery ? 'ojt' : 'library'} /> : <App />}
   </StrictMode>
 );
 
