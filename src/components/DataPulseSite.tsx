@@ -379,6 +379,10 @@ export function DataPulseSite() {
                   <p className="mt-3 max-w-md text-sm leading-relaxed text-slate-600">Build, deliver, and assess competency-driven units with the UbD-aligned learning platform — unit builder, assessment engine, and analytics dashboard in one place.</p>
                   <span className="mt-7 inline-block text-sm font-semibold text-navy-900">Open Pulse OS</span>
                 </a>
+                <div className="mt-5 flex flex-wrap gap-3 border-t border-slate-200 pt-5">
+                  <a href="https://pulseosplatform.com/course-builder" className="rounded-xl bg-navy-900 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-navy-800">Build a course</a>
+                  <a href="https://pulseosplatform.com/learning-intelligence/lvi" className="rounded-xl border border-gold-400 bg-gold-50 px-4 py-2.5 text-sm font-bold text-navy-900 transition hover:bg-gold-100">Design for neurodivergent learners</a>
+                </div>
               </div>
             </div>
           </div>

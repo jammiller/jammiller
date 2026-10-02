@@ -18,8 +18,8 @@ import { WorkforceMode } from './pulseos/WorkforceMode';
 
 type View = 'dashboard' | 'builder' | 'assessments' | 'analytics' | 'workforce';
 
-export function PulseOS() {
-  const [view, setView] = useState<View>('workforce');
+export function PulseOS({ initialView = 'workforce' }: { initialView?: View }) {
+  const [view, setView] = useState<View>(initialView);
   const [selectedUnitId, setSelectedUnitId] = useState<string | null>(null);
   const {
     programs, courses, units, lessons, assessments, submissions,

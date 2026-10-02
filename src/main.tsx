@@ -1,6 +1,8 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { WorkforceMode } from './components/pulseos/WorkforceMode';
+import { PulseOS } from './components/PulseOS';
+import { LearningIntelligence } from './components/pulseos/LearningIntelligence';
 import { ForemanPortal } from './components/pulseos/ForemanPortal';
 import App from './App.tsx';
 import './index.css';
@@ -9,11 +11,18 @@ const hostname = window.location.hostname.toLowerCase();
 const isPulseOS = hostname === 'pulseosplatform.com' || hostname === 'www.pulseosplatform.com' || hostname.startsWith('pulse-os-') || hostname === 'pulse-os-datapulse-social.vercel.app';
 const isPasswordRecovery = new URLSearchParams(window.location.hash.slice(1)).get('type') === 'recovery'
   || new URLSearchParams(window.location.search).get('type') === 'recovery';
-const isForemanRoute = window.location.pathname.replace(/\/$/, '') === '/foreman';
+const pathname = window.location.pathname.replace(/\/$/, '') || '/';
+const isForemanRoute = pathname === '/foreman';
+const courseBuilderView = pathname === '/course-builder/assessments' ? 'assessments'
+  : pathname === '/course-builder/analytics' ? 'analytics'
+    : pathname === '/course-builder' ? 'builder'
+      : null;
+const isLearningIntelligenceRoute = pathname === '/learning-intelligence' || pathname.startsWith('/learning-intelligence/');
+const learningTool = pathname === '/learning-intelligence/lvi' ? 'lvi' : 'overview';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    {isForemanRoute ? <ForemanPortal /> : isPulseOS || isPasswordRecovery ? <WorkforceMode initialView={isPasswordRecovery ? 'ojt' : 'library'} /> : <App />}
+    {isForemanRoute ? <ForemanPortal /> : courseBuilderView ? <PulseOS initialView={courseBuilderView} /> : isLearningIntelligenceRoute ? <LearningIntelligence initialTool={learningTool} /> : isPulseOS || isPasswordRecovery ? <WorkforceMode initialView={isPasswordRecovery ? 'ojt' : 'library'} /> : <App />}
   </StrictMode>
 );
 

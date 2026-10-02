@@ -18,6 +18,7 @@ import type {
   Program, Course, UbDUnit, Lesson, Stage1, Stage2, Stage3,
 } from '../../lib/pulseos-types';
 import { emptyStage1, emptyStage2, emptyStage3, ubdCompleteness } from '../../lib/pulseos-types';
+import { LviDesignCompanion } from './LviDesignCompanion';
 
 interface Props {
   units: UbDUnit[];
@@ -246,14 +247,17 @@ export function UnitBuilder({
           ))}
         </div>
 
-        {/* Stage content */}
-        <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-7">
-          <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-slate-50 opacity-50" />
-          <div className="relative">
-            {stageTab === 1 && <Stage1Editor unit={selectedUnit} onSave={saveUnit} />}
-            {stageTab === 2 && <Stage2Editor unit={selectedUnit} onSave={saveUnit} />}
-            {stageTab === 3 && <Stage3Editor unit={selectedUnit} onSave={saveUnit} />}
+        {/* Stage content with persistent learner-variability guidance */}
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_19rem]">
+          <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-7">
+            <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-slate-50 opacity-50" />
+            <div className="relative">
+              {stageTab === 1 && <Stage1Editor unit={selectedUnit} onSave={saveUnit} />}
+              {stageTab === 2 && <Stage2Editor unit={selectedUnit} onSave={saveUnit} />}
+              {stageTab === 3 && <Stage3Editor unit={selectedUnit} onSave={saveUnit} />}
+            </div>
           </div>
+          <LviDesignCompanion stage={stageTab} />
         </div>
 
         {/* Lessons with drag-and-drop sequencing */}
