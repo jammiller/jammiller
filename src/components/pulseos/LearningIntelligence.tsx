@@ -51,7 +51,7 @@ export function LearningIntelligence({ initialTool = 'overview' }: { initialTool
         <div className="flex flex-wrap items-center gap-3 text-xs font-bold uppercase tracking-wider text-gold-300"><span>PulseOS</span><span className="text-white/30">/</span><span>Learning Intelligence</span></div>
         <h1 className="mt-4 text-3xl font-bold leading-tight sm:text-5xl">Design learning around the people who will experience it.</h1>
         <p className="mt-4 max-w-3xl text-sm leading-6 text-slate-300 sm:text-base">Learning Intelligence turns learner context into practical course, assessment, and accessibility decisions—without requiring diagnostic labels or machine learning to get started.</p>
-        <div className="mt-6 flex flex-wrap gap-3"><a href="/" className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm font-bold text-white hover:bg-white/10"><UsersRound className="h-4 w-4" /> Workforce Intelligence</a><button onClick={() => navigate('lvi')} className="inline-flex items-center gap-2 rounded-xl bg-gold-500 px-4 py-2.5 text-sm font-bold text-navy-950 hover:bg-gold-400"><Brain className="h-4 w-4" /> Open LVI</button></div>
+        <div className="mt-6 flex flex-wrap gap-3"><a href="/learning-intelligence" className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm font-bold text-white hover:bg-white/10"><UsersRound className="h-4 w-4" /> Explore PulseOS Tools</a><button onClick={() => navigate('lvi')} className="inline-flex items-center gap-2 rounded-xl bg-gold-500 px-4 py-2.5 text-sm font-bold text-navy-950 hover:bg-gold-400"><Brain className="h-4 w-4" /> Open LVI</button></div>
       </div>
     </header>
 

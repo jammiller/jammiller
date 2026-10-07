@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import {
-  BookOpen, ClipboardList, BarChart3, Plus, Layers,
+  BookOpen, ClipboardList, BarChart3, Plus,
   ChevronRight, FileText, Target, CheckCircle2, Clock,
-  TrendingUp, Award, ListChecks, Zap, Brain, Calendar, Phone, Check,
-  Sparkles, ArrowRight, Activity, Users, GraduationCap,
-  CircleDot, LayoutGrid, FolderTree, HardHat,
+  TrendingUp, Award, ListChecks, Zap, Calendar, Phone, Check,
+  Sparkles, ArrowRight, GraduationCap,
+  LayoutGrid, FolderTree, HardHat,
 } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import type {
@@ -18,7 +18,8 @@ import { WorkforceMode } from './pulseos/WorkforceMode';
 
 type View = 'dashboard' | 'builder' | 'assessments' | 'analytics' | 'workforce';
 
-export function PulseOS({ initialView = 'workforce' }: { initialView?: View }) {
+export function PulseOS({ initialView = 'workforce', brand = 'pulseos' }: { initialView?: View; brand?: 'pulseos' | 'datapulse' }) {
+  const isDataPulseStudio = brand === 'datapulse';
   const [view, setView] = useState<View>(initialView);
   const [selectedUnitId, setSelectedUnitId] = useState<string | null>(null);
   const {
@@ -72,8 +73,8 @@ export function PulseOS({ initialView = 'workforce' }: { initialView?: View }) {
               <Zap className="h-4 w-4" />
             </span>
             <div className="flex flex-col">
-              <span className="text-sm font-bold tracking-wide leading-none">PulseOS</span>
-              <span className="mt-0.5 text-[10px] font-medium uppercase tracking-wider text-gold-400/80">UbD Platform</span>
+              <span className="text-sm font-bold tracking-wide leading-none">{isDataPulseStudio ? 'DATAPULSE SOCIAL' : 'PulseOS'}</span>
+              <span className="mt-0.5 text-[10px] font-medium uppercase tracking-wider text-gold-400/80">{isDataPulseStudio ? 'Course Studio · Powered by PulseOS' : 'UbD Platform'}</span>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -170,7 +171,7 @@ export function PulseOS({ initialView = 'workforce' }: { initialView?: View }) {
 
       <footer className="border-t border-slate-200 bg-white py-6">
         <div className="mx-auto flex max-w-7xl flex-col items-center gap-3 px-4 sm:flex-row sm:justify-between sm:px-6">
-          <p className="text-xs text-slate-500">PulseOS — UbD-driven learning operations. Built for real instructional design.</p>
+          <p className="text-xs text-slate-500">{isDataPulseStudio ? 'DATAPULSE SOCIAL Course Studio — powered by PulseOS learning operations.' : 'PulseOS — UbD-driven learning operations. Built for real instructional design.'}</p>
           <div className="flex gap-3">
             <a href="https://calendar.app.google/8otEDsChvouw51aaA" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-lg bg-gold-500 px-3 py-1.5 text-xs font-semibold text-navy-950 transition-colors hover:bg-gold-400">
               <Calendar className="h-3.5 w-3.5" /> Book a Demo
