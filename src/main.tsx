@@ -1,4 +1,5 @@
 import { StrictMode } from 'react';
+import { PulseOSAuthProvider } from './components/pulseos/usePulseOSAuth';
 import { createRoot } from 'react-dom/client';
 import { WorkforceMode } from './components/pulseos/WorkforceMode';
 import { PulseOS } from './components/PulseOS';
@@ -15,14 +16,16 @@ const pathname = window.location.pathname.replace(/\/$/, '') || '/';
 const isForemanRoute = pathname === '/foreman';
 const courseBuilderView = pathname === '/course-builder/assessments' ? 'assessments'
   : pathname === '/course-builder/analytics' ? 'analytics'
-    : pathname === '/course-builder' ? 'builder'
+    : pathname === '/course-builder' ? 'workforce'
       : null;
 const isLearningIntelligenceRoute = pathname === '/learning-intelligence' || pathname.startsWith('/learning-intelligence/');
 const learningTool = pathname === '/learning-intelligence/lvi' ? 'lvi' : 'overview';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
+    <PulseOSAuthProvider>
     {isForemanRoute ? <ForemanPortal /> : courseBuilderView ? <PulseOS initialView={courseBuilderView} brand={isPulseOS ? 'pulseos' : 'datapulse'} /> : isLearningIntelligenceRoute ? <LearningIntelligence initialTool={learningTool} /> : isPulseOS || isPasswordRecovery ? <WorkforceMode initialView={isPasswordRecovery ? 'ojt' : 'library'} /> : <App />}
+    </PulseOSAuthProvider>
   </StrictMode>
 );
 

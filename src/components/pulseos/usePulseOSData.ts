@@ -1,10 +1,11 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import type {
   Program, Course, UbDUnit, Lesson, Assessment, AssessmentSubmission,
 } from '../../lib/pulseos-types';
 
-export function usePulseOSData() {
+export function usePulseOSData(enabled: boolean) {
+  const latestRequest = useRef(0);
   const [programs, setPrograms] = useState<Program[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [units, setUnits] = useState<UbDUnit[]>([]);
@@ -16,6 +17,12 @@ export function usePulseOSData() {
   const [error, setError] = useState<string | null>(null);
 
   const fetchAll = useCallback(async (isRefetch = false) => {
+    const request = ++latestRequest.current;
+    if (!enabled) {
+      setPrograms([]); setCourses([]); setUnits([]); setLessons([]); setAssessments([]); setSubmissions([]);
+      setLoading(false); setRefetching(false); setError(null);
+      return;
+    }
     if (isRefetch) {
       setRefetching(true);
     } else {
@@ -31,6 +38,8 @@ export function usePulseOSData() {
         supabase.from('pulseos_assessments').select('*').order('created_at', { ascending: false }),
         supabase.from('pulseos_assessment_submissions').select('*').order('submitted_at', { ascending: false }),
       ]);
+
+      if (request !== latestRequest.current) return;
 
       if (pRes.error) throw pRes.error;
       if (cRes.error) throw cRes.error;
@@ -49,6 +58,7 @@ export function usePulseOSData() {
         score: s.score !== null ? Number(s.score) : null,
       })));
     } catch (err) {
+      if (request !== latestRequest.current) return;
       const message = err instanceof Error
         ? err.message
         : typeof err === 'object' && err !== null && 'message' in err && typeof err.message === 'string'
@@ -56,10 +66,12 @@ export function usePulseOSData() {
           : 'Failed to load PulseOS data';
       setError(message);
     } finally {
-      setLoading(false);
-      setRefetching(false);
+      if (request === latestRequest.current) {
+        setLoading(false);
+        setRefetching(false);
+      }
     }
-  }, []);
+  }, [enabled]);
 
   useEffect(() => { fetchAll(); }, [fetchAll]);
 

@@ -4,12 +4,13 @@ import {
   ChevronRight, FileText, Target, CheckCircle2, Clock,
   TrendingUp, Award, ListChecks, Zap, Calendar, Phone, Check,
   Sparkles, ArrowRight, GraduationCap,
-  LayoutGrid, FolderTree, HardHat,
+  LayoutGrid, FolderTree, HardHat, LockKeyhole,
 } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import type {
   Program, Course, UbDUnit, Lesson, Assessment, AssessmentSubmission,
 } from '../lib/pulseos-types';
+import { usePulseOSAuth } from './pulseos/usePulseOSAuth';
 import { usePulseOSData } from './pulseos/usePulseOSData';
 import { UnitBuilder } from './pulseos/UnitBuilder';
 import { AssessmentEngine } from './pulseos/AssessmentEngine';
@@ -19,13 +20,19 @@ import { WorkforceMode } from './pulseos/WorkforceMode';
 type View = 'dashboard' | 'builder' | 'assessments' | 'analytics' | 'workforce';
 
 export function PulseOS({ initialView = 'workforce', brand = 'pulseos' }: { initialView?: View; brand?: 'pulseos' | 'datapulse' }) {
+  const { user, role, loading: authLoading, signIn, signUp, signOut } = usePulseOSAuth();
+  const authorized = !authLoading && !!user && role === 'admin';
+  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState<string | null>(null);
   const isDataPulseStudio = brand === 'datapulse';
   const [view, setView] = useState<View>(initialView);
   const [selectedUnitId, setSelectedUnitId] = useState<string | null>(null);
   const {
     programs, courses, units, lessons, assessments, submissions,
     loading, error, refetch,
-  } = usePulseOSData();
+  } = usePulseOSData(authorized);
 
   const selectedUnit = units.find(u => u.id === selectedUnitId) ?? null;
 
@@ -116,6 +123,23 @@ export function PulseOS({ initialView = 'workforce', brand = 'pulseos' }: { init
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
         {view === 'workforce' && <WorkforceMode />}
+        {view !== 'workforce' && !authLoading && !authorized && (
+          <section className="mx-auto max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <LockKeyhole className="h-6 w-6 text-gold-700" />
+            <h2 className="mt-3 text-xl font-bold text-navy-900">Secure education workspace</h2>
+            <p className="mt-2 text-sm leading-6 text-slate-600">UbD units, assessments, submissions, and analytics are private workspace data. Only a provisioned PulseOS administrator can access this workspace.</p>
+            {!user ? <>
+              <div className="mt-5 grid grid-cols-2 rounded-xl bg-slate-100 p-1 text-sm font-bold text-slate-600"><button type="button" onClick={() => setAuthMode('signin')} className={`rounded-lg px-3 py-2 ${authMode === 'signin' ? 'bg-white text-navy-900 shadow-sm' : ''}`}>Sign in</button><button type="button" onClick={() => setAuthMode('signup')} className={`rounded-lg px-3 py-2 ${authMode === 'signup' ? 'bg-white text-navy-900 shadow-sm' : ''}`}>Create account</button></div>
+              <form className="mt-4 space-y-3" onSubmit={async (event) => { event.preventDefault(); const result = await (authMode === 'signin' ? signIn : signUp)(email, password); setMessage(result.error); }}>
+                <input required type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Administrator email" className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+                <input required minLength={6} type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password (6+ characters)" className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+                <button className="w-full rounded-xl bg-navy-900 px-4 py-2.5 text-sm font-bold text-white">{authMode === 'signin' ? 'Sign in' : 'Create account'}</button>
+              </form>
+            </> : <><p className="mt-4 rounded-xl bg-amber-50 p-3 text-sm text-amber-900">This account is not an education workspace administrator.</p><p className="mt-3 text-sm text-slate-600">Ask an existing PulseOS administrator to provision your account.</p><button onClick={signOut} className="mt-4 text-sm font-bold text-navy-800 underline">Sign out</button></>}
+            {message && <p className="mt-3 text-sm text-rose-700">{message}</p>}
+          </section>
+        )}
+        {authorized && <>
         {view !== 'workforce' && loading && (
           <div className="flex flex-col items-center justify-center py-24">
             <div className="h-10 w-10 animate-spin rounded-full border-2 border-navy-200 border-t-gold-500" />
@@ -167,6 +191,7 @@ export function PulseOS({ initialView = 'workforce', brand = 'pulseos' }: { init
             submissions={submissions}
           />
         )}
+        </>}
       </main>
 
       <footer className="border-t border-slate-200 bg-white py-6">
