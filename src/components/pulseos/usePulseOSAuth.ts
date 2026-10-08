@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { createContext, createElement, useContext, useEffect, useState, useCallback, type ReactNode } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
 import { supabase } from '../../lib/supabaseClient';
 
@@ -18,7 +18,20 @@ export interface PulseOSAuthState {
   updatePassword: (newPassword: string) => Promise<{ error: string | null }>;
 }
 
+const PulseOSAuthContext = createContext<PulseOSAuthState | null>(null);
+
+export function PulseOSAuthProvider({ children }: { children: ReactNode }) {
+  const auth = usePulseOSAuthState();
+  return createElement(PulseOSAuthContext.Provider, { value: auth }, children);
+}
+
 export function usePulseOSAuth(): PulseOSAuthState {
+  const auth = useContext(PulseOSAuthContext);
+  if (!auth) throw new Error('PulseOSAuthProvider is required');
+  return auth;
+}
+
+function usePulseOSAuthState(): PulseOSAuthState {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [role, setRole] = useState<PulseOSRole>(null);
