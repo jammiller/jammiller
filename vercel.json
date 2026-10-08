@@ -4,6 +4,16 @@
   "installCommand": "npm install",
   "rewrites": [
     {
+      "source": "/((?!assets/|.*\\.[a-zA-Z0-9]+$).*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?pulseosplatform\\.com|pulse-os-.*\\.vercel\\.app|pulse-[a-z0-9]+-datapulse-social\\.vercel\\.app"
+        }
+      ],
+      "destination": "/pulseos.html"
+    },
+    {
       "source": "/robots.txt",
       "has": [
         {
@@ -31,6 +41,15 @@
   "headers": [
     {
       "source": "/sw.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/pulseos.html",
       "headers": [
         {
           "key": "Cache-Control",
