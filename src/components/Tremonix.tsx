@@ -147,7 +147,7 @@ const faqItems = [
   },
   {
     question: 'How much does it cost?',
-    answer: 'The 15-minute audit is $397. The detailed leak report (with action plan) is included. Implementation help is optional and quoted separately.',
+    answer: 'Regular price: $397. Introductory price: $97 for the 15-minute Revenue Recovery Audit. The detailed leak report (with action plan) is included. Implementation help is optional and quoted separately.',
   },
 ];
 
@@ -326,7 +326,7 @@ export function Tremonix() {
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500 text-navy-950">
               <DollarSign className="h-5 w-5" />
             </span>
-            <span className="text-sm font-bold tracking-[0.08em]">TREMONIX</span>
+            <span className="text-sm font-bold tracking-[0.08em]">Revenue Recovery Audit</span>
           </a>
           <nav className="hidden items-center gap-7 md:flex">
             <a href="#how" className="text-sm text-slate-300 transition-colors hover:text-white">How it works</a>
@@ -345,7 +345,7 @@ export function Tremonix() {
           <div className="relative z-10 mx-auto grid max-w-7xl gap-12 px-4 py-24 sm:px-6 sm:py-32 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:px-8">
             <div>
               <p className="mb-6 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400">
-                <span className="inline-block h-px w-12 bg-emerald-400" /> Revenue Leak Audit
+                <span className="inline-block h-px w-12 bg-emerald-400" /> Revenue Recovery Audit
               </p>
               <h1 className="max-w-3xl text-4xl font-bold leading-tight tracking-tight sm:text-6xl">
                 Your sales process is <span className="text-emerald-400">leaking revenue.</span> We'll show you where.
@@ -353,12 +353,13 @@ export function Tremonix() {
               <p className="mt-6 max-w-xl text-base leading-relaxed text-slate-300 sm:text-lg">
                 Book a 15-minute call. We'll audit your response speed, follow-up discipline, and retention process. You'll get a detailed report showing exactly where revenue is being lost — and how to fix it.
               </p>
+              <p className="mt-6 text-sm text-slate-300">Regular Price: <s>$397</s> <strong className="ml-3 text-emerald-400">Introductory Price: $97</strong></p>
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                 <button
                   onClick={() => setFormOpen(true)}
                   className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-navy-950 transition-all hover:-translate-y-0.5 hover:shadow-lg"
                 >
-                  Book your $397 audit <ArrowRight className="h-4 w-4" />
+                  Book your $97 introductory audit <ArrowRight className="h-4 w-4" />
                 </button>
                 <a href="#leaks" className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-white/40">
                   See the leaks
@@ -584,7 +585,7 @@ export function Tremonix() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
           <div className="w-full max-w-md rounded-2xl bg-navy-950 p-8 shadow-2xl border border-white/10">
             <h3 className="text-2xl font-bold text-white">Book Your Audit</h3>
-            <p className="mt-2 text-sm text-slate-300">15-minute call + detailed leak report. $397.</p>
+            <p className="mt-2 text-sm text-slate-300">15-minute call + detailed leak report. Regular price: $397. Introductory price: $97.</p>
 
             {formSuccess && (
               <div className="mt-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 p-4">
@@ -654,7 +655,7 @@ export function Tremonix() {
                 ) : (
                   <>
                     <Calendar className="h-4 w-4" />
-                    Book Audit ($397)
+                    Book Audit ($97 introductory price)
                   </>
                 )}
               </button>
@@ -674,7 +675,7 @@ export function Tremonix() {
       <footer className="bg-navy-950 px-4 py-8 text-slate-400 sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-7xl flex-col gap-6 text-xs">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p>&copy; {new Date().getFullYear()} Tremonix. Revenue leak diagnostics backed by published research.</p>
+            <p>&copy; {new Date().getFullYear()} Revenue Recovery Audit. Revenue recovery insights backed by published research.</p>
             <div className="flex gap-4">
               <a href="#how" className="hover:text-white">How it works</a>
               <a href="#leaks" className="hover:text-white">Leaks</a>
