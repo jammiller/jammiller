@@ -118,8 +118,8 @@
         }
         setLink('link[rel="manifest"]', variant.manifest);
         setLink('link[rel="apple-touch-icon"]', variant.apple, variant.apple.endsWith('.svg') ? 'image/svg+xml' : undefined);
-        setLink('link[rel="icon"][sizes="32x32"]', variant.icon, variant.icon.endsWith('.svg') ? 'image/svg+xml' : 'image/png');
-        setLink('link[rel="icon"][sizes="16x16"]', variant.icon, variant.icon.endsWith('.svg') ? 'image/svg+xml' : 'image/png');
+        setLink('link[rel="icon"][sizes="32x32"]', variant.icon, variant.icon.endsWith('.svg') ? 'image/svg+xml' : variant.icon.endsWith('.webp') ? 'image/webp' : 'image/png');
+        setLink('link[rel="icon"][sizes="16x16"]', variant.icon, variant.icon.endsWith('.svg') ? 'image/svg+xml' : variant.icon.endsWith('.webp') ? 'image/webp' : 'image/png');
         document.title = variant.title;
         document.querySelector('meta[name="description"]')?.setAttribute('content', variant.description);
         document.querySelector('meta[name="theme-color"]')?.setAttribute('content', variant.theme);
