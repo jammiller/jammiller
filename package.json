@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/check-branding.mjs",
     "build": "vite build",
     "build:pulseos": "vite build --config vite.pulseos.config.ts && node scripts/check-pulseos-build.mjs",
     "lint": "eslint .",

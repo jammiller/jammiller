@@ -108,7 +108,7 @@
             canonical: 'https://www.voltecho.app/', manifest: '/voltecho-manifest.json', icon: '/voltecho-icon.svg', apple: '/voltecho-icon.svg', theme: '#000000'
           }
         };
-        var key = 'tremonix';
+        var key = document.documentElement.dataset.app === 'pulseos' || h === 'pulseosplatform.com' || h === 'www.pulseosplatform.com' || h.startsWith('pulse-os-') ? 'pulseos' : 'tremonix';
         var variant = variants[key];
         function setLink(selector, href, type) {
           var link = document.querySelector(selector) || document.head.appendChild(document.createElement('link'));
