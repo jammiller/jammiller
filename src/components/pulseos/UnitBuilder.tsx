@@ -866,6 +866,7 @@ function LessonCardInner({ lesson, index }: { lesson: Lesson; index: number }) {
 
 function Stage1Editor({ unit, onSave, enableFloridaStandards }: { unit: UbDUnit; onSave: (u: UbDUnit) => void; enableFloridaStandards: boolean }) {
   const s1 = unit.stage1;
+  const [, setStandardsVersion] = useState(0);
   const update = (patch: Partial<Stage1>) => { unit.stage1 = { ...s1, ...patch }; };
 
   return (
@@ -884,7 +885,10 @@ function Stage1Editor({ unit, onSave, enableFloridaStandards }: { unit: UbDUnit;
       {enableFloridaStandards && (
         <FloridaStandardsPicker
           selectedStandards={s1.standards}
-          onAdd={standard => update({ standards: [...s1.standards, standard] })}
+          onAdd={standard => {
+            update({ standards: [...s1.standards, standard] });
+            setStandardsVersion(version => version + 1);
+          }}
         />
       )}
       <StringListEditor items={s1.standards} onChange={v => update({ standards: v })} placeholder="Standard code or description..." label={enableFloridaStandards ? 'Selected Standards (editable)' : 'Standards Alignment'} />

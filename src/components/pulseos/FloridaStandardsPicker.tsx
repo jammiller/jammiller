@@ -78,6 +78,7 @@ export function FloridaStandardsPicker({ selectedStandards, onAdd }: Props) {
       .filter(item => !normalizedQuery
         || item.code.toLowerCase().includes(normalizedQuery)
         || item.title.toLowerCase().includes(normalizedQuery))
+      .sort((left, right) => left.code.localeCompare(right.code))
       .slice(0, 100);
   }, [grade, query, shard, subject]);
 
@@ -140,7 +141,7 @@ export function FloridaStandardsPicker({ selectedStandards, onAdd }: Props) {
         </div>
       )}
       <p className="text-[11px] leading-4 text-slate-500">
-        Academic standards data provided by <a className="font-semibold underline" href="https://howtostudent.com" target="_blank" rel="noreferrer">How To Student</a> (CC BY 4.0).
+        Academic standards data provided by <a className="font-semibold underline" href="https://howtostudent.com" target="_blank" rel="noreferrer">How To Student</a>. (CC BY 4.0)
         {' '}Verify current requirements with <a className="font-semibold underline" href="https://www.cpalms.org/Public/search/Standard" target="_blank" rel="noreferrer">CPALMS</a>, Florida’s official standards source.
       </p>
     </section>
