@@ -5,6 +5,8 @@ import {
   matchOffer, revenueScore, scoreBand, searchProspects, topOpportunities, usd,
   type Deal, type OrgType, type Prospect, type Stage,
 } from '../../lib/pis';
+import { PISGate } from './PISGate';
+import { usePulseOSAuth } from '../pulseos/usePulseOSAuth';
 import { SEED_PROSPECTS, SEED_STAGES } from '../../lib/pis-data';
 
 type Screen = 'dashboard' | 'discovery' | 'intelligence' | 'match' | 'proposal' | 'outreach' | 'pipeline';
@@ -57,7 +59,8 @@ function List({ items }: { items: string[] }) {
   return <ul className="list-disc space-y-1 pl-5 text-sm text-slate-700">{items.map((i) => <li key={i}>{i}</li>)}</ul>;
 }
 
-export function ProspectIntelligence() {
+function ProspectIntelligenceApp() {
+  const { user, signOut } = usePulseOSAuth();
   const [screen, setScreen] = useState<Screen>('dashboard');
   const [deals, setDeals] = useState<Deal[]>(initialDeals);
   const [selectedId, setSelectedId] = useState<string>(SEED_PROSPECTS[0].id);
@@ -113,6 +116,7 @@ export function ProspectIntelligence() {
       <header className="border-b border-slate-200 bg-white px-6 py-4 print:hidden">
         <h1 className="text-xl font-bold">PIS · Prospect Intelligence System</h1>
         <p className="text-sm text-slate-600">Generate revenue for every PulseOS asset. Sample data shown for demonstration.</p>
+        <p className="text-xs text-slate-500">Signed in as {user?.email} · <button className="underline" onClick={() => { void signOut(); }}>Sign out</button></p>
         <nav className="mt-3 flex flex-wrap gap-2">
           {SCREENS.map(({ id, label, icon: Icon }) => (
             <button
@@ -299,5 +303,13 @@ export function ProspectIntelligence() {
         )}
       </main>
     </div>
+  );
+}
+
+export function ProspectIntelligence() {
+  return (
+    <PISGate>
+      <ProspectIntelligenceApp />
+    </PISGate>
   );
 }
