@@ -19,7 +19,9 @@ const courseBuilderView = pathname === '/course-builder/assessments' ? 'assessme
   : pathname === '/course-builder/analytics' ? 'analytics'
     : pathname === '/course-builder' ? 'workforce'
       : null;
-const isPISRoute = pathname === '/pis';
+const isPISHost = hostname.startsWith('pis.') || hostname.startsWith('pis-');
+const isPISPreview = pathname === '/pis' && (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.endsWith('.vercel.app'));
+const isPISRoute = isPISHost || isPISPreview;
 const isLearningIntelligenceRoute = pathname === '/learning-intelligence' || pathname.startsWith('/learning-intelligence/');
 const learningTool = pathname === '/learning-intelligence/lvi' ? 'lvi' : 'overview';
 
