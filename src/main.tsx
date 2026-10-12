@@ -22,7 +22,8 @@ const courseBuilderView = pathname === '/course-builder/assessments' ? 'assessme
       : null;
 const isVoltEchoHost = hostname === 'voltecho.app' || hostname === 'www.voltecho.app';
 const isPISPreview = pathname === '/pis' && (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.endsWith('.vercel.app'));
-const isPISRoute = (isVoltEchoHost && pathname === '/pis') || isPISPreview;
+const isTremonixHost = hostname === 'tremonix.com' || hostname === 'www.tremonix.com';
+const isPISRoute = (isTremonixHost && pathname === '/pis') || isPISPreview;
 const isLearningIntelligenceRoute = pathname === '/learning-intelligence' || pathname.startsWith('/learning-intelligence/');
 const learningTool = pathname === '/learning-intelligence/lvi' ? 'lvi' : 'overview';
 

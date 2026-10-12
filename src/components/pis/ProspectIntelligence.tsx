@@ -64,6 +64,14 @@ export function ProspectIntelligence() {
   const [query, setQuery] = useState<{ industry: string; location: string; orgType: OrgType | '' }>({ industry: '', location: 'Florida', orgType: '' });
 
   useEffect(() => {
+    const meta = document.createElement('meta');
+    meta.name = 'robots';
+    meta.content = 'noindex, nofollow';
+    document.head.appendChild(meta);
+    return () => { meta.remove(); };
+  }, []);
+
+  useEffect(() => {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(deals)); } catch { /* ignore */ }
   }, [deals]);
 
