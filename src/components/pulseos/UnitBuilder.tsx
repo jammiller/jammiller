@@ -19,6 +19,7 @@ import type {
 } from '../../lib/pulseos-types';
 import { emptyStage1, emptyStage2, emptyStage3, ubdCompleteness } from '../../lib/pulseos-types';
 import { LviDesignCompanion } from './LviDesignCompanion';
+import { FloridaStandards } from './FloridaStandards';
 
 interface Props {
   units: UbDUnit[];
@@ -863,8 +864,12 @@ function LessonCardInner({ lesson, index }: { lesson: Lesson; index: number }) {
 // ---- Stage 1/2/3 Editors ----
 
 function Stage1Editor({ unit, onSave }: { unit: UbDUnit; onSave: (u: UbDUnit) => void }) {
+  const [, refresh] = useState(0);
   const s1 = unit.stage1;
-  const update = (patch: Partial<Stage1>) => { unit.stage1 = { ...s1, ...patch }; };
+  const update = (patch: Partial<Stage1>) => {
+    unit.stage1 = { ...unit.stage1, ...patch };
+    refresh(value => value + 1);
+  };
 
   return (
     <div className="space-y-6">
@@ -879,7 +884,8 @@ function Stage1Editor({ unit, onSave }: { unit: UbDUnit; onSave: (u: UbDUnit) =>
       <StringListEditor items={s1.understandings} onChange={v => update({ understandings: v })} placeholder="Students will understand that..." label="Understandings" />
       <StringListEditor items={s1.essential_questions} onChange={v => update({ essential_questions: v })} placeholder="Essential question..." label="Essential Questions" />
       <StringListEditor items={s1.knowledge_skills} onChange={v => update({ knowledge_skills: v })} placeholder="Knowledge / skill..." label="Knowledge & Skills" />
-      <StringListEditor items={s1.standards} onChange={v => update({ standards: v })} placeholder="Standard (e.g., CCSS.RL.6.1)..." label="Standards Alignment" />
+      <FloridaStandards onAdd={entries => update({ standards: [...new Set([...unit.stage1.standards, ...entries])] })} />
+      <StringListEditor items={s1.standards} onChange={v => update({ standards: v })} placeholder="Official benchmark code and wording..." label="Standards Alignment" />
       <button onClick={() => onSave(unit)} className="inline-flex items-center gap-2 rounded-lg bg-navy-900 px-4 py-2 text-sm font-semibold text-white hover:bg-navy-800">
         <Save className="h-4 w-4" /> Save Stage 1
       </button>
