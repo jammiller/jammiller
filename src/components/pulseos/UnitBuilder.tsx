@@ -19,6 +19,7 @@ import type {
 } from '../../lib/pulseos-types';
 import { emptyStage1, emptyStage2, emptyStage3, ubdCompleteness } from '../../lib/pulseos-types';
 import { LviDesignCompanion } from './LviDesignCompanion';
+import { FloridaStandardsPicker } from './FloridaStandardsPicker';
 
 interface Props {
   units: UbDUnit[];
@@ -28,12 +29,13 @@ interface Props {
   selectedUnit: UbDUnit | null;
   onSelectUnit: (id: string | null) => void;
   onRefetch: () => void;
+  enableFloridaStandards?: boolean;
 }
 
 type StageTab = 1 | 2 | 3;
 
 export function UnitBuilder({
-  units, courses, programs, lessons, selectedUnit, onSelectUnit, onRefetch,
+  units, courses, programs, lessons, selectedUnit, onSelectUnit, onRefetch, enableFloridaStandards = false,
 }: Props) {
   const [stageTab, setStageTab] = useState<StageTab>(1);
   const [saving, setSaving] = useState(false);
@@ -250,7 +252,7 @@ export function UnitBuilder({
           <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-7">
             <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-slate-50 opacity-50" />
             <div className="relative">
-              {stageTab === 1 && <Stage1Editor unit={selectedUnit} onSave={saveUnit} />}
+              {stageTab === 1 && <Stage1Editor unit={selectedUnit} onSave={saveUnit} enableFloridaStandards={enableFloridaStandards} />}
               {stageTab === 2 && <Stage2Editor unit={selectedUnit} onSave={saveUnit} />}
               {stageTab === 3 && <Stage3Editor unit={selectedUnit} onSave={saveUnit} />}
             </div>
@@ -862,7 +864,7 @@ function LessonCardInner({ lesson, index }: { lesson: Lesson; index: number }) {
 
 // ---- Stage 1/2/3 Editors ----
 
-function Stage1Editor({ unit, onSave }: { unit: UbDUnit; onSave: (u: UbDUnit) => void }) {
+function Stage1Editor({ unit, onSave, enableFloridaStandards }: { unit: UbDUnit; onSave: (u: UbDUnit) => void; enableFloridaStandards: boolean }) {
   const s1 = unit.stage1;
   const update = (patch: Partial<Stage1>) => { unit.stage1 = { ...s1, ...patch }; };
 
@@ -879,7 +881,13 @@ function Stage1Editor({ unit, onSave }: { unit: UbDUnit; onSave: (u: UbDUnit) =>
       <StringListEditor items={s1.understandings} onChange={v => update({ understandings: v })} placeholder="Students will understand that..." label="Understandings" />
       <StringListEditor items={s1.essential_questions} onChange={v => update({ essential_questions: v })} placeholder="Essential question..." label="Essential Questions" />
       <StringListEditor items={s1.knowledge_skills} onChange={v => update({ knowledge_skills: v })} placeholder="Knowledge / skill..." label="Knowledge & Skills" />
-      <StringListEditor items={s1.standards} onChange={v => update({ standards: v })} placeholder="Standard (e.g., CCSS.RL.6.1)..." label="Standards Alignment" />
+      {enableFloridaStandards && (
+        <FloridaStandardsPicker
+          selectedStandards={s1.standards}
+          onAdd={standard => update({ standards: [...s1.standards, standard] })}
+        />
+      )}
+      <StringListEditor items={s1.standards} onChange={v => update({ standards: v })} placeholder="Standard code or description..." label={enableFloridaStandards ? 'Selected Standards (editable)' : 'Standards Alignment'} />
       <button onClick={() => onSave(unit)} className="inline-flex items-center gap-2 rounded-lg bg-navy-900 px-4 py-2 text-sm font-semibold text-white hover:bg-navy-800">
         <Save className="h-4 w-4" /> Save Stage 1
       </button>

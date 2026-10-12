@@ -173,6 +173,7 @@ export function PulseOS({ initialView = 'workforce', brand = 'pulseos' }: { init
             selectedUnit={selectedUnit}
             onSelectUnit={setSelectedUnitId}
             onRefetch={refetch}
+            enableFloridaStandards={isDataPulseStudio}
           />
         )}
         {!loading && !error && view === 'assessments' && (
