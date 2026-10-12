@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Award, CheckCircle2, ClipboardCheck, HardHat, Layers3, ShieldCheck, Users, Wrench, Clock3 } from 'lucide-react';
+import { CheckCircle2, ClipboardCheck, HardHat, Layers3, ShieldCheck, Users, Wrench, Clock3 } from 'lucide-react';
 import { OJTCompliance } from './OJTCompliance';
 import { competencies, roles, workers, type CompetencyDomain } from '../../lib/competency-foundation';
 
@@ -26,7 +26,7 @@ export function WorkforceMode({ initialView = 'library' }: { initialView?: Workf
           <div className="inline-flex items-center gap-2 rounded-full border border-gold-500/30 bg-gold-500/10 px-3 py-1 text-xs font-bold text-gold-300"><HardHat className="h-3.5 w-3.5" /> Competency-First Workforce OS</div>
           <h1 className="mt-4 text-3xl font-bold leading-tight sm:text-5xl">Readiness is proven by evidence, not course completion.</h1>
           <p className="mt-4 text-sm leading-6 text-slate-300 sm:text-base">Industry → Occupation → Role → Competency → Task. Build reusable competency requirements, verify them in the field, and see the workforce gaps that affect delivery.</p>
-          <div className="mt-6 flex flex-wrap gap-3"><a href="/" className="rounded-xl border border-white/20 bg-white/5 px-4 py-2.5 text-sm font-bold text-white hover:bg-white/10">Workforce Intelligence</a></div>
+          <div className="mt-6 flex flex-wrap gap-3"><a href="/course-builder" className="rounded-xl bg-gold-500 px-4 py-2.5 text-sm font-bold text-navy-950 hover:bg-gold-400">Workforce Competency</a><a href="/" className="rounded-xl border border-white/20 bg-white/5 px-4 py-2.5 text-sm font-bold text-white hover:bg-white/10">Workforce Intelligence</a></div>
           <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {[
               ['OSHA-aligned qualification', 'Competent-person and training requirements translated into practical work requirements.'],
@@ -45,15 +45,12 @@ export function WorkforceMode({ initialView = 'library' }: { initialView?: Workf
 
       <div className="grid gap-4 sm:grid-cols-3">
         <Metric icon={Layers3} label="Competency library" value={competencies.length} detail="Construction accelerator" />
-        <Metric icon={ShieldCheck} label="Verified for James Carter" value={`${verified}/${worker.competencies.length}`} detail="Evidence-backed competencies" />
-        <Metric icon={Users} label="Role readiness" value="75%" detail={`${selectedRole.title} requirements met`} />
       </div>
 
       <nav className="flex flex-wrap gap-2 border-b border-slate-200 pb-4">
         {([
           ['library', 'Competency Library', Layers3],
           ['roles', 'Role Builder', Wrench],
-          ['passport', 'Competency Passport', Award],
           ['ojt', 'OJT & Compliance', Clock3],
         ] as const).map(([key, label, Icon]) => <button key={key} onClick={() => setView(key)} className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition ${view === key ? 'border-b-2 border-gold-500 text-gold-700' : 'border-b-2 border-transparent text-slate-600 hover:text-navy-900'}`}><Icon className="h-4 w-4" />{label}</button>)}
       </nav>
@@ -85,7 +82,6 @@ export function WorkforceMode({ initialView = 'library' }: { initialView?: Workf
 
       {view === 'ojt' && <OJTCompliance />}
 
-      {view === 'passport' && <section className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]"><article className="rounded-2xl bg-navy-950 p-7 text-white"><div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gold-500 text-navy-950"><Award className="h-6 w-6" /></div><p className="mt-4 text-xs font-bold uppercase tracking-wider text-gold-300">James Carter</p><p className="mt-1 text-2xl font-bold">Competency Passport</p><p className="mt-3 text-sm text-slate-300">{verified} of {worker.competencies.length} competencies verified through field evidence.</p><div className="mt-6 space-y-3">{worker.competencies.map(comp => <div key={comp.competencyId} className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3"><span className="text-sm font-bold text-slate-100">{competencies.find(c => c.id === comp.competencyId)?.name}</span><span className={`text-xs font-bold ${comp.verified ? 'text-emerald-400' : 'text-slate-400'}`}>{comp.verified ? 'Verified' : 'In progress'}</span></div>)}</div></article><article className="rounded-2xl border border-slate-200 bg-white p-6"><p className="text-xs font-bold uppercase tracking-wider text-slate-500">Next verification checkpoint</p><p className="mt-3 text-sm font-bold text-navy-900">Quality: Workmanship accuracy</p><p className="mt-2 text-sm text-slate-600">Verify evidence of quality control in completed work. Evidence: Inspection photos, supervisor sign-off, customer feedback.</p><button className="mt-5 w-full rounded-xl bg-gold-500 px-4 py-3 text-sm font-bold text-navy-950 hover:bg-gold-400">Schedule field verification</button></article></section>}
     </div>
   );
 
