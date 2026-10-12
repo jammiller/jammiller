@@ -18,6 +18,8 @@ import type {
   Program, Course, UbDUnit, Lesson, Stage1, Stage2, Stage3,
 } from '../../lib/pulseos-types';
 import { emptyStage1, emptyStage2, emptyStage3, ubdCompleteness } from '../../lib/pulseos-types';
+import { LviDesignCompanion } from './LviDesignCompanion';
+import { FloridaStandards } from './FloridaStandards';
 
 interface Props {
   units: UbDUnit[];
@@ -224,36 +226,37 @@ export function UnitBuilder({
           </div>
         </div>
 
-        {/* Stage tabs */}
-        <div className="flex flex-wrap gap-2">
-          {[
-            { num: 1, label: 'Stage 1 — Desired Results', icon: Target, gradient: 'from-navy-600 to-navy-800' },
-            { num: 2, label: 'Stage 2 — Evidence', icon: FileText, gradient: 'from-gold-400 to-gold-600' },
-            { num: 3, label: 'Stage 3 — Learning Plan', icon: BookOpen, gradient: 'from-emerald-500 to-emerald-700' },
-          ].map(tab => (
-            <button
-              key={tab.num}
-              onClick={() => { setStageTab(tab.num as StageTab); logAnalytics(selectedUnit.id, 'view'); }}
-              className={`group inline-flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-all ${
-                stageTab === tab.num
-                  ? `bg-gradient-to-br ${tab.gradient} text-white shadow-lg`
-                  : 'border border-slate-200 bg-white text-slate-600 hover:border-navy-300 hover:shadow-md'
-              }`
-            }
-            >
-              <tab.icon className="h-4 w-4" /> {tab.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Stage content */}
-        <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-7">
-          <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-slate-50 opacity-50" />
-          <div className="relative">
-            {stageTab === 1 && <Stage1Editor unit={selectedUnit} onSave={saveUnit} />}
-            {stageTab === 2 && <Stage2Editor unit={selectedUnit} onSave={saveUnit} />}
-            {stageTab === 3 && <Stage3Editor unit={selectedUnit} onSave={saveUnit} />}
+        {/* The UbD framework is the primary course-design workflow */}
+        <section aria-label="UbD design stages">
+          <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+            <div><p className="text-xs font-bold uppercase tracking-wider text-gold-700">UbD Design Studio</p><h2 className="mt-1 text-2xl font-bold tracking-tight text-navy-900">Build the unit in three decisions.</h2></div>
+            <p className="max-w-sm text-sm leading-5 text-slate-600">Start with outcomes, define evidence, then create the learning plan.</p>
           </div>
+          <div className="grid gap-3 lg:grid-cols-3">
+            {[
+              { num: 1, label: 'Desired Results', detail: 'What should learners understand and be able to do?', icon: Target, accent: 'navy' },
+              { num: 2, label: 'Evidence', detail: 'What would demonstrate meaningful understanding?', icon: FileText, accent: 'gold' },
+              { num: 3, label: 'Learning Plan', detail: 'How will learners reach the desired results?', icon: BookOpen, accent: 'emerald' },
+            ].map(tab => {
+              const active = stageTab === tab.num;
+              const complete = completeness.stage >= tab.num;
+              const colors = tab.accent === 'navy' ? 'bg-navy-900 text-white border-navy-900' : tab.accent === 'gold' ? 'bg-gold-500 text-navy-950 border-gold-500' : 'bg-emerald-600 text-white border-emerald-600';
+              return <button key={tab.num} onClick={() => { setStageTab(tab.num as StageTab); logAnalytics(selectedUnit.id, 'view'); }} className={`relative overflow-hidden rounded-2xl border p-5 text-left transition ${active ? `${colors} shadow-lg` : 'border-slate-200 bg-white hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md'}`}><div className="flex items-start justify-between gap-3"><span className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${active ? 'bg-white/20' : 'bg-slate-100 text-navy-900'}`}>0{tab.num}</span>{complete && <CheckCircle2 className={`h-5 w-5 ${active ? 'text-white' : 'text-emerald-600'}`} />}</div><div className="mt-5 flex items-center gap-2"><tab.icon className="h-4 w-4" /><span className="text-base font-bold">Stage {tab.num}: {tab.label}</span></div><p className={`mt-2 text-sm leading-5 ${active ? 'text-white/80' : 'text-slate-600'}`}>{tab.detail}</p><span className={`mt-5 inline-flex items-center gap-1 text-xs font-bold ${active ? 'text-white' : 'text-gold-700'}`}>{active ? 'Currently designing' : 'Open stage'} <ChevronRight className="h-3.5 w-3.5" /></span></button>;
+            })}
+          </div>
+        </section>
+
+        {/* Stage content with persistent learner-variability guidance */}
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_19rem]">
+          <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-7">
+            <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-slate-50 opacity-50" />
+            <div className="relative">
+              {stageTab === 1 && <Stage1Editor unit={selectedUnit} onSave={saveUnit} />}
+              {stageTab === 2 && <Stage2Editor unit={selectedUnit} onSave={saveUnit} />}
+              {stageTab === 3 && <Stage3Editor unit={selectedUnit} onSave={saveUnit} />}
+            </div>
+          </div>
+          <LviDesignCompanion stage={stageTab} />
         </div>
 
         {/* Lessons with drag-and-drop sequencing */}
@@ -861,8 +864,12 @@ function LessonCardInner({ lesson, index }: { lesson: Lesson; index: number }) {
 // ---- Stage 1/2/3 Editors ----
 
 function Stage1Editor({ unit, onSave }: { unit: UbDUnit; onSave: (u: UbDUnit) => void }) {
+  const [, refresh] = useState(0);
   const s1 = unit.stage1;
-  const update = (patch: Partial<Stage1>) => { unit.stage1 = { ...s1, ...patch }; };
+  const update = (patch: Partial<Stage1>) => {
+    unit.stage1 = { ...unit.stage1, ...patch };
+    refresh(value => value + 1);
+  };
 
   return (
     <div className="space-y-6">
@@ -877,7 +884,8 @@ function Stage1Editor({ unit, onSave }: { unit: UbDUnit; onSave: (u: UbDUnit) =>
       <StringListEditor items={s1.understandings} onChange={v => update({ understandings: v })} placeholder="Students will understand that..." label="Understandings" />
       <StringListEditor items={s1.essential_questions} onChange={v => update({ essential_questions: v })} placeholder="Essential question..." label="Essential Questions" />
       <StringListEditor items={s1.knowledge_skills} onChange={v => update({ knowledge_skills: v })} placeholder="Knowledge / skill..." label="Knowledge & Skills" />
-      <StringListEditor items={s1.standards} onChange={v => update({ standards: v })} placeholder="Standard (e.g., CCSS.RL.6.1)..." label="Standards Alignment" />
+      <FloridaStandards onAdd={entries => update({ standards: [...new Set([...unit.stage1.standards, ...entries])] })} />
+      <StringListEditor items={s1.standards} onChange={v => update({ standards: v })} placeholder="Official benchmark code and wording..." label="Standards Alignment" />
       <button onClick={() => onSave(unit)} className="inline-flex items-center gap-2 rounded-lg bg-navy-900 px-4 py-2 text-sm font-semibold text-white hover:bg-navy-800">
         <Save className="h-4 w-4" /> Save Stage 1
       </button>

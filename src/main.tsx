@@ -1,15 +1,37 @@
 import { StrictMode } from 'react';
+import { PulseOSAuthProvider } from './components/pulseos/usePulseOSAuth';
 import { createRoot } from 'react-dom/client';
 import { WorkforceMode } from './components/pulseos/WorkforceMode';
+import { PulseOS } from './components/PulseOS';
+import { LearningIntelligence } from './components/pulseos/LearningIntelligence';
+import { ForemanPortal } from './components/pulseos/ForemanPortal';
+import { ProspectIntelligence } from './components/pis/ProspectIntelligence';
+import { VoltEcho } from './components/VoltEcho';
 import App from './App.tsx';
 import './index.css';
 
 const hostname = window.location.hostname.toLowerCase();
-const isPulseOS = hostname === 'pulseosplatform.com' || hostname === 'www.pulseosplatform.com' || hostname.startsWith('pulse-os-') || hostname === 'pulse-os-datapulse-social.vercel.app';
+const isPulseOS = document.documentElement.dataset.app === 'pulseos' || hostname === 'pulseosplatform.com' || hostname === 'www.pulseosplatform.com' || hostname.startsWith('pulse-os-') || hostname === 'pulse-os-datapulse-social.vercel.app';
+const isPasswordRecovery = new URLSearchParams(window.location.hash.slice(1)).get('type') === 'recovery'
+  || new URLSearchParams(window.location.search).get('type') === 'recovery';
+const pathname = window.location.pathname.replace(/\/$/, '') || '/';
+const isForemanRoute = pathname === '/foreman';
+const courseBuilderView = pathname === '/course-builder/assessments' ? 'assessments'
+  : pathname === '/course-builder/analytics' ? 'analytics'
+    : pathname === '/course-builder' ? 'workforce'
+      : null;
+const isVoltEchoHost = hostname === 'voltecho.app' || hostname === 'www.voltecho.app';
+const isPISPreview = pathname === '/pis' && (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.endsWith('.vercel.app'));
+const isTremonixHost = hostname === 'tremonix.com' || hostname === 'www.tremonix.com';
+const isPISRoute = (isTremonixHost && pathname === '/pis') || isPISPreview;
+const isLearningIntelligenceRoute = pathname === '/learning-intelligence' || pathname.startsWith('/learning-intelligence/');
+const learningTool = pathname === '/learning-intelligence/lvi' ? 'lvi' : 'overview';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    {isPulseOS ? <WorkforceMode /> : <App />}
+    <PulseOSAuthProvider>
+    {isPISRoute ? <ProspectIntelligence /> : isVoltEchoHost ? <VoltEcho /> : isForemanRoute ? <ForemanPortal /> : courseBuilderView ? <PulseOS initialView={courseBuilderView} brand={isPulseOS ? 'pulseos' : 'datapulse'} /> : isLearningIntelligenceRoute ? <LearningIntelligence initialTool={learningTool} /> : isPulseOS || isPasswordRecovery ? <WorkforceMode initialView={isPasswordRecovery ? 'ojt' : 'library'} /> : <App />}
+    </PulseOSAuthProvider>
   </StrictMode>
 );
 
