@@ -5,6 +5,7 @@ import { WorkforceMode } from './components/pulseos/WorkforceMode';
 import { PulseOS } from './components/PulseOS';
 import { LearningIntelligence } from './components/pulseos/LearningIntelligence';
 import { ForemanPortal } from './components/pulseos/ForemanPortal';
+import { ProspectIntelligence } from './components/pis/ProspectIntelligence';
 import App from './App.tsx';
 import './index.css';
 
@@ -18,13 +19,14 @@ const courseBuilderView = pathname === '/course-builder/assessments' ? 'assessme
   : pathname === '/course-builder/analytics' ? 'analytics'
     : pathname === '/course-builder' ? 'workforce'
       : null;
+const isPISRoute = pathname === '/pis';
 const isLearningIntelligenceRoute = pathname === '/learning-intelligence' || pathname.startsWith('/learning-intelligence/');
 const learningTool = pathname === '/learning-intelligence/lvi' ? 'lvi' : 'overview';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <PulseOSAuthProvider>
-    {isForemanRoute ? <ForemanPortal /> : courseBuilderView ? <PulseOS initialView={courseBuilderView} brand={isPulseOS ? 'pulseos' : 'datapulse'} /> : isLearningIntelligenceRoute ? <LearningIntelligence initialTool={learningTool} /> : isPulseOS || isPasswordRecovery ? <WorkforceMode initialView={isPasswordRecovery ? 'ojt' : 'library'} /> : <App />}
+    {isPISRoute ? <ProspectIntelligence /> : isForemanRoute ? <ForemanPortal /> : courseBuilderView ? <PulseOS initialView={courseBuilderView} brand={isPulseOS ? 'pulseos' : 'datapulse'} /> : isLearningIntelligenceRoute ? <LearningIntelligence initialTool={learningTool} /> : isPulseOS || isPasswordRecovery ? <WorkforceMode initialView={isPasswordRecovery ? 'ojt' : 'library'} /> : <App />}
     </PulseOSAuthProvider>
   </StrictMode>
 );
