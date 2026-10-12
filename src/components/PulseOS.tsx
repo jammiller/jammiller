@@ -80,6 +80,8 @@ export function PulseOS({ initialView = 'workforce', brand = 'pulseos' }: { init
               <Zap className="h-4 w-4" />
             </span>
             <div className="flex flex-col">
+              <span className="text-sm font-bold tracking-wide leading-none">PulseOS</span>
+              <span className="mt-0.5 text-[10px] font-medium uppercase tracking-wider text-gold-400/80">Standards & Evidence</span>
               <span className="text-sm font-bold tracking-wide leading-none">{isDataPulseStudio ? 'DATAPULSE SOCIAL' : 'PulseOS'}</span>
               <span className="mt-0.5 text-[10px] font-medium uppercase tracking-wider text-gold-400/80">{isDataPulseStudio ? 'Course Studio · Powered by PulseOS' : 'UbD Platform'}</span>
             </div>
@@ -196,6 +198,7 @@ export function PulseOS({ initialView = 'workforce', brand = 'pulseos' }: { init
 
       <footer className="border-t border-slate-200 bg-white py-6">
         <div className="mx-auto flex max-w-7xl flex-col items-center gap-3 px-4 sm:flex-row sm:justify-between sm:px-6">
+          <p className="text-xs text-slate-500">PulseOS — The standards-to-evidence layer for workforce training.</p>
           <p className="text-xs text-slate-500">{isDataPulseStudio ? 'DATAPULSE SOCIAL Course Studio — powered by PulseOS learning operations.' : 'PulseOS — UbD-driven learning operations. Built for real instructional design.'}</p>
           <div className="flex gap-3">
             <a href="https://calendar.app.google/8otEDsChvouw51aaA" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-lg bg-gold-500 px-3 py-1.5 text-xs font-semibold text-navy-950 transition-colors hover:bg-gold-400">

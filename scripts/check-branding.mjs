@@ -12,8 +12,8 @@ const cases = [
   ['pulseosplatform.com', '', 'PulseOS Platform', '/pulseos-icon-512.webp', '/pulseos-manifest.json'],
   ['www.pulseosplatform.com', '', 'PulseOS Platform', '/pulseos-icon-512.webp', '/pulseos-manifest.json'],
   ['pulse-os-test.vercel.app', '', 'PulseOS Platform', '/pulseos-icon-512.webp', '/pulseos-manifest.json'],
-  ['tremonix.com', '', 'Tremonix — Revenue Leak Diagnostic', '/tremonix-icon.svg', '/tremonix-manifest.json'],
-  ['www.tremonix.com', '', 'Tremonix — Revenue Leak Diagnostic', '/tremonix-icon.svg', '/tremonix-manifest.json'],
+  ['tremonix.com', '', 'Revenue Recovery Audit', '/tremonix-icon.svg', '/tremonix-manifest.json'],
+  ['www.tremonix.com', '', 'Revenue Recovery Audit', '/tremonix-icon.svg', '/tremonix-manifest.json'],
   ['other.vercel.app', 'pulseos', 'PulseOS Platform', '/pulseos-icon-512.webp', '/pulseos-manifest.json'],
 ];
 for (const [hostname, app, title, icon, manifest] of cases) {
