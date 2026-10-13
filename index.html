@@ -100,7 +100,7 @@
             canonical: 'https://www.harborhush.website/', manifest: '/manifest.json', icon: '/favicon-32.png', apple: '/apple-touch-icon.png', theme: '#1a3a42'
           },
           tremonix: {
-            title: 'Tremonix — Revenue Leak Diagnostic', description: 'Tremonix — find the revenue your business is losing to slow response times, insufficient follow-up, and abandoned leads.',
+            title: 'Revenue Recovery Audit', description: 'Revenue Recovery Audit — find the revenue your business is losing to slow response times, insufficient follow-up, and abandoned leads.',
             canonical: 'https://www.tremonix.com/', manifest: '/tremonix-manifest.json', icon: '/tremonix-icon.svg', apple: '/tremonix-icon.svg', theme: '#0a1f1a'
           },
           voltecho: {
@@ -108,13 +108,7 @@
             canonical: 'https://www.voltecho.app/', manifest: '/voltecho-manifest.json', icon: '/voltecho-icon.svg', apple: '/voltecho-icon.svg', theme: '#000000'
           }
         };
-        var key = h === 'safetyapp.com' || h === 'www.safetyapp.com' ? 'safety'
-          : h === 'statslab.app' || h === 'www.statslab.app' ? 'statslab'
-          : h === 'pulseosplatform.com' || h === 'www.pulseosplatform.com' || p === '/pulseos' ? 'pulseos'
-          : h === 'harborhush.website' || h === 'www.harborhush.website' ? 'harbor'
-          : h === 'tremonix.com' || h === 'www.tremonix.com' || p === '/tremonix' ? 'tremonix'
-          : h === 'voltecho.app' || h === 'www.voltecho.app' || p === '/voltecho' ? 'voltecho'
-          : 'datapulse';
+        var key = document.documentElement.dataset.app === 'pulseos' || h === 'pulseosplatform.com' || h === 'www.pulseosplatform.com' || h.startsWith('pulse-os-') ? 'pulseos' : 'tremonix';
         var variant = variants[key];
         function setLink(selector, href, type) {
           var link = document.querySelector(selector) || document.head.appendChild(document.createElement('link'));
@@ -124,8 +118,8 @@
         }
         setLink('link[rel="manifest"]', variant.manifest);
         setLink('link[rel="apple-touch-icon"]', variant.apple, variant.apple.endsWith('.svg') ? 'image/svg+xml' : undefined);
-        setLink('link[rel="icon"][sizes="32x32"]', variant.icon, variant.icon.endsWith('.svg') ? 'image/svg+xml' : 'image/png');
-        setLink('link[rel="icon"][sizes="16x16"]', variant.icon, variant.icon.endsWith('.svg') ? 'image/svg+xml' : 'image/png');
+        setLink('link[rel="icon"][sizes="32x32"]', variant.icon, variant.icon.endsWith('.svg') ? 'image/svg+xml' : variant.icon.endsWith('.webp') ? 'image/webp' : 'image/png');
+        setLink('link[rel="icon"][sizes="16x16"]', variant.icon, variant.icon.endsWith('.svg') ? 'image/svg+xml' : variant.icon.endsWith('.webp') ? 'image/webp' : 'image/png');
         document.title = variant.title;
         document.querySelector('meta[name="description"]')?.setAttribute('content', variant.description);
         document.querySelector('meta[name="theme-color"]')?.setAttribute('content', variant.theme);
