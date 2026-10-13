@@ -15,7 +15,7 @@ const isPasswordRecovery = new URLSearchParams(window.location.hash.slice(1)).ge
 const pathname = window.location.pathname.replace(/\/$/, '') || '/';
 const isForemanRoute = pathname === '/foreman';
 const isWorkforceRoute = pathname === '/workforce';
-const isPulseOSLanding = isPulseOS && pathname === '/';
+const isPulseOSLanding = isPulseOS && pathname === '/' && !isPasswordRecovery;
 const courseBuilderView = pathname === '/course-builder/assessments' ? 'assessments'
   : pathname === '/course-builder/analytics' ? 'analytics'
     : pathname === '/course-builder' ? 'builder'
