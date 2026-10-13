@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import {
-  BookOpen, ClipboardList, BarChart3, Plus, Layers,
+  BookOpen, ClipboardList, BarChart3, Plus,
   ChevronRight, FileText, Target, CheckCircle2, Clock,
-  TrendingUp, Award, ListChecks, Zap, Brain, Calendar, Phone, Check,
-  Sparkles, ArrowRight, Activity, Users, GraduationCap,
-  CircleDot, LayoutGrid, FolderTree, HardHat,
+  TrendingUp, Award, ListChecks, Zap, Calendar, Phone, Check,
+  Sparkles, ArrowRight, GraduationCap,
+  LayoutGrid, FolderTree, HardHat, LockKeyhole,
 } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import type {
   Program, Course, UbDUnit, Lesson, Assessment, AssessmentSubmission,
 } from '../lib/pulseos-types';
+import { usePulseOSAuth } from './pulseos/usePulseOSAuth';
 import { usePulseOSData } from './pulseos/usePulseOSData';
 import { UnitBuilder } from './pulseos/UnitBuilder';
 import { AssessmentEngine } from './pulseos/AssessmentEngine';
@@ -18,13 +19,20 @@ import { WorkforceMode } from './pulseos/WorkforceMode';
 
 type View = 'dashboard' | 'builder' | 'assessments' | 'analytics' | 'workforce';
 
-export function PulseOS() {
-  const [view, setView] = useState<View>('workforce');
+export function PulseOS({ initialView = 'workforce', brand = 'pulseos' }: { initialView?: View; brand?: 'pulseos' | 'datapulse' }) {
+  const { user, role, loading: authLoading, signIn, signUp, signOut } = usePulseOSAuth();
+  const authorized = !authLoading && !!user && role === 'admin';
+  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState<string | null>(null);
+  const isDataPulseStudio = brand === 'datapulse';
+  const [view, setView] = useState<View>(initialView);
   const [selectedUnitId, setSelectedUnitId] = useState<string | null>(null);
   const {
     programs, courses, units, lessons, assessments, submissions,
     loading, error, refetch,
-  } = usePulseOSData();
+  } = usePulseOSData(authorized);
 
   const selectedUnit = units.find(u => u.id === selectedUnitId) ?? null;
 
@@ -73,7 +81,9 @@ export function PulseOS() {
             </span>
             <div className="flex flex-col">
               <span className="text-sm font-bold tracking-wide leading-none">PulseOS</span>
-              <span className="mt-0.5 text-[10px] font-medium uppercase tracking-wider text-gold-400/80">UbD Platform</span>
+              <span className="mt-0.5 text-[10px] font-medium uppercase tracking-wider text-gold-400/80">Standards & Evidence</span>
+              <span className="text-sm font-bold tracking-wide leading-none">{isDataPulseStudio ? 'DATAPULSE SOCIAL' : 'PulseOS'}</span>
+              <span className="mt-0.5 text-[10px] font-medium uppercase tracking-wider text-gold-400/80">{isDataPulseStudio ? 'Course Studio · Powered by PulseOS' : 'UbD Platform'}</span>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -115,6 +125,23 @@ export function PulseOS() {
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
         {view === 'workforce' && <WorkforceMode />}
+        {view !== 'workforce' && !authLoading && !authorized && (
+          <section className="mx-auto max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <LockKeyhole className="h-6 w-6 text-gold-700" />
+            <h2 className="mt-3 text-xl font-bold text-navy-900">Secure education workspace</h2>
+            <p className="mt-2 text-sm leading-6 text-slate-600">UbD units, assessments, submissions, and analytics are private workspace data. Only a provisioned PulseOS administrator can access this workspace.</p>
+            {!user ? <>
+              <div className="mt-5 grid grid-cols-2 rounded-xl bg-slate-100 p-1 text-sm font-bold text-slate-600"><button type="button" onClick={() => setAuthMode('signin')} className={`rounded-lg px-3 py-2 ${authMode === 'signin' ? 'bg-white text-navy-900 shadow-sm' : ''}`}>Sign in</button><button type="button" onClick={() => setAuthMode('signup')} className={`rounded-lg px-3 py-2 ${authMode === 'signup' ? 'bg-white text-navy-900 shadow-sm' : ''}`}>Create account</button></div>
+              <form className="mt-4 space-y-3" onSubmit={async (event) => { event.preventDefault(); const result = await (authMode === 'signin' ? signIn : signUp)(email, password); setMessage(result.error); }}>
+                <input required type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Administrator email" className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+                <input required minLength={6} type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password (6+ characters)" className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+                <button className="w-full rounded-xl bg-navy-900 px-4 py-2.5 text-sm font-bold text-white">{authMode === 'signin' ? 'Sign in' : 'Create account'}</button>
+              </form>
+            </> : <><p className="mt-4 rounded-xl bg-amber-50 p-3 text-sm text-amber-900">This account is not an education workspace administrator.</p><p className="mt-3 text-sm text-slate-600">Ask an existing PulseOS administrator to provision your account.</p><button onClick={signOut} className="mt-4 text-sm font-bold text-navy-800 underline">Sign out</button></>}
+            {message && <p className="mt-3 text-sm text-rose-700">{message}</p>}
+          </section>
+        )}
+        {authorized && <>
         {view !== 'workforce' && loading && (
           <div className="flex flex-col items-center justify-center py-24">
             <div className="h-10 w-10 animate-spin rounded-full border-2 border-navy-200 border-t-gold-500" />
@@ -166,11 +193,13 @@ export function PulseOS() {
             submissions={submissions}
           />
         )}
+        </>}
       </main>
 
       <footer className="border-t border-slate-200 bg-white py-6">
         <div className="mx-auto flex max-w-7xl flex-col items-center gap-3 px-4 sm:flex-row sm:justify-between sm:px-6">
-          <p className="text-xs text-slate-500">PulseOS — UbD-driven learning operations. Built for real instructional design.</p>
+          <p className="text-xs text-slate-500">PulseOS — The standards-to-evidence layer for workforce training.</p>
+          <p className="text-xs text-slate-500">{isDataPulseStudio ? 'DATAPULSE SOCIAL Course Studio — powered by PulseOS learning operations.' : 'PulseOS — UbD-driven learning operations. Built for real instructional design.'}</p>
           <div className="flex gap-3">
             <a href="https://calendar.app.google/8otEDsChvouw51aaA" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-lg bg-gold-500 px-3 py-1.5 text-xs font-semibold text-navy-950 transition-colors hover:bg-gold-400">
               <Calendar className="h-3.5 w-3.5" /> Book a Demo
@@ -394,34 +423,37 @@ function Dashboard({
       <div>
         <div className="mb-5 flex items-center gap-2">
           <GraduationCap className="h-5 w-5 text-navy-700" />
-          <h2 className="text-xl font-bold text-navy-900">Pricing</h2>
+          <div>
+            <h2 className="text-xl font-bold text-navy-900">Simple pricing for workforce readiness</h2>
+            <p className="mt-1 text-sm text-slate-500">Start with one crew, then scale the operating model across your organization.</p>
+          </div>
         </div>
         <div className="grid gap-5 md:grid-cols-3">
           <PricingCard
-            name="Educator"
-            price="$0"
-            tagline="For individual teachers and instructional designers"
+            name="Pilot"
+            price="$149"
+            tagline="For one crew or program proving evidence-based readiness"
             features={[
-              'Unlimited UbD units',
-              'Stage 1, 2, 3 editor',
-              'Assessment engine',
-              'Basic analytics',
-              'Shared workspace',
+              'Up to 15 active workers',
+              'Construction competency library',
+              'Role builder and competency passports',
+              'Field-validation evidence tracking',
+              'OJT & compliance workspace',
             ]}
-            ctaLabel="Start free"
+            ctaLabel="Book a pilot"
             ctaHref="https://calendar.app.google/8otEDsChvouw51aaA"
             highlighted={false}
           />
           <PricingCard
-            name="Team"
-            price="$49"
-            tagline="For schools and small teams building curriculum together"
+            name="Operations"
+            price="$399"
+            tagline="For teams standardizing workforce readiness across projects"
             features={[
-              'Everything in Educator',
-              'Program and course hierarchy',
-              'Workflow and review status',
-              'UbD integrity scoring',
-              'Per-unit analytics dashboard',
+              'Up to 75 active workers',
+              'Everything in Pilot',
+              'Multi-role readiness tracking',
+              'Workforce gap visibility',
+              'Program setup support',
               'Priority support',
             ]}
             ctaLabel="Book a demo"
@@ -429,19 +461,19 @@ function Dashboard({
             highlighted={true}
           />
           <PricingCard
-            name="District"
+            name="Enterprise"
             price="Custom"
-            tagline="For districts scaling aligned curriculum across schools"
+            tagline="For multi-site employers, workforce partners, and public programs"
             features={[
-              'Everything in Team',
-              'Multi-school programs',
-              'District-level analytics',
-              'UbD alignment reporting',
-              'Custom onboarding',
-              'Dedicated support',
+              'Everything in Operations',
+              'Multi-site reporting',
+              'Custom competency frameworks',
+              'Implementation and data migration',
+              'Dedicated success partner',
+              'Security and procurement support',
             ]}
-            ctaLabel="Contact us"
-            ctaHref="tel:8508309910"
+            ctaLabel="Talk to us"
+            ctaHref="https://calendar.app.google/8otEDsChvouw51aaA"
             highlighted={false}
           />
         </div>
