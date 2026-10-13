@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { WorkforceMode } from './components/pulseos/WorkforceMode';
 import { PulseOS } from './components/PulseOS';
 import { LearningIntelligence } from './components/pulseos/LearningIntelligence';
+import { PulseOSLanding } from './components/pulseos/PulseOSLanding';
 import { ForemanPortal } from './components/pulseos/ForemanPortal';
 import { ProspectIntelligence } from './components/pis/ProspectIntelligence';
 import { VoltEcho } from './components/VoltEcho';
@@ -16,6 +17,8 @@ const isPasswordRecovery = new URLSearchParams(window.location.hash.slice(1)).ge
   || new URLSearchParams(window.location.search).get('type') === 'recovery';
 const pathname = window.location.pathname.replace(/\/$/, '') || '/';
 const isForemanRoute = pathname === '/foreman';
+const isWorkforceRoute = pathname === '/workforce';
+const isPulseOSLanding = isPulseOS && pathname === '/' && !isPasswordRecovery;
 const courseBuilderView = pathname === '/course-builder/assessments' ? 'assessments'
   : pathname === '/course-builder/analytics' ? 'analytics'
     : pathname === '/course-builder' ? 'workforce'
@@ -29,9 +32,7 @@ const learningTool = pathname === '/learning-intelligence/lvi' ? 'lvi' : 'overvi
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <PulseOSAuthProvider>
-    {isPISRoute ? <ProspectIntelligence /> : isVoltEchoHost ? <VoltEcho /> : isForemanRoute ? <ForemanPortal /> : courseBuilderView ? <PulseOS initialView={courseBuilderView} brand={isPulseOS ? 'pulseos' : 'datapulse'} /> : isLearningIntelligenceRoute ? <LearningIntelligence initialTool={learningTool} /> : isPulseOS || isPasswordRecovery ? <WorkforceMode initialView={isPasswordRecovery ? 'ojt' : 'library'} /> : <App />}
-    </PulseOSAuthProvider>
+    {isForemanRoute ? <ForemanPortal /> : isPulseOSLanding ? <PulseOSLanding /> : courseBuilderView ? <PulseOS initialView={courseBuilderView} /> : isLearningIntelligenceRoute ? <LearningIntelligence initialTool={learningTool} /> : isWorkforceRoute || isPulseOS || isPasswordRecovery ? <WorkforceMode initialView={isPasswordRecovery ? 'ojt' : 'library'} /> : <App />}
   </StrictMode>
 );
 
