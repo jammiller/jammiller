@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { PulseOSAuthProvider } from './components/pulseos/usePulseOSAuth';
 import { createRoot } from 'react-dom/client';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { WorkforceMode } from './components/pulseos/WorkforceMode';
 import { PulseOS } from './components/PulseOS';
 import { LearningIntelligence } from './components/pulseos/LearningIntelligence';
@@ -32,7 +33,8 @@ const learningTool = pathname === '/learning-intelligence/lvi' ? 'lvi' : 'overvi
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    {isForemanRoute ? <ForemanPortal /> : isPulseOSLanding ? <PulseOSLanding /> : courseBuilderView ? <PulseOS initialView={courseBuilderView} /> : isLearningIntelligenceRoute ? <LearningIntelligence initialTool={learningTool} /> : isWorkforceRoute || isPulseOS || isPasswordRecovery ? <WorkforceMode initialView={isPasswordRecovery ? 'ojt' : 'library'} /> : <App />}
+    {isPulseOS ? <WorkforceMode /> : <App />}
+    <SpeedInsights />
   </StrictMode>
 );
 
