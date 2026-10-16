@@ -11,13 +11,128 @@ create table if not exists cc_leads (
   contact text,
   email text,
   phone text,
+  website text,
   source text,
+  industry text,
   opportunity_value numeric(12,2) not null default 0,
   status text not null default 'New'
     check (status in ('New','Contacted','Qualified','Proposal','Won','Lost')),
   notes text,
+  employee_count integer check (employee_count >= 0),
+  annual_revenue numeric(14,2) check (annual_revenue >= 0),
+  industry_match boolean not null default false,
+  email_opens integer not null default 0 check (email_opens >= 0),
+  pages_visited integer not null default 0 check (pages_visited >= 0),
+  time_on_site_seconds integer not null default 0 check (time_on_site_seconds >= 0),
+  form_completeness integer not null default 0 check (form_completeness between 0 and 100),
+  engagement_score integer not null default 0 check (engagement_score between 0 and 100),
+  budget_indicator boolean not null default false,
+  purchase_intent boolean not null default false,
+  qualification_score integer not null default 0 check (qualification_score between 0 and 100),
+  intent_tier text not null default 'Unqualified'
+    check (intent_tier in ('High', 'Medium', 'Low', 'Unqualified')),
+  routing_queue text not null default 'Suppression - Remove from Sequence',
+  qualified_at timestamptz,
   created_at timestamptz not null default now()
 );
+
+alter table cc_leads
+  add column if not exists website text,
+  add column if not exists industry text,
+  add column if not exists employee_count integer check (employee_count >= 0),
+  add column if not exists annual_revenue numeric(14,2) check (annual_revenue >= 0),
+  add column if not exists industry_match boolean not null default false,
+  add column if not exists email_opens integer not null default 0 check (email_opens >= 0),
+  add column if not exists pages_visited integer not null default 0 check (pages_visited >= 0),
+  add column if not exists time_on_site_seconds integer not null default 0 check (time_on_site_seconds >= 0),
+  add column if not exists form_completeness integer not null default 0 check (form_completeness between 0 and 100),
+  add column if not exists engagement_score integer not null default 0 check (engagement_score between 0 and 100),
+  add column if not exists budget_indicator boolean not null default false,
+  add column if not exists purchase_intent boolean not null default false,
+  add column if not exists qualification_score integer not null default 0 check (qualification_score between 0 and 100),
+  add column if not exists intent_tier text not null default 'Unqualified'
+    check (intent_tier in ('High', 'Medium', 'Low', 'Unqualified')),
+  add column if not exists routing_queue text not null default 'Suppression - Remove from Sequence',
+  add column if not exists qualified_at timestamptz;
+
+create or replace function cc_score_lead()
+returns trigger
+language plpgsql
+set search_path = public
+as $$
+declare
+  company_score integer;
+begin
+  new.engagement_score := round(
+    least(new.email_opens, 10) * 3
+    + least(new.pages_visited, 5) * 5
+    + least(new.time_on_site_seconds, 300) / 300.0 * 25
+    + new.form_completeness * 0.2
+  )::integer;
+
+  company_score := greatest(
+    case
+      when coalesce(new.employee_count, 0) >= 500 then 20
+      when coalesce(new.employee_count, 0) >= 100 then 16
+      when coalesce(new.employee_count, 0) >= 20 then 12
+      when coalesce(new.employee_count, 0) > 0 then 5
+      else 0
+    end,
+    case
+      when coalesce(new.annual_revenue, 0) >= 10000000 then 20
+      when coalesce(new.annual_revenue, 0) >= 1000000 then 16
+      when coalesce(new.annual_revenue, 0) >= 100000 then 12
+      when coalesce(new.annual_revenue, 0) > 0 then 5
+      else 0
+    end
+  );
+
+  new.qualification_score := least(100,
+    company_score
+    + case when new.industry_match then 20 else 0 end
+    + round(new.engagement_score * 0.25)::integer
+    + case when new.budget_indicator then 15 else 0 end
+    + case when new.purchase_intent then 20 else 0 end
+  );
+
+  new.intent_tier := case
+    when new.qualification_score >= 75 then 'High'
+    when new.qualification_score >= 50 then 'Medium'
+    when new.qualification_score >= 25 then 'Low'
+    else 'Unqualified'
+  end;
+
+  new.routing_queue := case new.intent_tier
+    when 'High' then 'Sales - Immediate Outreach'
+    when 'Medium' then 'Lifecycle - Extended Email Sequence'
+    when 'Low' then 'Marketing - Content Nurture'
+    else 'Suppression - Remove from Sequence'
+  end;
+
+  if new.intent_tier = 'High' then
+    if tg_op = 'UPDATE' then
+      if old.intent_tier = 'High' then
+        new.qualified_at := old.qualified_at;
+      else
+        new.qualified_at := now();
+      end if;
+    else
+      new.qualified_at := now();
+    end if;
+  else
+    new.qualified_at := null;
+  end if;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists cc_leads_score_before_write on cc_leads;
+create trigger cc_leads_score_before_write
+before insert or update on cc_leads
+for each row execute function cc_score_lead();
+
+update cc_leads set qualification_score = qualification_score;
 
 create table if not exists cc_revenue (
   id uuid primary key default gen_random_uuid(),

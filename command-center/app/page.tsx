@@ -32,6 +32,7 @@ export default function Dashboard() {
   const [domains, setDomains] = useState<Domain[]>([]);
   const [agents, setAgents] = useState<Agent[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
     (async () => {
@@ -57,8 +58,13 @@ export default function Dashboard() {
     })();
   }, []);
 
-  const now = new Date();
-  const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(Date.now()), 60_000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  const monthDate = new Date(now);
+  const monthKey = `${monthDate.getFullYear()}-${String(monthDate.getMonth() + 1).padStart(2, "0")}`;
   const revenueThisMonth = revenue
     .filter((r) => r.date.startsWith(monthKey))
     .reduce((s, r) => s + Number(r.amount), 0);
@@ -67,6 +73,13 @@ export default function Dashboard() {
   const mrr = activeClients.reduce((s, c) => s + Number(c.monthly_value), 0);
   const activeOpps = leads.filter((l) => !["Won", "Lost"].includes(l.status));
   const oppValue = activeOpps.reduce((s, l) => s + Number(l.opportunity_value), 0);
+  const leadTiers = ["High", "Medium", "Low", "Unqualified"] as const;
+  const urgentLeads = leads
+    .filter((lead) => lead.intent_tier === "High" && lead.status === "New")
+    .sort((a, b) => Date.parse(a.created_at) - Date.parse(b.created_at));
+  const overdueLeads = urgentLeads.filter(
+    (lead) => now - Date.parse(lead.created_at) >= 2 * 60 * 60 * 1000
+  );
 
   const healthyDomains = domains.filter((d) => d.health_status === "Healthy").length;
   const domainHealth = domains.length ? Math.round((healthyDomains / domains.length) * 100) : 0;
@@ -96,10 +109,46 @@ export default function Dashboard() {
         <StatCard label="MRR" value={fmt(mrr)} accent="text-emerald-400" sub={`${activeClients.length} active clients`} />
         <StatCard label="Total Clients" value={clients.length} accent="text-violet-400" />
         <StatCard label="Total Leads" value={leads.length} accent="text-amber-400" />
+        {leadTiers.map((tier) => (
+          <StatCard
+            key={tier}
+            label={`${tier} Intent`}
+            value={leads.filter((lead) => lead.intent_tier === tier).length}
+            accent={tier === "High" ? "text-red-400" : tier === "Medium" ? "text-amber-400" : "text-slate-400"}
+          />
+        ))}
+        <StatCard
+          label="High-Intent Follow-up Due"
+          value={overdueLeads.length}
+          accent={overdueLeads.length ? "text-red-400" : "text-emerald-400"}
+          sub="New leads past the 2-hour SLA"
+        />
         <StatCard label="Active Opportunities" value={activeOpps.length} sub={`${fmt(oppValue)} pipeline`} />
         <StatCard label="Domain Health" value={`${domainHealth}%`} accent={healthColor(domainHealth)} sub={`${healthyDomains}/${domains.length} healthy`} />
         <StatCard label="Agent Health" value={`${agentHealth}%`} accent={healthColor(agentHealth)} sub={`${agents.length} agents`} />
       </div>
+
+      <section className="rounded-xl border border-slate-800 bg-slate-900/70 p-5">
+        <h2 className="mb-4 text-sm font-medium text-slate-400">High-Intent Lead Alerts</h2>
+        {urgentLeads.length === 0 ? (
+          <p className="text-sm text-slate-500">No new high-intent leads need outreach.</p>
+        ) : (
+          <ul className="divide-y divide-slate-800">
+            {urgentLeads.map((lead) => {
+              const overdue = now - Date.parse(lead.created_at) >= 2 * 60 * 60 * 1000;
+              return (
+                <li key={lead.id} className="flex flex-wrap items-center justify-between gap-2 py-3 text-sm">
+                  <span className="font-medium text-slate-200">{lead.company}</span>
+                  <span className={overdue ? "text-red-400" : "text-amber-400"}>
+                    {overdue ? "2-hour follow-up overdue" : "Immediate manual outreach"}
+                  </span>
+                  <span className="text-slate-500">{lead.qualification_score}/100 · {lead.routing_queue}</span>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card title="Revenue by Month">
