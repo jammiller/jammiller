@@ -4,7 +4,9 @@ export type Asset = (typeof ASSETS)[number];
 export type Lead = {
   id: string; company: string; contact: string | null; email: string | null;
   phone: string | null; source: string | null; opportunity_value: number;
-  status: string; notes: string | null;
+  status: string; notes: string | null; qualification_score: number;
+  intent_tier: "High" | "Medium" | "Low" | "Unqualified";
+  routing_queue: string; qualified_at: string | null; created_at: string;
 };
 export type Revenue = {
   id: string; date: string; amount: number; asset: Asset;

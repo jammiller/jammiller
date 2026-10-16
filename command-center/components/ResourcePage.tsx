@@ -7,9 +7,11 @@ type Row = Record<string, unknown> & { id: string };
 export type Field = {
   key: string;
   label: string;
-  type?: "text" | "number" | "date" | "email" | "datetime-local" | "select" | "textarea";
+  type?: "text" | "number" | "date" | "email" | "datetime-local" | "select" | "textarea" | "boolean";
   options?: readonly string[];
   required?: boolean;
+  readOnly?: boolean;
+  step?: string;
   format?: (v: unknown) => string;
 };
 
@@ -47,11 +49,15 @@ export default function ResourcePage({ title, table, fields, orderBy = "created_
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    const payload: Record<string, string | number> = {};
+    const payload: Record<string, string | number | boolean> = {};
     for (const f of fields) {
+      if (f.readOnly) continue;
       const v = form[f.key];
-      if (v === undefined || v === "") continue;
-      payload[f.key] = f.type === "number" ? Number(v) : v;
+      if (f.type === "boolean") {
+        payload[f.key] = v === "true";
+      } else if (v !== undefined && v !== "") {
+        payload[f.key] = f.type === "number" ? Number(v) : v;
+      }
     }
     try {
       const { error } = await getSupabase().from(table).insert(payload);
@@ -100,11 +106,18 @@ export default function ResourcePage({ title, table, fields, orderBy = "created_
           onSubmit={submit}
           className="mb-6 grid gap-4 rounded-xl border border-slate-800 bg-slate-900/70 p-5 sm:grid-cols-2 lg:grid-cols-3"
         >
-          {fields.map((f) => (
+          {fields.filter((f) => !f.readOnly).map((f) => (
             <label key={f.key} className={`text-xs text-slate-400 ${f.type === "textarea" ? "sm:col-span-2 lg:col-span-3" : ""}`}>
               {f.label}
               <div className="mt-1">
-                {f.type === "select" ? (
+                {f.type === "boolean" ? (
+                  <input
+                    className="h-4 w-4 rounded border-slate-700 bg-slate-950 accent-cyan-500"
+                    type="checkbox"
+                    checked={form[f.key] === "true"}
+                    onChange={(e) => set(f.key, String(e.target.checked))}
+                  />
+                ) : f.type === "select" ? (
                   <select
                     className={input}
                     required={f.required}
@@ -124,7 +137,7 @@ export default function ResourcePage({ title, table, fields, orderBy = "created_
                   <input
                     className={input}
                     type={f.type ?? "text"}
-                    step={f.type === "number" ? "0.01" : undefined}
+                    step={f.step ?? (f.type === "number" ? "0.01" : undefined)}
                     required={f.required}
                     value={form[f.key] ?? ""}
                     onChange={(e) => set(f.key, e.target.value)}
