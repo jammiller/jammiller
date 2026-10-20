@@ -1,4 +1,6 @@
 import { useState, type FormEvent } from 'react';
+import { CookieConsent } from './CookieConsent';
+import { trackAnalyticsEvent } from '../lib/analytics';
 import {
   ArrowRight,
   Clock,
@@ -231,6 +233,10 @@ export function Tremonix() {
       setQuizCurrent(qIndex + 1);
     } else {
       setQuizComplete(true);
+      trackAnalyticsEvent('audit_completed', {
+        funnel_stage: 'audit_complete',
+        product: 'Tremonix',
+      }, 'tremonix_cookie_consent');
     }
   };
 
@@ -305,6 +311,15 @@ export function Tremonix() {
       });
 
       if (response.ok) {
+        trackAnalyticsEvent('generate_lead', {
+          funnel_stage: 'lead',
+          lead_source: 'audit_booking_form',
+          product: 'Tremonix',
+        }, 'tremonix_cookie_consent');
+        trackAnalyticsEvent('booking_requested', {
+          funnel_stage: 'booking_requested',
+          product: 'Tremonix',
+        }, 'tremonix_cookie_consent');
         setFormSuccess(true);
         setFormData({ name: '', email: '', company: '', phone: '' });
         setFormOpen(false);
@@ -319,6 +334,10 @@ export function Tremonix() {
 
   return (
     <div className="min-h-screen bg-navy-950 text-white antialiased">
+      <CookieConsent
+        measurementId={import.meta.env.VITE_TREMONIX_GA4_MEASUREMENT_ID ?? ''}
+        storageKey="tremonix_cookie_consent"
+      />
       {/* Nav */}
       <header className="sticky top-0 z-40 border-b border-white/10 bg-navy-950/95 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
