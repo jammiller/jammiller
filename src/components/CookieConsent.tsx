@@ -3,7 +3,7 @@ import { Cookie, X, Check, Shield } from 'lucide-react';
 
 const STORAGE_KEY = 'dps_cookie_consent';
 const CONSENT_EXPIRY_DAYS = 180;
-const GA_MEASUREMENT_ID = 'G-L8EMSGHX28';
+const DEFAULT_GA_MEASUREMENT_ID = 'G-L8EMSGHX28';
 
 type ConsentChoice = 'accepted' | 'declined' | null;
 
@@ -12,15 +12,15 @@ interface StoredConsent {
   timestamp: number;
 }
 
-function getStoredConsent(): ConsentChoice {
+function getStoredConsent(storageKey: string): ConsentChoice {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(storageKey);
     if (!raw) return null;
     const parsed: StoredConsent = JSON.parse(raw);
     const ageMs = Date.now() - parsed.timestamp;
     const maxAgeMs = CONSENT_EXPIRY_DAYS * 24 * 60 * 60 * 1000;
     if (ageMs > maxAgeMs) {
-      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(storageKey);
       return null;
     }
     return parsed.choice;
@@ -29,56 +29,65 @@ function getStoredConsent(): ConsentChoice {
   }
 }
 
-function saveConsent(choice: Exclude<ConsentChoice, null>) {
+function saveConsent(choice: Exclude<ConsentChoice, null>, storageKey: string) {
   const data: StoredConsent = { choice, timestamp: Date.now() };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  localStorage.setItem(storageKey, JSON.stringify(data));
 }
 
-function loadAnalytics() {
+function loadAnalytics(measurementId: string) {
   if (window.GA4_LOADED) return;
   window.GA4_LOADED = true;
   const script = document.createElement('script');
   script.async = true;
-  script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+  script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
   document.head.appendChild(script);
   window.dataLayer = window.dataLayer || [];
-  window.gtag = function gtag() { window.dataLayer!.push(arguments); };
-  window.gtag('js', new Date());
-  window.gtag('config', GA_MEASUREMENT_ID, { anonymize_ip: true });
+  window.gtag = (...args: unknown[]) => window.dataLayer!.push(args);
+  window.gtag!('js', new Date());
+  window.gtag!('config', measurementId, { anonymize_ip: true });
 }
 
 declare global {
   interface Window {
     dataLayer: unknown[];
-    gtag: (...args: unknown[]) => void;
+    gtag?: (...args: unknown[]) => void;
     GA4_LOADED?: boolean;
   }
 }
 
-export function CookieConsent() {
+type CookieConsentProps = {
+  measurementId?: string;
+  storageKey?: string;
+};
+
+export function CookieConsent({
+  measurementId = DEFAULT_GA_MEASUREMENT_ID,
+  storageKey = STORAGE_KEY,
+}: CookieConsentProps) {
   const [visible, setVisible] = useState(false);
   const [closing, setClosing] = useState(false);
 
   useEffect(() => {
-    const consent = getStoredConsent();
+    if (!measurementId) return;
+    const consent = getStoredConsent(storageKey);
     if (consent === 'accepted') {
-      loadAnalytics();
+      loadAnalytics(measurementId);
     } else if (consent === null) {
       const timer = setTimeout(() => setVisible(true), 800);
       return () => clearTimeout(timer);
     }
-  }, []);
+  }, [measurementId, storageKey]);
 
   const handleChoice = (choice: 'accepted' | 'declined') => {
-    saveConsent(choice);
+    saveConsent(choice, storageKey);
     if (choice === 'accepted') {
-      loadAnalytics();
+      loadAnalytics(measurementId);
     }
     setClosing(true);
     setTimeout(() => setVisible(false), 300);
   };
 
-  if (!visible) return null;
+  if (!measurementId || !visible) return null;
 
   return (
     <div
