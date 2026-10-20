@@ -11,7 +11,7 @@ This is a standalone app in `command-center/`, separate from the Vite site in th
 
 ## Notes
 - RLS allows only `authenticated` users. There is no login page yet: add Supabase Auth, or temporarily enable the commented dev-only anon policy in the schema (never in production).
-- `components/ResourcePage.tsx` is a generic list/add/delete page; each entity page only declares its fields.
+- `components/ResourcePage.tsx` is a generic list/add/edit/delete page; each entity page only declares its fields.
 - MRR = sum of Active clients' monthly value; Active Opportunities = leads not Won/Lost; Domain Health = % Healthy; Agent Health = average score.
 - Lead scores are recalculated by a database trigger whenever a lead is inserted or updated. Company size contributes up to 20 points (the higher of employee-count or revenue bands), industry fit 20, budget 15, purchase intent 20, and engagement 25. Engagement weights email opens (30%), pages visited (25%), time on site (25%), and form completeness (20%), capped at 10 opens, 5 pages, and 300 seconds.
 - Scores route to High (75–100, immediate sales outreach), Medium (50–74, extended email sequence), Low (25–49, content nurture), or Unqualified (0–24, suppress from sequences). The dashboard surfaces new high-intent leads and marks leads still New after two hours as overdue.

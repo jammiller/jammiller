@@ -80,7 +80,8 @@ export default function Dashboard() {
   const overdueLeads = urgentLeads.filter(
     (lead) => now - Date.parse(lead.created_at) >= 2 * 60 * 60 * 1000
   );
-  const today = new Date(now).toISOString().slice(0, 10);
+  const todayDate = new Date(now);
+  const today = `${todayDate.getFullYear()}-${String(todayDate.getMonth() + 1).padStart(2, "0")}-${String(todayDate.getDate()).padStart(2, "0")}`;
   const tremonixLeads = leads.filter((lead) => lead.asset === "Tremonix");
   const followUpsDue = tremonixLeads.filter(
     (lead) =>
