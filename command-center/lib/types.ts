@@ -8,6 +8,18 @@ export type Lead = {
   intent_tier: "High" | "Medium" | "Low" | "Unqualified";
   routing_queue: string; qualified_at: string | null; created_at: string;
 };
+export type LeadStageHistory = {
+  id: string; lead_id: string; stage: string; entered_at: string; exited_at: string | null;
+};
+export type Campaign = {
+  id: string; campaign_name: string; channel: string; source: string | null;
+  content_title: string | null; date: string; sent_count: number; open_count: number;
+  click_count: number; conversions: number;
+};
+export type Traffic = {
+  id: string; date: string; source: string; page_title: string | null;
+  page_path: string; sessions: number; leads: number;
+};
 export type Revenue = {
   id: string; date: string; amount: number; asset: Asset;
   revenue_type: string; notes: string | null;
