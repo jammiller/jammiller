@@ -16,7 +16,7 @@ create table if not exists cc_leads (
   industry text,
   opportunity_value numeric(12,2) not null default 0,
   status text not null default 'New'
-    check (status in ('New','Contacted','Qualified','Proposal','Won','Lost')),
+    check (status in ('New','Contacted','Qualified','Proposal','Booked','Won','Lost')),
   notes text,
   employee_count integer check (employee_count >= 0),
   annual_revenue numeric(14,2) check (annual_revenue >= 0),
@@ -54,6 +54,32 @@ alter table cc_leads
     check (intent_tier in ('High', 'Medium', 'Low', 'Unqualified')),
   add column if not exists routing_queue text not null default 'Suppression - Remove from Sequence',
   add column if not exists qualified_at timestamptz;
+
+alter table cc_leads drop constraint if exists cc_leads_status_check;
+alter table cc_leads add constraint cc_leads_status_check
+  check (status in ('New','Contacted','Qualified','Proposal','Booked','Won','Lost'));
+
+create table if not exists cc_outreach_enrollments (
+  id uuid primary key default gen_random_uuid(),
+  lead_id uuid not null unique references cc_leads(id) on delete cascade,
+  sequence_key text not null check (sequence_key in ('standard','referral')),
+  status text not null default 'active'
+    check (status in ('active','replied','booked','manual','suppressed')),
+  current_step smallint not null default 1 check (current_step between 1 and 5),
+  enrolled_at timestamptz not null default now(),
+  next_step_at timestamptz not null default now(),
+  last_sent_at timestamptz
+);
+
+create table if not exists cc_outreach_events (
+  id uuid primary key default gen_random_uuid(),
+  enrollment_id uuid not null references cc_outreach_enrollments(id) on delete cascade,
+  step_number smallint not null check (step_number between 1 and 5),
+  event_type text not null check (event_type in ('sent','replied','booked','manual_handoff','suppressed')),
+  subject_variant text check (subject_variant in ('A','B')),
+  cta_variant text check (cta_variant in ('A','B')),
+  created_at timestamptz not null default now()
+);
 
 create or replace function cc_score_lead()
 returns trigger
@@ -181,7 +207,7 @@ create table if not exists cc_agents (
 do $$
 declare t text;
 begin
-  foreach t in array array['cc_leads','cc_revenue','cc_clients','cc_domains','cc_agents'] loop
+  foreach t in array array['cc_leads','cc_outreach_enrollments','cc_outreach_events','cc_revenue','cc_clients','cc_domains','cc_agents'] loop
     execute format('alter table %I enable row level security', t);
     execute format('drop policy if exists "auth full access" on %I', t);
     execute format(
@@ -191,6 +217,6 @@ end $$;
 
 -- DEV ONLY (uncomment to use without auth; remove before production):
 -- do $$ declare t text; begin
---   foreach t in array array['cc_leads','cc_revenue','cc_clients','cc_domains','cc_agents'] loop
+--   foreach t in array array['cc_leads','cc_outreach_enrollments','cc_outreach_events','cc_revenue','cc_clients','cc_domains','cc_agents'] loop
 --     execute format('create policy "dev anon" on %I for all to anon using (true) with check (true)', t);
 --   end loop; end $$;
