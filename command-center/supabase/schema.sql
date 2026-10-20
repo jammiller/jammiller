@@ -134,6 +134,45 @@ for each row execute function cc_score_lead();
 
 update cc_leads set qualification_score = qualification_score;
 
+create table if not exists cc_lead_stage_history (
+  id uuid primary key default gen_random_uuid(),
+  lead_id uuid not null references cc_leads(id) on delete cascade,
+  stage text not null,
+  entered_at timestamptz not null default now(),
+  exited_at timestamptz
+);
+
+create index if not exists cc_lead_stage_history_lead_stage_idx
+  on cc_lead_stage_history (lead_id, stage, exited_at);
+
+create or replace function cc_track_lead_stage()
+returns trigger
+language plpgsql
+set search_path = public
+as $$
+begin
+  if tg_op = 'UPDATE' then
+    if old.status is not distinct from new.status then
+      return new;
+    end if;
+
+    update cc_lead_stage_history
+      set exited_at = now()
+      where lead_id = old.id and exited_at is null;
+  end if;
+
+  insert into cc_lead_stage_history (lead_id, stage, entered_at)
+    values (new.id, new.status, case when tg_op = 'INSERT' then new.created_at else now() end);
+
+  return new;
+end;
+$$;
+
+drop trigger if exists cc_leads_stage_history_after_write on cc_leads;
+create trigger cc_leads_stage_history_after_write
+after insert or update of status on cc_leads
+for each row execute function cc_track_lead_stage();
+
 create table if not exists cc_revenue (
   id uuid primary key default gen_random_uuid(),
   date date not null default current_date,
@@ -144,6 +183,33 @@ create table if not exists cc_revenue (
   notes text,
   created_at timestamptz not null default now()
 );
+
+create table if not exists cc_campaigns (
+  id uuid primary key default gen_random_uuid(),
+  campaign_name text not null,
+  channel text not null default 'Email',
+  source text,
+  content_title text,
+  date date not null default current_date,
+  sent_count integer not null default 0 check (sent_count >= 0),
+  open_count integer not null default 0 check (open_count >= 0),
+  click_count integer not null default 0 check (click_count >= 0),
+  conversions integer not null default 0 check (conversions >= 0),
+  created_at timestamptz not null default now()
+);
+
+create table if not exists cc_traffic (
+  id uuid primary key default gen_random_uuid(),
+  date date not null default current_date,
+  source text not null,
+  page_title text,
+  page_path text not null,
+  sessions integer not null default 0 check (sessions >= 0),
+  leads integer not null default 0 check (leads >= 0),
+  created_at timestamptz not null default now()
+);
+
+create index if not exists cc_traffic_date_source_idx on cc_traffic (date, source);
 
 create table if not exists cc_clients (
   id uuid primary key default gen_random_uuid(),
@@ -181,7 +247,10 @@ create table if not exists cc_agents (
 do $$
 declare t text;
 begin
-  foreach t in array array['cc_leads','cc_revenue','cc_clients','cc_domains','cc_agents'] loop
+  foreach t in array array[
+    'cc_leads','cc_lead_stage_history','cc_revenue','cc_campaigns','cc_traffic',
+    'cc_clients','cc_domains','cc_agents'
+  ] loop
     execute format('alter table %I enable row level security', t);
     execute format('drop policy if exists "auth full access" on %I', t);
     execute format(
@@ -191,6 +260,9 @@ end $$;
 
 -- DEV ONLY (uncomment to use without auth; remove before production):
 -- do $$ declare t text; begin
---   foreach t in array array['cc_leads','cc_revenue','cc_clients','cc_domains','cc_agents'] loop
+--   foreach t in array array[
+--     'cc_leads','cc_lead_stage_history','cc_revenue','cc_campaigns','cc_traffic',
+--     'cc_clients','cc_domains','cc_agents'
+--   ] loop
 --     execute format('create policy "dev anon" on %I for all to anon using (true) with check (true)', t);
 --   end loop; end $$;
