@@ -17,6 +17,7 @@ import {
   ChevronDown,
   Loader,
 } from 'lucide-react';
+import { supabase } from '../lib/supabaseClient';
 
 const leakCategories = [
   {
@@ -174,7 +175,11 @@ export function Tremonix() {
   const [formData, setFormData] = useState<FormData>({ name: '', email: '', company: '', phone: '' });
   const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [formSubmitting, setFormSubmitting] = useState(false);
+  const [formSubmitError, setFormSubmitError] = useState<string | null>(null);
   const [formSuccess, setFormSuccess] = useState(false);
+  const [formIntegrationWarning, setFormIntegrationWarning] = useState(false);
+  const [honeypot, setHoneypot] = useState('');
+  const [marketingConsent, setMarketingConsent] = useState(false);
 
   const quizQuestions = [
     {
@@ -290,28 +295,36 @@ export function Tremonix() {
     e.preventDefault();
     if (!validateForm()) return;
 
+    setFormSubmitError(null);
     setFormSubmitting(true);
     try {
-      const response = await fetch('https://formspree.io/f/xpzvwqnj', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          company: formData.company,
-          phone: formData.phone,
-          message: `New audit request from ${formData.company}`,
-        }),
+      const query = new URLSearchParams(window.location.search);
+      const { data, error } = await supabase.functions.invoke('tremonix-lead-capture', {
+        body: {
+          ...formData,
+          source: query.get('utm_source') || 'tremonix_website',
+          campaign: query.get('utm_campaign'),
+          marketing_consent: marketingConsent,
+          website_url: honeypot,
+        },
       });
 
-      if (response.ok) {
-        setFormSuccess(true);
-        setFormData({ name: '', email: '', company: '', phone: '' });
-        setFormOpen(false);
-        setTimeout(() => setFormSuccess(false), 5000);
-      }
-    } catch (error) {
-      console.error('Form submission error:', error);
+      if (error || !data?.success) throw error ?? new Error('Lead submission failed');
+      const integrations = data.integrations;
+      setFormIntegrationWarning(
+        integrations?.crm !== 'sent' || integrations?.welcome !== 'sent' || integrations?.notification !== 'sent',
+      );
+      setFormSuccess(true);
+      setFormErrors({});
+      setFormData({ name: '', email: '', company: '', phone: '' });
+      setHoneypot('');
+      setMarketingConsent(false);
+      setTimeout(() => {
+        setFormSuccess(false);
+        setFormIntegrationWarning(false);
+      }, 5000);
+    } catch {
+      setFormSubmitError('We could not submit your request. Please try again.');
     } finally {
       setFormSubmitting(false);
     }
@@ -590,9 +603,26 @@ export function Tremonix() {
             {formSuccess && (
               <div className="mt-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 p-4">
                 <p className="text-sm text-emerald-300">✓ Thanks! We'll send you a calendar link and next steps shortly.</p>
+                {formIntegrationWarning && (
+                  <p className="mt-2 text-sm text-amber-300">Your request was saved, but some automated follow-up is delayed. You can also reach us at contact@tremonix.com.</p>
+                )}
               </div>
             )}
 
+            {formSubmitError && (
+              <p role="alert" className="mt-4 text-sm text-rose-400">{formSubmitError}</p>
+            )}
+
+            <input
+              type="text"
+              name="website_url"
+              value={honeypot}
+              onChange={(event) => setHoneypot(event.target.value)}
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              className="absolute -left-[9999px] h-px w-px"
+            />
             <form onSubmit={handleFormSubmit} className="mt-6 space-y-4">
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">Your name</label>
@@ -642,9 +672,19 @@ export function Tremonix() {
                 {formErrors.phone && <p className="mt-1 text-xs text-rose-400">{formErrors.phone}</p>}
               </div>
 
+              <label className="flex items-start gap-2 text-sm text-slate-300">
+                <input
+                  type="checkbox"
+                  checked={marketingConsent}
+                  onChange={(event) => setMarketingConsent(event.target.checked)}
+                  className="mt-1 accent-emerald-500"
+                />
+                <span>Email me audit tips and occasional Tremonix updates.</span>
+              </label>
+
               <button
                 type="submit"
-                disabled={formSubmitting}
+                disabled={formSubmitting || formSuccess}
                 className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-navy-950 transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-50"
               >
                 {formSubmitting ? (
