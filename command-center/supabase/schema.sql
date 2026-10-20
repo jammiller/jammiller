@@ -64,7 +64,7 @@ create table if not exists cc_outreach_enrollments (
   lead_id uuid not null unique references cc_leads(id) on delete cascade,
   sequence_key text not null check (sequence_key in ('standard','referral')),
   status text not null default 'active'
-    check (status in ('active','replied','booked','manual')),
+    check (status in ('active','replied','booked','manual','suppressed')),
   current_step smallint not null default 1 check (current_step between 1 and 5),
   enrolled_at timestamptz not null default now(),
   next_step_at timestamptz not null default now(),
@@ -75,7 +75,7 @@ create table if not exists cc_outreach_events (
   id uuid primary key default gen_random_uuid(),
   enrollment_id uuid not null references cc_outreach_enrollments(id) on delete cascade,
   step_number smallint not null check (step_number between 1 and 5),
-  event_type text not null check (event_type in ('sent','replied','booked','manual_handoff')),
+  event_type text not null check (event_type in ('sent','replied','booked','manual_handoff','suppressed')),
   subject_variant text check (subject_variant in ('A','B')),
   cta_variant text check (cta_variant in ('A','B')),
   created_at timestamptz not null default now()

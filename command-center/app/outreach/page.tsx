@@ -18,7 +18,7 @@ type Enrollment = {
   id: string;
   lead_id: string;
   sequence_key: "standard" | "referral";
-  status: "active" | "replied" | "booked" | "manual";
+  status: "active" | "replied" | "booked" | "manual" | "suppressed";
   current_step: number;
   enrolled_at: string;
   next_step_at: string;
@@ -28,7 +28,7 @@ type OutreachEvent = {
   id: string;
   enrollment_id: string;
   step_number: number;
-  event_type: "sent" | "replied" | "booked" | "manual_handoff";
+  event_type: "sent" | "replied" | "booked" | "manual_handoff" | "suppressed";
   subject_variant: "A" | "B" | null;
   cta_variant: "A" | "B" | null;
 };
@@ -125,30 +125,31 @@ const secondaryButton =
   "rounded-md border border-slate-700 px-3 py-2 text-sm text-slate-200 hover:bg-slate-800";
 const day = 24 * 60 * 60 * 1000;
 
-function variantFor(enrollment: Enrollment, step: number): "A" | "B" {
-  const hash = [...enrollment.id].reduce((total, char) => total + char.charCodeAt(0), step);
-  return hash % 2 === 0 ? "A" : "B";
+function variantFor(enrollment: Enrollment, step: number, kind: "subject" | "cta"): "A" | "B" {
+  const seed = `${enrollment.id}:${step}:${kind}`;
+  let hash = 2166136261;
+  for (const char of seed) hash = Math.imul(hash ^ char.charCodeAt(0), 16777619);
+  return (hash >>> 0) % 2 === 0 ? "A" : "B";
 }
 
 function emailContent(lead: Lead, enrollment: Enrollment, step: number) {
   const template = sequences[enrollment.sequence_key][step - 1];
-  const variant = variantFor(enrollment, step);
-  const index = variant === "A" ? 0 : 1;
+  const subjectVariant = variantFor(enrollment, step, "subject");
+  const ctaVariant = variantFor(enrollment, step, "cta");
+  const subjectIndex = subjectVariant === "A" ? 0 : 1;
+  const ctaIndex = ctaVariant === "A" ? 0 : 1;
   const replace = (value: string) =>
     value
       .replaceAll("{{company}}", lead.company)
       .replaceAll("{{contact}}", lead.contact || "there");
   return {
     template,
-    variant,
-    subject: replace(template.subject[index]),
-    cta: template.cta[index],
-    body: `${replace(template.body)}\n\n${template.cta[index]}`,
+    subjectVariant,
+    ctaVariant,
+    subject: replace(template.subject[subjectIndex]),
+    cta: template.cta[ctaIndex],
+    body: `${replace(template.body)}\n\n${template.cta[ctaIndex]}`,
   };
-}
-
-function dueAt(enrollment: Enrollment, step: number) {
-  return Date.parse(enrollment.enrolled_at) + sequences[enrollment.sequence_key][step - 1].day * day;
 }
 
 export default function OutreachPage() {
@@ -170,9 +171,48 @@ export default function OutreachPage() {
       ]);
       const firstError = [leadResult, enrollmentResult, eventResult].find((result) => result.error)?.error;
       if (firstError) throw new Error(firstError.message);
-      setLeads((leadResult.data as Lead[]) ?? []);
-      setEnrollments((enrollmentResult.data as Enrollment[]) ?? []);
-      setEvents((eventResult.data as OutreachEvent[]) ?? []);
+      const loadedLeads = (leadResult.data as Lead[]) ?? [];
+      const loadedEnrollments = (enrollmentResult.data as Enrollment[]) ?? [];
+      const loadedEvents = (eventResult.data as OutreachEvent[]) ?? [];
+      const loadedLeadById = new Map(loadedLeads.map((lead) => [lead.id, lead]));
+      const closedEnrollments = loadedEnrollments.filter((enrollment) =>
+        enrollment.status === "active" &&
+        ["Booked", "Won", "Lost"].includes(loadedLeadById.get(enrollment.lead_id)?.status ?? "")
+      );
+      for (const enrollment of closedEnrollments) {
+        const lead = loadedLeadById.get(enrollment.lead_id);
+        const booked = lead?.status === "Booked";
+        const eventType = booked ? "booked" : "suppressed";
+        const { data: updated, error: updateError } = await sb.from("cc_outreach_enrollments")
+          .update({ status: booked ? "booked" : "suppressed" })
+          .eq("id", enrollment.id)
+          .eq("status", "active")
+          .select("id")
+          .maybeSingle();
+        if (updateError) throw new Error(updateError.message);
+        if (updated) {
+          const { error: eventError } = await sb.from("cc_outreach_events").insert({
+            enrollment_id: enrollment.id,
+            step_number: Math.max(1, enrollment.current_step - 1),
+            event_type: eventType,
+          });
+          if (eventError) throw new Error(eventError.message);
+        }
+        enrollment.status = booked ? "booked" : "suppressed";
+      }
+      setLeads(loadedLeads);
+      setEnrollments(loadedEnrollments);
+      setEvents([
+        ...loadedEvents,
+        ...closedEnrollments.map((enrollment) => ({
+          id: `${enrollment.id}-closed`,
+          enrollment_id: enrollment.id,
+          step_number: Math.max(1, enrollment.current_step - 1),
+          event_type: loadedLeadById.get(enrollment.lead_id)?.status === "Booked" ? "booked" as const : "suppressed" as const,
+          subject_variant: null,
+          cta_variant: null,
+        })),
+      ]);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
@@ -223,17 +263,17 @@ export default function OutreachPage() {
 
   async function markSent(enrollment: Enrollment) {
     const lead = leadById.get(enrollment.lead_id);
-    if (!lead) return;
+    if (!lead || ["Booked", "Won", "Lost"].includes(lead.status)) return;
     setBusy(true);
     setError(null);
     const step = enrollment.current_step;
-    const { variant } = emailContent(lead, enrollment, step);
+    const { subjectVariant, ctaVariant } = emailContent(lead, enrollment, step);
     const sentEvent = {
       enrollment_id: enrollment.id,
       step_number: step,
       event_type: "sent",
-      subject_variant: variant,
-      cta_variant: variant,
+      subject_variant: subjectVariant,
+      cta_variant: ctaVariant,
     };
     try {
       const { error: eventError } = await getSupabase().from("cc_outreach_events").insert(sentEvent);
@@ -250,13 +290,17 @@ export default function OutreachPage() {
         if (updateError) throw new Error(updateError.message);
       } else {
         const nextStep = step + 1;
-        const nextStepAt = new Date(dueAt(enrollment, nextStep)).toISOString();
+        const sentAt = new Date();
+        const gapDays =
+          sequences[enrollment.sequence_key][nextStep - 1].day -
+          sequences[enrollment.sequence_key][step - 1].day;
+        const nextStepAt = new Date(sentAt.getTime() + gapDays * day).toISOString();
         const { error: updateError } = await getSupabase()
           .from("cc_outreach_enrollments")
           .update({
             current_step: nextStep,
             next_step_at: nextStepAt,
-            last_sent_at: new Date().toISOString(),
+            last_sent_at: sentAt.toISOString(),
           })
           .eq("id", enrollment.id);
         if (updateError) throw new Error(updateError.message);
@@ -275,8 +319,11 @@ export default function OutreachPage() {
     setError(null);
     const lastSentStep = Math.max(1, enrollment.current_step - 1);
     const lead = leadById.get(enrollment.lead_id);
-    const variant = lead && enrollment.current_step > 1
-      ? variantFor(enrollment, lastSentStep)
+    const subjectVariant = lead && enrollment.current_step > 1
+      ? variantFor(enrollment, lastSentStep, "subject")
+      : null;
+    const ctaVariant = lead && enrollment.current_step > 1
+      ? variantFor(enrollment, lastSentStep, "cta")
       : null;
     try {
       if (outcome === "booked") {
@@ -288,8 +335,8 @@ export default function OutreachPage() {
         enrollment_id: enrollment.id,
         step_number: lastSentStep,
         event_type: outcome,
-        subject_variant: variant,
-        cta_variant: variant,
+        subject_variant: subjectVariant,
+        cta_variant: ctaVariant,
       });
       if (eventError) throw new Error(eventError.message);
       const { error: updateError } = await getSupabase()
@@ -304,9 +351,11 @@ export default function OutreachPage() {
     }
   }
 
-  function metrics(step: number, variant: "A" | "B") {
+  function metrics(step: number, subjectVariant: "A" | "B", ctaVariant: "A" | "B") {
     const matching = events.filter((event) =>
-      event.step_number === step && event.subject_variant === variant
+      event.step_number === step &&
+      event.subject_variant === subjectVariant &&
+      event.cta_variant === ctaVariant
     );
     const sent = matching.filter((event) => event.event_type === "sent").length;
     const replies = matching.filter((event) => event.event_type === "replied").length;
@@ -342,9 +391,10 @@ export default function OutreachPage() {
               const lead = leadById.get(enrollment.lead_id);
               if (!lead) return null;
               const step = enrollment.current_step;
-              const { template, variant, subject, cta, body } = emailContent(lead, enrollment, step);
+              const { template, subjectVariant, ctaVariant, subject, cta, body } = emailContent(lead, enrollment, step);
               const isDue = Date.parse(enrollment.next_step_at) <= Date.now();
-              const draftUrl = `mailto:${encodeURIComponent(lead.email ?? "")}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+              const recipient = encodeURIComponent(lead.email ?? "").replaceAll("%40", "@");
+              const draftUrl = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
               return (
                 <article key={enrollment.id} className="rounded-lg border border-slate-800 p-4">
                   <div className="flex flex-wrap items-start justify-between gap-3">
@@ -362,13 +412,13 @@ export default function OutreachPage() {
                   <div className="mt-4 border-t border-slate-800 pt-4">
                     <div className="flex flex-wrap justify-between gap-2 text-sm">
                       <span className="font-medium text-cyan-300">Email {step}: {template.name}</span>
-                      <span className="text-slate-500">Subject / CTA variant {variant} · Day {template.day}</span>
+                      <span className="text-slate-500">Subject {subjectVariant} · CTA {ctaVariant} · Day {template.day}</span>
                     </div>
                     <p className="mt-2 text-slate-300">{subject}</p>
                     <pre className="mt-2 whitespace-pre-wrap font-sans text-sm text-slate-400">{body}</pre>
                     <div className="mt-4 flex flex-wrap gap-2">
                       <a className={secondaryButton} href={draftUrl}>Open email draft</a>
-                      <button className={button} disabled={busy || !isDue} onClick={() => markSent(enrollment)}>
+                      <button className={button} disabled={busy || !isDue || ["Booked", "Won", "Lost"].includes(lead.status)} onClick={() => markSent(enrollment)}>
                         Record as sent
                       </button>
                       <button className={secondaryButton} disabled={busy || step === 1} onClick={() => stopSequence(enrollment, "replied")}>
@@ -393,19 +443,20 @@ export default function OutreachPage() {
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm">
             <thead className="border-b border-slate-800 text-left text-xs uppercase tracking-wider text-slate-500">
-              <tr><th className="px-3 py-2">Email</th><th className="px-3 py-2">Variant</th><th className="px-3 py-2">Sent</th><th className="px-3 py-2">Replies</th><th className="px-3 py-2">Response rate</th></tr>
+              <tr><th className="px-3 py-2">Email</th><th className="px-3 py-2">Subject</th><th className="px-3 py-2">CTA</th><th className="px-3 py-2">Sent</th><th className="px-3 py-2">Replies</th><th className="px-3 py-2">Response rate</th></tr>
             </thead>
             <tbody>
               {sequences.standard.map((template, index) => (
-                (["A", "B"] as const).map((variant) => {
-                  const result = metrics(index + 1, variant);
+                (["A", "B"] as const).flatMap((subjectVariant) =>
+                  (["A", "B"] as const).map((ctaVariant) => {
+                  const result = metrics(index + 1, subjectVariant, ctaVariant);
                   return (
-                    <tr className="border-b border-slate-800/60 text-slate-300" key={`${index}-${variant}`}>
-                      <td className="px-3 py-2">{template.name}</td><td className="px-3 py-2">{variant}</td>
+                    <tr className="border-b border-slate-800/60 text-slate-300" key={`${index}-${subjectVariant}-${ctaVariant}`}>
+                      <td className="px-3 py-2">{template.name}</td><td className="px-3 py-2">{subjectVariant}</td><td className="px-3 py-2">{ctaVariant}</td>
                       <td className="px-3 py-2">{result.sent}</td><td className="px-3 py-2">{result.replies}</td><td className="px-3 py-2">{result.rate}</td>
                     </tr>
                   );
-                })
+                }))
               ))}
             </tbody>
           </table>
@@ -424,7 +475,13 @@ export default function OutreachPage() {
                 <li key={enrollment.id} className="flex flex-wrap justify-between gap-2 py-3 text-sm">
                   <span className="text-slate-200">{lead?.company ?? "Deleted lead"}</span>
                   <span className={enrollment.status === "manual" ? "text-amber-300" : "text-emerald-300"}>
-                    {enrollment.status === "manual" ? "Manual sales follow-up required" : enrollment.status === "booked" ? "Booked — sequence stopped" : "Replied — sequence stopped"}
+                    {enrollment.status === "manual"
+                      ? "Manual sales follow-up required"
+                      : enrollment.status === "booked"
+                        ? "Booked — sequence stopped"
+                        : enrollment.status === "suppressed"
+                          ? "Lead closed — sequence suppressed"
+                          : "Replied — sequence stopped"}
                   </span>
                 </li>
               );
