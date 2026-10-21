@@ -261,8 +261,10 @@ $$;
 
 drop trigger if exists cc_leads_outreach_after_write on cc_leads;
 create trigger cc_leads_outreach_after_write
-after insert or update of email, source, status, intent_tier, meeting_booked on cc_leads
+after insert or update on cc_leads
 for each row execute function cc_sync_lead_outreach();
+
+update cc_leads set email = email;
 
 create or replace function cc_record_outreach_event(
   p_enrollment_id uuid,
