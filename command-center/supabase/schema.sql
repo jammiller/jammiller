@@ -297,6 +297,9 @@ begin
     if enrollment.status <> 'active' or enrollment.current_step > 5 then
       raise exception 'This enrollment is not awaiting an email';
     end if;
+    if enrollment.next_send_at is null or enrollment.next_send_at > now() then
+      raise exception 'This email is not due yet';
+    end if;
     event_step := enrollment.current_step;
   else
     event_step := least(5, greatest(1, enrollment.current_step - 1));

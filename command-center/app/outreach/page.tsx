@@ -54,7 +54,7 @@ export default function OutreachPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState<string | null>(null);
-  const [now] = useState(() => Date.now());
+  const [now, setNow] = useState(() => Date.now());
 
   const load = useCallback(async () => {
     try {
@@ -84,6 +84,10 @@ export default function OutreachPage() {
   }, []);
 
   useEffect(() => { void load(); }, [load]);
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(Date.now()), 60_000);
+    return () => window.clearInterval(timer);
+  }, []);
 
   const active = enrollments.filter((row) => row.status === "active");
   const due = active.filter((row) => row.next_send_at && Date.parse(row.next_send_at) <= now);
@@ -135,12 +139,13 @@ export default function OutreachPage() {
 
   function enrollmentActions(enrollment: Enrollment) {
     const busy = busyId === enrollment.id;
+    const isDue = enrollment.next_send_at !== null && Date.parse(enrollment.next_send_at) <= now;
     return (
       <div className="flex flex-wrap gap-2">
         {enrollment.status === "active" && enrollment.current_step <= 5 && (
           <>
             <a className={button} href={draftUrl(enrollment)}>Open email draft</a>
-            <button className={button} disabled={busy} onClick={() => void record(enrollment, "sent")}>Mark sent</button>
+            <button className={button} disabled={busy || !isDue} onClick={() => void record(enrollment, "sent")}>Mark sent</button>
           </>
         )}
         {enrollment.status === "active" && (
