@@ -104,7 +104,7 @@ export function CookieConsent() {
                   We use cookies to enhance your browsing experience, analyze site traffic, and
                   personalize content. By clicking "Accept all", you consent to our use of cookies.
                   See our{' '}
-                  <a href="https://datapulsesocial.com/privacy" className="text-navy-900 font-medium hover:text-gold-600 underline underline-offset-2">
+                  <a href="https://www.datapulsesocial.com/privacy" className="text-navy-900 font-medium hover:text-gold-600 underline underline-offset-2">
                     Privacy Policy
                   </a>{' '}
                   for details.

@@ -34,6 +34,10 @@
       "destination": "/tremonix/sitemap.xml"
     },
     {
+      "source": "/privacy",
+      "destination": "/privacy-policy.html"
+    },
+    {
       "source": "/((?!sw\\.js|manifest\\.json|safety-manifest\\.json|pulseos-manifest\\.json|statslab-manifest\\.json|robots\\.txt|sitemap\\.xml|llms\\.txt|_redirects|google.*|privacy-policy\\.html).*)",
       "destination": "/index.html"
     }
@@ -86,6 +90,17 @@
     }
   ],
   "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "datapulsesocial.com"
+        }
+      ],
+      "destination": "https://www.datapulsesocial.com/:path*",
+      "statusCode": 301
+    },
     {
       "source": "/:path*",
       "has": [

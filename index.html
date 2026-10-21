@@ -18,9 +18,9 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="google-site-verification" content="wgURdOvCdUKE-2-qbxiy1JWsIzIhvaiECh2wIicFm3w" />
 
-    <title>DATAPULSE SOCIAL</title>
-    <meta name="description" content="We engineer UbD-driven learning systems that reduce cognitive overload and build the workforce competencies needed for a tech-savvy, machine-ready, high-performance workforce." />
-    <meta name="keywords" content="curriculum development, UbD, understanding by design, workforce competencies, cognitive load, instructional design, learning systems, course development, competency-based learning" />
+    <title>DATAPULSE SOCIAL | Social Growth &amp; Course Design for Experts</title>
+    <meta name="description" content="Social growth strategy and course design for experts. We build the system that attracts an audience, nurtures it, and converts it into paid courses." />
+    <meta name="keywords" content="social media growth, course design, online course creation, content strategy, expert marketing, course builder, social media management" />
     <meta name="author" content="DATAPULSE SOCIAL" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://www.datapulsesocial.com/" />
@@ -29,29 +29,30 @@
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="DATAPULSE SOCIAL" />
-    <meta property="og:title" content="DATAPULSE SOCIAL | UbD-Engineered Learning Systems" />
-    <meta property="og:description" content="We engineer UbD-driven learning systems that reduce cognitive overload and build the workforce competencies needed for a tech-savvy, machine-ready, high-performance workforce." />
+    <meta property="og:title" content="DATAPULSE SOCIAL | Social Growth &amp; Course Design for Experts" />
+    <meta property="og:description" content="Social growth strategy and course design for experts. We build the system that attracts an audience, nurtures it, and converts it into paid courses." />
     <meta property="og:url" content="https://www.datapulsesocial.com/" />
-    <meta property="og:image" content="https://www.datapulsesocial.com/Academic_English_Mastery_Guide.png" />
+    <meta property="og:image" content="https://www.datapulsesocial.com/datapulse-og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="en_US" />
 
     <!-- Twitter / X Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="DATAPULSE SOCIAL | UbD-Engineered Learning Systems" />
-    <meta name="twitter:description" content="We engineer UbD-driven learning systems that reduce cognitive overload and build the workforce competencies needed for a tech-savvy, machine-ready, high-performance workforce." />
-    <meta name="twitter:image" content="https://www.datapulsesocial.com/Academic_English_Mastery_Guide.png" />
+    <meta name="twitter:title" content="DATAPULSE SOCIAL | Social Growth &amp; Course Design for Experts" />
+    <meta name="twitter:description" content="Social growth strategy and course design for experts. We build the system that attracts an audience, nurtures it, and converts it into paid courses." />
+    <meta name="twitter:image" content="https://www.datapulsesocial.com/datapulse-og-image.png" />
 
     <!-- Structured Data -->
+    <!-- TODO: add "sameAs" profile URLs (LinkedIn, etc.) once the real company profile links are confirmed. -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "ProfessionalService",
       "name": "DATAPULSE SOCIAL",
-      "url": "https://www.datapulsesocial.com",
-      "logo": "https://www.datapulsesocial.com/Academic_English_Mastery_Guide.png",
-      "description": "We engineer UbD-driven learning systems that reduce cognitive overload and build the workforce competencies needed for a tech-savvy, machine-ready, high-performance workforce.",
+      "url": "https://www.datapulsesocial.com/",
+      "logo": "https://www.datapulsesocial.com/datapulse-og-image.png",
+      "description": "Social growth strategy and course design for experts. We build the system that attracts an audience, nurtures it, and converts it into paid courses.",
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "28839 Midnight Star Loop",
@@ -65,7 +66,7 @@
       "founder": {
         "@type": "Person",
         "name": "James Miller",
-        "jobTitle": "Curriculum Architect & Platform Designer"
+        "jobTitle": "Founder"
       },
       "sameAs": []
     }
@@ -78,8 +79,8 @@
         var p = window.location.pathname.replace(/\/$/, '') || '/';
         var variants = {
           datapulse: {
-            title: 'DATAPULSE SOCIAL',
-            description: 'We engineer UbD-driven learning systems that reduce cognitive overload and build the workforce competencies needed for a tech-savvy, machine-ready, high-performance workforce.',
+            title: 'DATAPULSE SOCIAL | Social Growth & Course Design for Experts',
+            description: 'Social growth strategy and course design for experts. We build the system that attracts an audience, nurtures it, and converts it into paid courses.',
             canonical: 'https://www.datapulsesocial.com/',
             manifest: '/manifest.json', icon: '/favicon-32.png', apple: '/apple-touch-icon.png', theme: '#0a1a2f'
           },
@@ -108,7 +109,13 @@
             canonical: 'https://www.voltecho.app/', manifest: '/voltecho-manifest.json', icon: '/voltecho-icon.svg', apple: '/voltecho-icon.svg', theme: '#000000'
           }
         };
-        var key = document.documentElement.dataset.app === 'pulseos' || h === 'pulseosplatform.com' || h === 'www.pulseosplatform.com' || h.startsWith('pulse-os-') ? 'pulseos' : 'tremonix';
+        var key = 'datapulse';
+        if (document.documentElement.dataset.app === 'pulseos' || /^(www\.)?pulseosplatform\.com$/.test(h) || h.startsWith('pulse-os-')) key = 'pulseos';
+        else if (/^(www\.)?tremonix\.com$/.test(h)) key = 'tremonix';
+        else if (/^(www\.)?safetyapp\.com$/.test(h)) key = 'safety';
+        else if (/^(www\.)?statslab\.app$/.test(h)) key = 'statslab';
+        else if (/^(www\.)?harborhush\.website$/.test(h)) key = 'harbor';
+        else if (/^(www\.)?voltecho\.app$/.test(h)) key = 'voltecho';
         var variant = variants[key];
         function setLink(selector, href, type) {
           var link = document.querySelector(selector) || document.head.appendChild(document.createElement('link'));
@@ -136,6 +143,27 @@
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <main style="font-family:Inter,Arial,sans-serif;max-width:760px;margin:0 auto;padding:32px 16px;line-height:1.6">
+        <h1>We help experts grow online and turn knowledge into paid courses</h1>
+        <p>DATAPULSE SOCIAL builds the system that attracts, nurtures, and converts: from social strategy to course design.</p>
+        <h2>Services</h2>
+        <ul>
+          <li><strong>Social Growth</strong> &mdash; positioning, content strategy and production, conversion-focused optimization.</li>
+          <li><strong>Course Build</strong> &mdash; curriculum and learning journey design, lessons, scripts, assessments, and launch support.</li>
+        </ul>
+        <h2>Pricing</h2>
+        <ul>
+          <li>Social Management &mdash; custom scope</li>
+          <li>Course Build &mdash; custom scope</li>
+          <li>Membership &mdash; $49/month</li>
+          <li>Custom / Hybrid &mdash; custom scope</li>
+        </ul>
+        <h2>Contact</h2>
+        <p>Email: <a href="mailto:info@datapulsesocial.com">info@datapulsesocial.com</a><br />Phone: 850-830-9910<br />28839 Midnight Star Loop, Wesley Chapel, FL 33543</p>
+        <p><a href="/privacy">Privacy Policy</a></p>
+      </main>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
