@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { supabase } from '../lib/supabaseClient';
 import {
   ArrowRight,
   Clock,
@@ -156,6 +157,7 @@ interface FormData {
   email: string;
   company: string;
   phone: string;
+  marketingConsent: boolean;
 }
 
 interface FormErrors {
@@ -171,10 +173,11 @@ export function Tremonix() {
   const [quizAnswers, setQuizAnswers] = useState<Record<number, string>>({});
   const [quizComplete, setQuizComplete] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
-  const [formData, setFormData] = useState<FormData>({ name: '', email: '', company: '', phone: '' });
+  const [formData, setFormData] = useState<FormData>({ name: '', email: '', company: '', phone: '', marketingConsent: false });
   const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [formSubmitting, setFormSubmitting] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
+  const [formSubmitError, setFormSubmitError] = useState('');
 
   const quizQuestions = [
     {
@@ -291,27 +294,39 @@ export function Tremonix() {
     if (!validateForm()) return;
 
     setFormSubmitting(true);
+    setFormSubmitError('');
     try {
-      const response = await fetch('https://formspree.io/f/xpzvwqnj', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      const params = new URLSearchParams(window.location.search);
+      const { error } = await supabase.functions.invoke('tremonix-lead-capture', {
+        body: {
           name: formData.name,
           email: formData.email,
           company: formData.company,
           phone: formData.phone,
-          message: `New audit request from ${formData.company}`,
-        }),
+          marketing_consent: formData.marketingConsent,
+          source: 'tremonix_audit_inquiry',
+          campaign: params.get('campaign') ?? params.get('utm_campaign'),
+          utm_source: params.get('utm_source'),
+          utm_medium: params.get('utm_medium'),
+          utm_campaign: params.get('utm_campaign'),
+          utm_content: params.get('utm_content'),
+          utm_term: params.get('utm_term'),
+          landing_page: window.location.href,
+          referrer: document.referrer,
+          quiz_answers: quizAnswers,
+        },
       });
 
-      if (response.ok) {
-        setFormSuccess(true);
-        setFormData({ name: '', email: '', company: '', phone: '' });
+      if (error) throw error;
+
+      setFormSuccess(true);
+      setFormData({ name: '', email: '', company: '', phone: '', marketingConsent: false });
+      setTimeout(() => {
+        setFormSuccess(false);
         setFormOpen(false);
-        setTimeout(() => setFormSuccess(false), 5000);
-      }
-    } catch (error) {
-      console.error('Form submission error:', error);
+      }, 5000);
+    } catch {
+      setFormSubmitError('We couldn’t submit your request. Please try again, or email contact@tremonix.com.');
     } finally {
       setFormSubmitting(false);
     }
@@ -356,7 +371,11 @@ export function Tremonix() {
               <p className="mt-6 text-sm text-slate-300">Regular Price: <s>$397</s> <strong className="ml-3 text-emerald-400">Introductory Price: $97</strong></p>
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                 <button
-                  onClick={() => setFormOpen(true)}
+                  onClick={() => {
+                    setFormOpen(true);
+                    setFormSuccess(false);
+                    setFormSubmitError('');
+                  }}
                   className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-navy-950 transition-all hover:-translate-y-0.5 hover:shadow-lg"
                 >
                   Book your $97 introductory audit <ArrowRight className="h-4 w-4" />
@@ -443,7 +462,11 @@ export function Tremonix() {
 
             <div className="mt-12 text-center">
               <button
-                onClick={() => setFormOpen(true)}
+                onClick={() => {
+                  setFormOpen(true);
+                  setFormSuccess(false);
+                  setFormSubmitError('');
+                }}
                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-navy-950 transition-all hover:-translate-y-0.5 hover:shadow-lg"
               >
                 Ready? Book your audit <ArrowRight className="h-4 w-4" />
@@ -593,7 +616,9 @@ export function Tremonix() {
               </div>
             )}
 
-            <form onSubmit={handleFormSubmit} className="mt-6 space-y-4">
+            {formSubmitError && <p role="alert" className="mt-4 text-sm text-rose-400">{formSubmitError}</p>}
+
+            {!formSuccess && <form onSubmit={handleFormSubmit} className="mt-6 space-y-4">
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">Your name</label>
                 <input
@@ -642,6 +667,16 @@ export function Tremonix() {
                 {formErrors.phone && <p className="mt-1 text-xs text-rose-400">{formErrors.phone}</p>}
               </div>
 
+              <label className="flex items-start gap-3 text-xs leading-relaxed text-slate-300">
+                <input
+                  type="checkbox"
+                  checked={formData.marketingConsent}
+                  onChange={(e) => setFormData({ ...formData, marketingConsent: e.target.checked })}
+                  className="mt-0.5 accent-emerald-500"
+                />
+                Email me practical follow-up tips and Tremonix updates. I can unsubscribe at any time.
+              </label>
+
               <button
                 type="submit"
                 disabled={formSubmitting}
@@ -667,7 +702,7 @@ export function Tremonix() {
               >
                 Cancel
               </button>
-            </form>
+            </form>}
           </div>
         </div>
       )}
