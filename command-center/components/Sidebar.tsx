@@ -1,12 +1,13 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Target, DollarSign, Users, Globe, Bot, Menu, X } from "lucide-react";
+import { LayoutDashboard, Target, DollarSign, Users, Globe, Bot, Mail, Menu, X } from "lucide-react";
 import { useState } from "react";
 
 const links = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/leads", label: "Leads", icon: Target },
+  { href: "/outreach", label: "Outreach", icon: Mail },
   { href: "/revenue", label: "Revenue", icon: DollarSign },
   { href: "/clients", label: "Clients", icon: Users },
   { href: "/domains", label: "Domains", icon: Globe },
