@@ -38,6 +38,16 @@
       "destination": "/privacy-policy.html"
     },
     {
+      "source": "/((?!assets/|.*\\.[a-zA-Z0-9]+$).*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?tremonix\\.com"
+        }
+      ],
+      "destination": "/tremonix.html"
+    },
+    {
       "source": "/((?!sw\\.js|manifest\\.json|safety-manifest\\.json|pulseos-manifest\\.json|statslab-manifest\\.json|robots\\.txt|sitemap\\.xml|llms\\.txt|_redirects|google.*|privacy-policy\\.html).*)",
       "destination": "/index.html"
     }
