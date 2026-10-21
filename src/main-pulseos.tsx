@@ -5,6 +5,7 @@ import { WorkforceMode } from './components/pulseos/WorkforceMode';
 import { PulseOS } from './components/PulseOS';
 import { LearningIntelligence } from './components/pulseos/LearningIntelligence';
 import { ForemanPortal } from './components/pulseos/ForemanPortal';
+import { TrustCenter, type TrustCenterView } from './components/pulseos/TrustCenter';
 import './index.css';
 
 const isPasswordRecovery = new URLSearchParams(window.location.hash.slice(1)).get('type') === 'recovery'
@@ -16,12 +17,15 @@ const courseBuilderView = pathname === '/course-builder/assessments' ? 'assessme
     : pathname === '/course-builder' ? 'workforce'
       : null;
 const isLearningIntelligenceRoute = pathname === '/learning-intelligence' || pathname.startsWith('/learning-intelligence/');
+const isTrustCenterRoute = pathname === '/trust-center' || pathname.startsWith('/trust-center/');
+const trustCenterViews: TrustCenterView[] = ['risk-monitor', 'investigations', 'audit-logs', 'integrity-ai'];
+const trustCenterView = trustCenterViews.find((v) => pathname === `/trust-center/${v}`) ?? 'overview';
 const learningTool = pathname === '/learning-intelligence/lvi' ? 'lvi' : 'overview';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <PulseOSAuthProvider>
-    {isForemanRoute ? <ForemanPortal /> : courseBuilderView ? <PulseOS initialView={courseBuilderView} brand="pulseos" /> : isLearningIntelligenceRoute ? <LearningIntelligence initialTool={learningTool} /> : <WorkforceMode initialView={isPasswordRecovery ? 'ojt' : 'library'} />}
+    {isForemanRoute ? <ForemanPortal /> : isTrustCenterRoute ? <TrustCenter initialView={trustCenterView} /> : courseBuilderView ? <PulseOS initialView={courseBuilderView} brand="pulseos" /> : isLearningIntelligenceRoute ? <LearningIntelligence initialTool={learningTool} /> : <WorkforceMode initialView={isPasswordRecovery ? 'ojt' : 'library'} />}
     </PulseOSAuthProvider>
   </StrictMode>
 );

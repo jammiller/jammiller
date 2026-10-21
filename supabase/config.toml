@@ -7,3 +7,5 @@ verify_jwt = false
 [functions.insider-access]
 verify_jwt = false
 
+[functions.pulseos-trust-center]
+verify_jwt = true
