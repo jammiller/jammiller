@@ -12,6 +12,7 @@
     "build": "vite build",
     "build:pulseos": "vite build --config vite.pulseos.config.ts && node scripts/check-pulseos-build.mjs",
     "lint": "eslint .",
+    "test:trust-center": "node --experimental-transform-types --test src/lib/trust-center/trust-center.test.ts",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
     "cap:sync": "npm run build && npx cap sync android",
