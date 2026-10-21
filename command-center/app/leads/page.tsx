@@ -30,7 +30,7 @@ export default function LeadsPage() {
         { key: "intent_tier", label: "Intent Tier", readOnly: true },
         { key: "routing_queue", label: "Routing Queue", readOnly: true },
         { key: "qualified_at", label: "Qualified At", readOnly: true, format: dateTime },
-        { key: "status", label: "Status", type: "select",
+        { key: "status", label: "Status", type: "select", editable: true,
           options: ["New", "Contacted", "Qualified", "Proposal", "Won", "Lost"] },
         { key: "notes", label: "Notes", type: "textarea" },
       ]}
