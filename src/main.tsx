@@ -15,7 +15,7 @@ import './index.css';
 
 const hostname = window.location.hostname.toLowerCase();
 const isPulseOS = document.documentElement.dataset.app === 'pulseos' || hostname === 'pulseosplatform.com' || hostname === 'www.pulseosplatform.com' || hostname.startsWith('pulse-os-') || hostname === 'pulse-os-datapulse-social.vercel.app';
-const isDataPulseHost = hostname === 'datapulsesocial.com' || hostname === 'www.datapulsesocial.com';
+const isDataPulseHost = document.documentElement.dataset.app === 'datapulse' || hostname === 'datapulsesocial.com' || hostname === 'www.datapulsesocial.com';
 const isPasswordRecovery = new URLSearchParams(window.location.hash.slice(1)).get('type') === 'recovery'
   || new URLSearchParams(window.location.search).get('type') === 'recovery';
 const pathname = window.location.pathname.replace(/\/$/, '') || '/';

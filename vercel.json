@@ -35,6 +35,26 @@
     },
     {
       "source": "/privacy",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?datapulsesocial\\.com"
+        }
+      ],
+      "destination": "/website-privacy-policy.html"
+    },
+    {
+      "source": "/((?!assets/|.*\\.[a-zA-Z0-9]+$).*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?datapulsesocial\\.com"
+        }
+      ],
+      "destination": "/datapulse.html"
+    },
+    {
+      "source": "/privacy",
       "destination": "/privacy-policy.html"
     },
     {

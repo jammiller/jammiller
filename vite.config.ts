@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   build: {
-    rollupOptions: { input: { main: 'index.html', pulseos: 'pulseos.html', tremonix: 'tremonix.html' } },
+    rollupOptions: { input: { main: 'index.html', pulseos: 'pulseos.html', tremonix: 'tremonix.html', datapulse: 'datapulse.html' } },
   },
   optimizeDeps: {
     include: ['@supabase/supabase-js'],
