@@ -11,6 +11,7 @@ export type Field = {
   options?: readonly string[];
   required?: boolean;
   readOnly?: boolean;
+  editable?: boolean;
   step?: string;
   format?: (v: unknown) => string;
 };
@@ -75,7 +76,18 @@ export default function ResourcePage({ title, table, fields, orderBy = "created_
     try {
       const { error } = await getSupabase().from(table).delete().eq("id", id);
       if (error) setError(error.message);
-      else load();
+      else void load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    }
+  }
+
+  async function updateField(id: string, key: string, value: string) {
+    setError(null);
+    try {
+      const { error } = await getSupabase().from(table).update({ [key]: value }).eq("id", id);
+      if (error) setError(error.message);
+      else void load();
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     }
@@ -172,7 +184,16 @@ export default function ResourcePage({ title, table, fields, orderBy = "created_
                 <tr key={r.id} className="border-b border-slate-800/60 text-slate-300 hover:bg-slate-800/30">
                   {fields.map((f) => (
                     <td key={f.key} className="max-w-xs truncate px-4 py-3">
-                      {f.format ? f.format(r[f.key]) : String(r[f.key] ?? "—")}
+                      {f.editable && f.type === "select" ? (
+                        <select
+                          aria-label={`${f.label} for ${String(r.company ?? r.id)}`}
+                          className="rounded border border-slate-700 bg-slate-950 px-2 py-1 text-slate-200"
+                          value={String(r[f.key] ?? "")}
+                          onChange={(e) => void updateField(r.id, f.key, e.target.value)}
+                        >
+                          {f.options?.map((option) => <option key={option}>{option}</option>)}
+                        </select>
+                      ) : f.format ? f.format(r[f.key]) : String(r[f.key] ?? "—")}
                     </td>
                   ))}
                   <td className="px-4 py-3 text-right">
