@@ -177,11 +177,80 @@ create table if not exists cc_agents (
   created_at timestamptz not null default now()
 );
 
+create table if not exists cc_lead_stage_history (
+  id uuid primary key default gen_random_uuid(),
+  lead_id uuid not null references cc_leads(id) on delete cascade,
+  status text not null
+    check (status in ('New','Contacted','Qualified','Proposal','Won','Lost')),
+  entered_at timestamptz not null default now(),
+  exited_at timestamptz
+);
+
+create index if not exists cc_lead_stage_history_lead_idx
+  on cc_lead_stage_history (lead_id, entered_at);
+
+insert into cc_lead_stage_history (lead_id, status, entered_at)
+select l.id, l.status, now()
+from cc_leads l
+where not exists (
+  select 1 from cc_lead_stage_history h where h.lead_id = l.id
+);
+
+create or replace function cc_track_lead_stage()
+returns trigger
+language plpgsql
+set search_path = public
+as $$
+begin
+  if tg_op = 'INSERT' then
+    insert into cc_lead_stage_history (lead_id, status, entered_at)
+    values (new.id, new.status, new.created_at);
+  elsif old.status is distinct from new.status then
+    update cc_lead_stage_history
+    set exited_at = now()
+    where lead_id = new.id and exited_at is null;
+
+    insert into cc_lead_stage_history (lead_id, status, entered_at)
+    values (new.id, new.status, now());
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists cc_leads_track_stage on cc_leads;
+create trigger cc_leads_track_stage
+after insert or update on cc_leads
+for each row execute function cc_track_lead_stage();
+
+create table if not exists cc_traffic (
+  id uuid primary key default gen_random_uuid(),
+  date date not null default current_date,
+  source text not null,
+  campaign_name text,
+  visits integer not null default 0 check (visits >= 0),
+  synced_at timestamptz not null default now()
+);
+
+create table if not exists cc_campaigns (
+  id uuid primary key default gen_random_uuid(),
+  campaign_name text not null,
+  content_title text,
+  source text,
+  sent integer not null default 0 check (sent >= 0),
+  opens integer not null default 0 check (opens >= 0),
+  clicks integer not null default 0 check (clicks >= 0),
+  conversions integer not null default 0 check (conversions >= 0),
+  synced_at timestamptz not null default now()
+);
+
 -- Row Level Security: authenticated users only
 do $$
 declare t text;
 begin
-  foreach t in array array['cc_leads','cc_revenue','cc_clients','cc_domains','cc_agents'] loop
+  foreach t in array array[
+    'cc_leads','cc_lead_stage_history','cc_traffic','cc_campaigns',
+    'cc_revenue','cc_clients','cc_domains','cc_agents'
+  ] loop
     execute format('alter table %I enable row level security', t);
     execute format('drop policy if exists "auth full access" on %I', t);
     execute format(
@@ -191,6 +260,9 @@ end $$;
 
 -- DEV ONLY (uncomment to use without auth; remove before production):
 -- do $$ declare t text; begin
---   foreach t in array array['cc_leads','cc_revenue','cc_clients','cc_domains','cc_agents'] loop
+--   foreach t in array array[
+--     'cc_leads','cc_lead_stage_history','cc_traffic','cc_campaigns',
+--     'cc_revenue','cc_clients','cc_domains','cc_agents'
+--   ] loop
 --     execute format('create policy "dev anon" on %I for all to anon using (true) with check (true)', t);
 --   end loop; end $$;
