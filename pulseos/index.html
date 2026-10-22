@@ -5,10 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PulseOS Platform</title>
     <meta name="description" content="PulseOS — learning operations, course building, assessments, and analytics." />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0a1a2f" />
+    <meta property="og:site_name" content="PulseOS Platform" />
+    <meta property="og:type" content="website" />
     <meta property="og:title" content="PulseOS Platform" />
     <meta property="og:description" content="PulseOS — learning operations, course building, assessments, and analytics." />
-    <link rel="canonical" href="https://pulseosplatform.com/" />
+    <meta property="og:url" content="https://www.pulseosplatform.com/" />
+    <meta property="og:image" content="https://www.pulseosplatform.com/pulseos-banner-graphic.webp" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="PulseOS Platform" />
+    <meta name="twitter:description" content="PulseOS — learning operations, course building, assessments, and analytics." />
+    <meta name="twitter:image" content="https://www.pulseosplatform.com/pulseos-banner-graphic.webp" />
+    <link rel="canonical" href="https://www.pulseosplatform.com/" />
+    <script>
+      // Per-route SEO metadata. Keep in sync with pulseos/public/sitemap.xml.
+      (function () {
+        var origin = 'https://www.pulseosplatform.com';
+        var path = location.pathname.replace(/\/+$/, '') || '/';
+        var pages = {
+          '/': ['PulseOS Platform', 'PulseOS — learning operations, course building, assessments, and analytics.'],
+          '/course-builder': ['Workforce Competency Course Builder | PulseOS Platform', 'Build workforce competency courses and role-based training with PulseOS.'],
+          '/course-builder/assessments': ['Assessments | PulseOS Platform', 'Create and manage competency assessments with PulseOS.'],
+          '/course-builder/analytics': ['Learning Analytics | PulseOS Platform', 'Track training progress and competency analytics with PulseOS.'],
+          '/learning-intelligence': ['Learning Intelligence | PulseOS Platform', 'Learning intelligence tools for workforce training from PulseOS.'],
+          '/learning-intelligence/lvi': ['Learning Value Index | PulseOS Platform', 'Learning Value Index (LVI) analysis from PulseOS Learning Intelligence.']
+        };
+        var page = pages[path];
+        var url = origin + (page ? (path === '/' ? '/' : path) : '/');
+        function set(sel, attr, value) {
+          var el = document.querySelector(sel);
+          if (el) el.setAttribute(attr, value);
+        }
+        set('link[rel="canonical"]', 'href', url);
+        set('meta[property="og:url"]', 'content', url);
+        if (page) {
+          document.title = page[0];
+          set('meta[name="description"]', 'content', page[1]);
+          set('meta[property="og:title"]', 'content', page[0]);
+          set('meta[property="og:description"]', 'content', page[1]);
+          set('meta[name="twitter:title"]', 'content', page[0]);
+          set('meta[name="twitter:description"]', 'content', page[1]);
+        }
+        var host = location.hostname;
+        var isProduction = host === 'www.pulseosplatform.com' || host === 'pulseosplatform.com';
+        if (!isProduction && host !== 'localhost' && host !== '127.0.0.1') {
+          set('meta[name="robots"]', 'content', 'noindex, nofollow');
+        }
+      })();
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://www.pulseosplatform.com/#organization",
+            "name": "PulseOS Platform",
+            "url": "https://www.pulseosplatform.com",
+            "logo": "https://www.pulseosplatform.com/pulseos-icon-512.webp"
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://www.pulseosplatform.com/#website",
+            "name": "PulseOS Platform",
+            "url": "https://www.pulseosplatform.com",
+            "publisher": { "@id": "https://www.pulseosplatform.com/#organization" }
+          }
+        ]
+      }
+    </script>
     <link rel="icon" type="image/webp" href="/pulseos-icon-512.webp" />
     <link rel="apple-touch-icon" href="/pulseos-icon-512.webp" />
     <link rel="manifest" href="/pulseos-manifest.json" />
