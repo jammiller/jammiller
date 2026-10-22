@@ -8,6 +8,7 @@ exception when duplicate_object then null; end $$;
 create table if not exists cc_leads (
   id uuid primary key default gen_random_uuid(),
   company text not null,
+  asset asset_name,
   contact text,
   email text,
   phone text,
@@ -33,10 +34,16 @@ create table if not exists cc_leads (
     check (intent_tier in ('High', 'Medium', 'Low', 'Unqualified')),
   routing_queue text not null default 'Suppression - Remove from Sequence',
   qualified_at timestamptz,
+  next_follow_up_at date,
+  audit_status text not null default 'Not Started'
+    check (audit_status in ('Not Started','Requested','Booked','Completed','Paid','Declined')),
+  audit_booked_at date,
+  audit_paid_at date,
   created_at timestamptz not null default now()
 );
 
 alter table cc_leads
+  add column if not exists asset asset_name,
   add column if not exists website text,
   add column if not exists industry text,
   add column if not exists employee_count integer check (employee_count >= 0),
@@ -53,7 +60,12 @@ alter table cc_leads
   add column if not exists intent_tier text not null default 'Unqualified'
     check (intent_tier in ('High', 'Medium', 'Low', 'Unqualified')),
   add column if not exists routing_queue text not null default 'Suppression - Remove from Sequence',
-  add column if not exists qualified_at timestamptz;
+  add column if not exists qualified_at timestamptz,
+  add column if not exists next_follow_up_at date,
+  add column if not exists audit_status text not null default 'Not Started'
+    check (audit_status in ('Not Started','Requested','Booked','Completed','Paid','Declined')),
+  add column if not exists audit_booked_at date,
+  add column if not exists audit_paid_at date;
 
 create or replace function cc_score_lead()
 returns trigger

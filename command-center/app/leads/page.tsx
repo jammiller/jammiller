@@ -1,6 +1,7 @@
 "use client";
 import ResourcePage from "@/components/ResourcePage";
 import { dateTime, money } from "@/components/format";
+import { ASSETS } from "@/lib/types";
 
 export default function LeadsPage() {
   return (
@@ -9,6 +10,7 @@ export default function LeadsPage() {
       table="cc_leads"
       fields={[
         { key: "company", label: "Company", required: true },
+        { key: "asset", label: "Product", type: "select", options: ASSETS, required: true },
         { key: "contact", label: "Contact" },
         { key: "email", label: "Email", type: "email" },
         { key: "phone", label: "Phone" },
@@ -30,8 +32,13 @@ export default function LeadsPage() {
         { key: "intent_tier", label: "Intent Tier", readOnly: true },
         { key: "routing_queue", label: "Routing Queue", readOnly: true },
         { key: "qualified_at", label: "Qualified At", readOnly: true, format: dateTime },
+        { key: "next_follow_up_at", label: "Next Follow-up", type: "date", clearable: true },
+        { key: "audit_status", label: "Audit Status", type: "select", required: true,
+          options: ["Not Started", "Requested", "Booked", "Completed", "Paid", "Declined"] },
+        { key: "audit_booked_at", label: "Audit Booked", type: "date", clearable: true },
+        { key: "audit_paid_at", label: "Audit Paid", type: "date", clearable: true },
         { key: "status", label: "Status", type: "select",
-          options: ["New", "Contacted", "Qualified", "Proposal", "Won", "Lost"] },
+          options: ["New", "Contacted", "Qualified", "Proposal", "Won", "Lost"], required: true },
         { key: "notes", label: "Notes", type: "textarea" },
       ]}
     />

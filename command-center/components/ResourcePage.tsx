@@ -10,6 +10,7 @@ export type Field = {
   type?: "text" | "number" | "date" | "email" | "datetime-local" | "select" | "textarea" | "boolean";
   options?: readonly string[];
   required?: boolean;
+  clearable?: boolean;
   readOnly?: boolean;
   step?: string;
   format?: (v: unknown) => string;
@@ -31,6 +32,7 @@ export default function ResourcePage({ title, table, fields, orderBy = "created_
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -49,7 +51,7 @@ export default function ResourcePage({ title, table, fields, orderBy = "created_
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    const payload: Record<string, string | number | boolean> = {};
+    const payload: Record<string, string | number | boolean | null> = {};
     for (const f of fields) {
       if (f.readOnly) continue;
       const v = form[f.key];
@@ -57,17 +59,35 @@ export default function ResourcePage({ title, table, fields, orderBy = "created_
         payload[f.key] = v === "true";
       } else if (v !== undefined && v !== "") {
         payload[f.key] = f.type === "number" ? Number(v) : v;
+      } else if (editingId && f.clearable) {
+        payload[f.key] = null;
       }
     }
     try {
-      const { error } = await getSupabase().from(table).insert(payload);
+      const request = editingId
+        ? getSupabase().from(table).update(payload).eq("id", editingId)
+        : getSupabase().from(table).insert(payload);
+      const { error } = await request;
       if (error) return setError(error.message);
     } catch (err) {
       return setError(err instanceof Error ? err.message : String(err));
     }
     setForm({});
     setShowForm(false);
+    setEditingId(null);
     load();
+  }
+
+  function edit(row: Row) {
+    const values: Record<string, string> = {};
+    for (const f of fields) {
+      if (f.readOnly) continue;
+      const value = row[f.key];
+      values[f.key] = f.type === "boolean" ? String(value === true) : String(value ?? "");
+    }
+    setForm(values);
+    setEditingId(row.id);
+    setShowForm(true);
   }
 
   async function remove(id: string) {
@@ -88,7 +108,11 @@ export default function ResourcePage({ title, table, fields, orderBy = "created_
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-semibold text-slate-100">{title}</h1>
         <button
-          onClick={() => setShowForm(!showForm)}
+          onClick={() => {
+            setShowForm(!showForm);
+            setEditingId(null);
+            setForm({});
+          }}
           className="rounded-md bg-cyan-500 px-4 py-2 text-sm font-medium text-slate-950 hover:bg-cyan-400"
         >
           {showForm ? "Close" : "+ Add"}
@@ -106,6 +130,9 @@ export default function ResourcePage({ title, table, fields, orderBy = "created_
           onSubmit={submit}
           className="mb-6 grid gap-4 rounded-xl border border-slate-800 bg-slate-900/70 p-5 sm:grid-cols-2 lg:grid-cols-3"
         >
+          <h2 className="text-sm font-medium text-slate-200 sm:col-span-2 lg:col-span-3">
+            {editingId ? "Update record" : "Add record"}
+          </h2>
           {fields.filter((f) => !f.readOnly).map((f) => (
             <label key={f.key} className={`text-xs text-slate-400 ${f.type === "textarea" ? "sm:col-span-2 lg:col-span-3" : ""}`}>
               {f.label}
@@ -148,8 +175,21 @@ export default function ResourcePage({ title, table, fields, orderBy = "created_
           ))}
           <div className="flex items-end">
             <button className="rounded-md bg-emerald-500 px-4 py-2 text-sm font-medium text-slate-950 hover:bg-emerald-400">
-              Save
+              {editingId ? "Update" : "Save"}
             </button>
+            {editingId && (
+              <button
+                type="button"
+                onClick={() => {
+                  setEditingId(null);
+                  setForm({});
+                  setShowForm(false);
+                }}
+                className="ml-2 rounded-md border border-slate-700 px-4 py-2 text-sm text-slate-300 hover:bg-slate-800"
+              >
+                Cancel
+              </button>
+            )}
           </div>
         </form>
       )}
@@ -176,6 +216,9 @@ export default function ResourcePage({ title, table, fields, orderBy = "created_
                     </td>
                   ))}
                   <td className="px-4 py-3 text-right">
+                    <button onClick={() => edit(r)} className="mr-3 text-xs text-cyan-400 hover:text-cyan-300">
+                      Edit
+                    </button>
                     <button onClick={() => remove(r.id)} className="text-xs text-red-400 hover:text-red-300">
                       Delete
                     </button>

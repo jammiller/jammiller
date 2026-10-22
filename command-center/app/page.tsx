@@ -80,6 +80,20 @@ export default function Dashboard() {
   const overdueLeads = urgentLeads.filter(
     (lead) => now - Date.parse(lead.created_at) >= 2 * 60 * 60 * 1000
   );
+  const todayDate = new Date(now);
+  const today = `${todayDate.getFullYear()}-${String(todayDate.getMonth() + 1).padStart(2, "0")}-${String(todayDate.getDate()).padStart(2, "0")}`;
+  const tremonixLeads = leads.filter((lead) => lead.asset === "Tremonix");
+  const followUpsDue = tremonixLeads.filter(
+    (lead) =>
+      lead.next_follow_up_at &&
+      lead.next_follow_up_at <= today &&
+      !["Won", "Lost"].includes(lead.status)
+  ).length;
+  const auditRequests = tremonixLeads.filter((lead) => lead.audit_status !== "Not Started");
+  const paidAudits = auditRequests.filter((lead) => lead.audit_status === "Paid").length;
+  const auditConversion = auditRequests.length
+    ? Math.round((paidAudits / auditRequests.length) * 100)
+    : 0;
 
   const healthyDomains = domains.filter((d) => d.health_status === "Healthy").length;
   const domainHealth = domains.length ? Math.round((healthyDomains / domains.length) * 100) : 0;
@@ -124,6 +138,18 @@ export default function Dashboard() {
           sub="New leads past the 2-hour SLA"
         />
         <StatCard label="Active Opportunities" value={activeOpps.length} sub={`${fmt(oppValue)} pipeline`} />
+        <StatCard
+          label="Tremonix Follow-ups Due"
+          value={followUpsDue}
+          accent={followUpsDue ? "text-amber-400" : "text-emerald-400"}
+        />
+        <StatCard label="Tremonix Audit Requests" value={auditRequests.length} />
+        <StatCard label="Tremonix Paid Audits" value={paidAudits} accent="text-emerald-400" />
+        <StatCard
+          label="Tremonix Audit Conversion"
+          value={`${auditConversion}%`}
+          sub={`${paidAudits}/${auditRequests.length} requests paid`}
+        />
         <StatCard label="Domain Health" value={`${domainHealth}%`} accent={healthColor(domainHealth)} sub={`${healthyDomains}/${domains.length} healthy`} />
         <StatCard label="Agent Health" value={`${agentHealth}%`} accent={healthColor(agentHealth)} sub={`${agents.length} agents`} />
       </div>
