@@ -9,11 +9,13 @@ import { PulseOSLanding } from './components/pulseos/PulseOSLanding';
 import { ForemanPortal } from './components/pulseos/ForemanPortal';
 import { ProspectIntelligence } from './components/pis/ProspectIntelligence';
 import { VoltEcho } from './components/VoltEcho';
+import { DataPulseSite } from './components/DataPulseSite';
 import App from './App.tsx';
 import './index.css';
 
 const hostname = window.location.hostname.toLowerCase();
 const isPulseOS = document.documentElement.dataset.app === 'pulseos' || hostname === 'pulseosplatform.com' || hostname === 'www.pulseosplatform.com' || hostname.startsWith('pulse-os-') || hostname === 'pulse-os-datapulse-social.vercel.app';
+const isDataPulseHost = document.documentElement.dataset.app === 'datapulse' || hostname === 'datapulsesocial.com' || hostname === 'www.datapulsesocial.com';
 const isPasswordRecovery = new URLSearchParams(window.location.hash.slice(1)).get('type') === 'recovery'
   || new URLSearchParams(window.location.search).get('type') === 'recovery';
 const pathname = window.location.pathname.replace(/\/$/, '') || '/';
@@ -33,7 +35,7 @@ const learningTool = pathname === '/learning-intelligence/lvi' ? 'lvi' : 'overvi
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    {isPulseOS ? <WorkforceMode /> : <App />}
+    {isPulseOS ? <WorkforceMode /> : isDataPulseHost ? <DataPulseSite /> : <App />}
     <SpeedInsights />
   </StrictMode>
 );
