@@ -9,7 +9,6 @@ import {
   CheckCircle2,
   AlertTriangle,
   BarChart3,
-  DollarSign,
   Zap,
   Calendar,
   Phone,
@@ -321,10 +320,10 @@ export function Tremonix() {
     <div className="min-h-screen bg-navy-950 text-white antialiased">
       {/* Nav */}
       <header className="sticky top-0 z-40 border-b border-white/10 bg-navy-950/95 backdrop-blur-md">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <a href="#top" className="flex items-center gap-3">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500 text-navy-950">
-              <DollarSign className="h-5 w-5" />
+        <div className="mx-auto flex min-h-24 max-w-7xl items-center justify-between gap-4 px-4 py-2 sm:px-6 lg:px-8">
+          <a href="#top" className="flex min-w-0 items-center gap-3">
+            <span className="shrink-0 rounded-lg bg-white p-1">
+              <img src="/tremonix-logo.png" alt="Tremonix" width="568" height="439" className="h-20 w-auto" />
             </span>
             <span className="text-sm font-bold tracking-[0.08em]">Revenue Recovery Audit</span>
           </a>
