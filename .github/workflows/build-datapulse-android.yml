@@ -15,6 +15,7 @@ jobs:
       DATAPULSE_KEYSTORE_PASSWORD: ${{ secrets.DATAPULSE_KEYSTORE_PASSWORD }}
       DATAPULSE_KEY_ALIAS: ${{ secrets.DATAPULSE_KEY_ALIAS }}
       DATAPULSE_KEY_PASSWORD: ${{ secrets.DATAPULSE_KEY_PASSWORD }}
+      DATAPULSE_KEYSTORE_BASE64: ${{ secrets.DATAPULSE_KEYSTORE_BASE64 }}
 
     steps:
       - name: Check out project
@@ -52,8 +53,8 @@ jobs:
 
       - name: Decode keystore from secret
         run: |
-          echo "${{ secrets.DATAPULSE_KEYSTORE_BASE64 }}" | base64 -d > android/app/datapulse.keystore
-        if: ${{ secrets.DATAPULSE_KEYSTORE_BASE64 != '' }}
+          echo "$DATAPULSE_KEYSTORE_BASE64" | base64 -d > android/app/datapulse.keystore
+        if: ${{ env.DATAPULSE_KEYSTORE_BASE64 != '' }}
 
       - name: Build DATAPULSE SOCIAL release bundle (.aab)
         working-directory: android
