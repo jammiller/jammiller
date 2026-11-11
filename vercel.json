@@ -3,26 +3,199 @@
   "outputDirectory": "dist",
   "installCommand": "npm install",
   "rewrites": [
-    { "source": "/((?!sw\\.js|manifest\\.json|safety-manifest\\.json|pulseos-manifest\\.json|statslab-manifest\\.json|robots\\.txt|sitemap\\.xml|llms\\.txt|_redirects|google.*|privacy-policy\\.html).*)", "destination": "/index.html" }
+    {
+      "source": "/insights/5-principles-effective-curriculum-design",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?datapulsesocial\\.com"
+        }
+      ],
+      "destination": "/insights/5-principles-effective-curriculum-design.html"
+    },
+    {
+      "source": "/insights/multimedia-learning-boosts-retention",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?datapulsesocial\\.com"
+        }
+      ],
+      "destination": "/insights/multimedia-learning-boosts-retention.html"
+    },
+    {
+      "source": "/insights/aligning-assessments-learning-objectives",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?datapulsesocial\\.com"
+        }
+      ],
+      "destination": "/insights/aligning-assessments-learning-objectives.html"
+    },
+    {
+      "source": "/insights/building-scalable-elearning-distributed-teams",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?datapulsesocial\\.com"
+        }
+      ],
+      "destination": "/insights/building-scalable-elearning-distributed-teams.html"
+    },
+    {
+      "source": "/insights/how-to-create-online-course-gets-results",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?datapulsesocial\\.com"
+        }
+      ],
+      "destination": "/insights/how-to-create-online-course-gets-results.html"
+    },
+    {
+      "source": "/insights/curriculum-design-best-practices-corporate-training",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?datapulsesocial\\.com"
+        }
+      ],
+      "destination": "/insights/curriculum-design-best-practices-corporate-training.html"
+    },
+    {
+      "source": "/insights/instructional-design-vs-curriculum-design",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?datapulsesocial\\.com"
+        }
+      ],
+      "destination": "/insights/instructional-design-vs-curriculum-design.html"
+    },
+    {
+      "source": "/insights/backward-design-improved-reading-outcomes",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?datapulsesocial\\.com"
+        }
+      ],
+      "destination": "/insights/backward-design-improved-reading-outcomes.html"
+    },
+    {
+      "source": "/((?!assets/|.*\\.[a-zA-Z0-9]+$).*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?pulseosplatform\\.com|pulse-os-.*\\.vercel\\.app|pulse-[a-z0-9]+-datapulse-social\\.vercel\\.app"
+        }
+      ],
+      "destination": "/pulseos.html"
+    },
+    {
+      "source": "/insights",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?datapulsesocial\\.com"
+        }
+      ],
+      "destination": "/insights.html"
+    },
+    {
+      "source": "/robots.txt",
+      "has": [
+        {
+          "type": "host",
+          "value": "tremonix.com"
+        }
+      ],
+      "destination": "/tremonix/robots.txt"
+    },
+    {
+      "source": "/sitemap.xml",
+      "has": [
+        {
+          "type": "host",
+          "value": "tremonix.com"
+        }
+      ],
+      "destination": "/tremonix/sitemap.xml"
+    },
+    {
+      "source": "/((?!sw\\.js|manifest\\.json|safety-manifest\\.json|pulseos-manifest\\.json|statslab-manifest\\.json|robots\\.txt|sitemap\\.xml|llms\\.txt|_redirects|google.*|privacy-policy\\.html).*)",
+      "destination": "/index.html"
+    }
   ],
   "headers": [
     {
       "source": "/sw.js",
       "headers": [
-        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/pulseos.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
       ]
     },
     {
       "source": "/index.html",
       "headers": [
-        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
       ]
     },
     {
       "source": "/assets/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
+    },
+    {
+      "source": "/articles/:path*",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.tremonix.com"
+        }
+      ],
+      "destination": "https://tremonix.com/:path*",
+      "statusCode": 301
+    },
+    {
+      "source": "/articles",
+      "destination": "/",
+      "statusCode": 308
+    },
+    {
+      "source": "/articles/:path*",
+      "destination": "/",
+      "statusCode": 308
     }
   ]
 }

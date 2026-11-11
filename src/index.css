@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .field { @apply w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-navy-900 outline-none transition focus:border-gold-400 focus:ring-2 focus:ring-gold-400/20; }
+  .button { @apply inline-flex items-center justify-center gap-2 rounded-xl bg-navy-900 px-4 py-2 text-sm font-bold text-white transition hover:bg-navy-800 disabled:cursor-not-allowed disabled:opacity-50; }
+}
+
 /* Blueprint grid overlay — apply to navy sections via .blueprint-overlay */
 .blueprint-overlay {
   position: relative;
