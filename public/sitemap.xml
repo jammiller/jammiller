@@ -2,38 +2,68 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://datapulsesocial.com/</loc>
-    <lastmod>2026-07-29</lastmod>
+    <lastmod>2026-11-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://datapulsesocial.com/#services</loc>
-    <changefreq>monthly</changefreq>
+    <loc>https://datapulsesocial.com/pulseos</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://datapulsesocial.com/insights</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://datapulsesocial.com/#features</loc>
+    <loc>https://datapulsesocial.com/insights/5-principles-effective-curriculum-design</loc>
+    <lastmod>2026-11-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://datapulsesocial.com/#process</loc>
+    <loc>https://datapulsesocial.com/insights/multimedia-learning-boosts-retention</loc>
+    <lastmod>2026-11-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://datapulsesocial.com/#demo</loc>
+    <loc>https://datapulsesocial.com/insights/aligning-assessments-learning-objectives</loc>
+    <lastmod>2026-11-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://datapulsesocial.com/#payments</loc>
+    <loc>https://datapulsesocial.com/insights/building-scalable-elearning-distributed-teams</loc>
+    <lastmod>2026-11-11</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://datapulsesocial.com/#contact</loc>
+    <loc>https://datapulsesocial.com/insights/how-to-create-online-course-gets-results</loc>
+    <lastmod>2026-11-11</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://datapulsesocial.com/insights/curriculum-design-best-practices-corporate-training</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://datapulsesocial.com/insights/instructional-design-vs-curriculum-design</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://datapulsesocial.com/insights/backward-design-improved-reading-outcomes</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>
