@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "vite",
     "prebuild": "node scripts/check-branding.mjs",
-    "build": "vite build",
+    "build": "vite build --config vite.tremonix.config.ts && node scripts/check-tremonix-build.mjs",
     "build:pulseos": "vite build --config vite.pulseos.config.ts && node scripts/check-pulseos-build.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
