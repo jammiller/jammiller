@@ -31,7 +31,7 @@ Our learning systems are engineered to produce:
 
 Monthly subscription plans:
 
-- Basic — $41/month (single course, up to 10 modules, basic assessments, 2 revision rounds, email support)
+- Basic — $49/month (single course, up to 10 modules, basic assessments, 2 revision rounds, email support)
 - Professional — $108/month (full curriculum design, up to 30 modules, advanced assessments, unlimited revisions, multimedia content, priority support)
 - Enterprise — $250/month (multi-program development, unlimited modules, custom branding, LMS integration, training workshops, dedicated account manager)
 
