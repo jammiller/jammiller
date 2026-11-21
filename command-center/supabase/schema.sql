@@ -177,6 +177,125 @@ create table if not exists cc_agents (
   created_at timestamptz not null default now()
 );
 
+create table if not exists cc_conversion_events (
+  id uuid primary key default gen_random_uuid(),
+  event_name text not null check (event_name in (
+    'lead_created','lead_qualified','customer_won','email_opened','customer_created','revenue_recorded'
+  )),
+  source_table text not null,
+  source_id uuid not null,
+  metadata jsonb not null default '{}'::jsonb,
+  occurred_at timestamptz not null default now()
+);
+
+create index if not exists cc_conversion_events_occurred_at_idx
+  on cc_conversion_events (occurred_at desc);
+
+create or replace function cc_track_lead_conversion()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if tg_op = 'INSERT' then
+    insert into cc_conversion_events (event_name, source_table, source_id, metadata)
+    values ('lead_created', 'cc_leads', new.id, jsonb_build_object('status', new.status));
+
+    if new.status in ('Qualified', 'Proposal', 'Won') then
+      insert into cc_conversion_events (event_name, source_table, source_id)
+      values ('lead_qualified', 'cc_leads', new.id);
+    end if;
+
+    if new.status = 'Won' then
+      insert into cc_conversion_events (event_name, source_table, source_id)
+      values ('customer_won', 'cc_leads', new.id);
+    end if;
+  else
+    if new.status is distinct from old.status then
+      if new.status in ('Qualified', 'Proposal', 'Won')
+        and old.status not in ('Qualified', 'Proposal', 'Won') then
+        insert into cc_conversion_events (event_name, source_table, source_id)
+        values ('lead_qualified', 'cc_leads', new.id);
+      end if;
+
+      if new.status = 'Won' and old.status <> 'Won' then
+        insert into cc_conversion_events (event_name, source_table, source_id)
+        values ('customer_won', 'cc_leads', new.id);
+      end if;
+    end if;
+
+    if new.email_opens > old.email_opens then
+      insert into cc_conversion_events (event_name, source_table, source_id, metadata)
+      values (
+        'email_opened',
+        'cc_leads',
+        new.id,
+        jsonb_build_object('open_count', new.email_opens - old.email_opens)
+      );
+    end if;
+  end if;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists cc_leads_conversion_after_write on cc_leads;
+create trigger cc_leads_conversion_after_write
+after insert or update of status, email_opens on cc_leads
+for each row execute function cc_track_lead_conversion();
+
+create or replace function cc_track_revenue_conversion()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  insert into cc_conversion_events (event_name, source_table, source_id, metadata)
+  values (
+    'revenue_recorded',
+    'cc_revenue',
+    new.id,
+    jsonb_build_object('amount', new.amount, 'asset', new.asset, 'revenue_type', new.revenue_type)
+  );
+  return new;
+end;
+$$;
+
+drop trigger if exists cc_revenue_conversion_after_insert on cc_revenue;
+create trigger cc_revenue_conversion_after_insert
+after insert on cc_revenue
+for each row execute function cc_track_revenue_conversion();
+
+create or replace function cc_track_customer_conversion()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  insert into cc_conversion_events (event_name, source_table, source_id)
+  values ('customer_created', 'cc_clients', new.id);
+  return new;
+end;
+$$;
+
+drop trigger if exists cc_clients_conversion_after_insert on cc_clients;
+create trigger cc_clients_conversion_after_insert
+after insert on cc_clients
+for each row execute function cc_track_customer_conversion();
+
+create or replace view cc_daily_conversion_report
+with (security_invoker = true)
+as
+select
+  date_trunc('day', occurred_at)::date as report_date,
+  event_name,
+  count(*)::integer as event_count
+from cc_conversion_events
+group by date_trunc('day', occurred_at)::date, event_name;
+
 -- Row Level Security: authenticated users only
 do $$
 declare t text;
@@ -188,6 +307,11 @@ begin
       'create policy "auth full access" on %I for all to authenticated using (true) with check (true)', t);
   end loop;
 end $$;
+
+alter table cc_conversion_events enable row level security;
+drop policy if exists "auth read conversion events" on cc_conversion_events;
+create policy "auth read conversion events"
+  on cc_conversion_events for select to authenticated using (true);
 
 -- DEV ONLY (uncomment to use without auth; remove before production):
 -- do $$ declare t text; begin

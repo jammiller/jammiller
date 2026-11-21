@@ -8,6 +8,14 @@ import { getSupabase } from "@/lib/supabase";
 import StatCard from "@/components/StatCard";
 import type { Agent, Client, Domain, Lead, Revenue } from "@/lib/types";
 
+type ConversionEvent = {
+  id: string;
+  event_name: string;
+  source_table: string;
+  occurred_at: string;
+};
+type DailyConversion = { report_date: string; event_name: string; event_count: number };
+
 const COLORS = ["#22d3ee", "#a78bfa", "#34d399", "#fbbf24"];
 const fmt = (n: number) =>
   n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
@@ -31,31 +39,43 @@ export default function Dashboard() {
   const [clients, setClients] = useState<Client[]>([]);
   const [domains, setDomains] = useState<Domain[]>([]);
   const [agents, setAgents] = useState<Agent[]>([]);
+  const [conversionEvents, setConversionEvents] = useState<ConversionEvent[]>([]);
+  const [dailyConversions, setDailyConversions] = useState<DailyConversion[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
-    (async () => {
+    const refresh = async () => {
       try {
         const sb = getSupabase();
-        const [r, l, c, d, a] = await Promise.all([
+        const [r, l, c, d, a, e, daily] = await Promise.all([
           sb.from("cc_revenue").select("*"),
           sb.from("cc_leads").select("*"),
           sb.from("cc_clients").select("*"),
           sb.from("cc_domains").select("*"),
           sb.from("cc_agents").select("*"),
+          sb.from("cc_conversion_events")
+            .select("id,event_name,source_table,occurred_at")
+            .order("occurred_at", { ascending: false })
+            .limit(20),
+          sb.from("cc_daily_conversion_report").select("*").order("report_date", { ascending: false }).limit(90),
         ]);
-        const err = [r, l, c, d, a].find((x) => x.error)?.error;
+        const err = [r, l, c, d, a, e, daily].find((x) => x.error)?.error;
         if (err) setError(err.message);
         setRevenue((r.data as Revenue[]) ?? []);
         setLeads((l.data as Lead[]) ?? []);
         setClients((c.data as Client[]) ?? []);
         setDomains((d.data as Domain[]) ?? []);
         setAgents((a.data as Agent[]) ?? []);
+        setConversionEvents((e.data as ConversionEvent[]) ?? []);
+        setDailyConversions((daily.data as DailyConversion[]) ?? []);
       } catch (e) {
         setError(e instanceof Error ? e.message : String(e));
       }
-    })();
+    };
+    void refresh();
+    const timer = window.setInterval(() => void refresh(), 30_000);
+    return () => window.clearInterval(timer);
   }, []);
 
   useEffect(() => {
@@ -93,6 +113,19 @@ export default function Dashboard() {
     .map(([name, value]) => ({ name, value }));
   const byStatus = Object.entries(tally(leads, (l) => l.status))
     .map(([status, count]) => ({ status, count }));
+  const funnel = [
+    { stage: "Lead", count: leads.length },
+    { stage: "Qualified", count: leads.filter((lead) => ["Qualified", "Proposal", "Won"].includes(lead.status)).length },
+    { stage: "Customer", count: leads.filter((lead) => lead.status === "Won").length },
+  ];
+  const dailyFunnel = Object.entries(dailyConversions.reduce<Record<string, number>>((totals, row) => {
+    if (["lead_created", "lead_qualified", "customer_won"].includes(row.event_name)) {
+      totals[row.report_date] = (totals[row.report_date] ?? 0) + row.event_count;
+    }
+    return totals;
+  }, {}))
+    .sort(([dateA], [dateB]) => dateA.localeCompare(dateB))
+    .map(([date, count]) => ({ date, count }));
 
   const tooltipStyle = { background: "#0f172a", border: "1px solid #1e293b", borderRadius: 8 };
   const healthColor = (n: number) => (n >= 80 ? "text-emerald-400" : n >= 50 ? "text-amber-400" : "text-red-400");
@@ -186,6 +219,30 @@ export default function Dashboard() {
           </ResponsiveContainer>
         </Card>
 
+        <Card title="CRM Conversion Funnel">
+          <ResponsiveContainer>
+            <BarChart data={funnel} layout="vertical">
+              <CartesianGrid stroke="#1e293b" />
+              <XAxis type="number" allowDecimals={false} stroke="#64748b" fontSize={12} />
+              <YAxis type="category" dataKey="stage" stroke="#64748b" fontSize={12} width={75} />
+              <Tooltip contentStyle={tooltipStyle} />
+              <Bar dataKey="count" fill="#22d3ee" radius={[0, 4, 4, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </Card>
+
+        <Card title="Daily Funnel Events">
+          <ResponsiveContainer>
+            <LineChart data={dailyFunnel}>
+              <CartesianGrid stroke="#1e293b" />
+              <XAxis dataKey="date" stroke="#64748b" fontSize={12} />
+              <YAxis allowDecimals={false} stroke="#64748b" fontSize={12} />
+              <Tooltip contentStyle={tooltipStyle} />
+              <Line type="monotone" dataKey="count" stroke="#34d399" strokeWidth={2} dot={false} />
+            </LineChart>
+          </ResponsiveContainer>
+        </Card>
+
         <Card title="Agent Health Scores">
           <ResponsiveContainer>
             <BarChart data={agents} layout="vertical">
@@ -198,6 +255,22 @@ export default function Dashboard() {
           </ResponsiveContainer>
         </Card>
       </div>
+
+      <section className="rounded-xl border border-slate-800 bg-slate-900/70 p-5">
+        <h2 className="mb-4 text-sm font-medium text-slate-400">Recent Conversion Activity</h2>
+        {conversionEvents.length === 0 ? (
+          <p className="text-sm text-slate-500">No conversion events recorded yet.</p>
+        ) : (
+          <ul className="divide-y divide-slate-800">
+            {conversionEvents.map((event) => (
+              <li key={event.id} className="flex flex-wrap justify-between gap-2 py-3 text-sm">
+                <span className="text-slate-200">{event.event_name.replace(/_/g, " ")}</span>
+                <span className="text-slate-500">{event.source_table} · {new Date(event.occurred_at).toLocaleString()}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </div>
   );
 }
