@@ -31,7 +31,7 @@ export default function LeadsPage() {
         { key: "routing_queue", label: "Routing Queue", readOnly: true },
         { key: "qualified_at", label: "Qualified At", readOnly: true, format: dateTime },
         { key: "status", label: "Status", type: "select",
-          options: ["New", "Contacted", "Qualified", "Proposal", "Won", "Lost"] },
+          options: ["New", "Contacted", "Qualified", "Proposal", "Booked", "Won", "Lost"] },
         { key: "notes", label: "Notes", type: "textarea" },
       ]}
     />
