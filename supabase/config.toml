@@ -7,3 +7,5 @@ verify_jwt = false
 [functions.insider-access]
 verify_jwt = false
 
+[functions.tremonix-lead-capture]
+verify_jwt = true

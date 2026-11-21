@@ -4,6 +4,86 @@
   "installCommand": "npm install",
   "rewrites": [
     {
+      "source": "/insights/5-principles-effective-curriculum-design",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?datapulsesocial\\.com"
+        }
+      ],
+      "destination": "/insights/5-principles-effective-curriculum-design.html"
+    },
+    {
+      "source": "/insights/multimedia-learning-boosts-retention",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?datapulsesocial\\.com"
+        }
+      ],
+      "destination": "/insights/multimedia-learning-boosts-retention.html"
+    },
+    {
+      "source": "/insights/aligning-assessments-learning-objectives",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?datapulsesocial\\.com"
+        }
+      ],
+      "destination": "/insights/aligning-assessments-learning-objectives.html"
+    },
+    {
+      "source": "/insights/building-scalable-elearning-distributed-teams",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?datapulsesocial\\.com"
+        }
+      ],
+      "destination": "/insights/building-scalable-elearning-distributed-teams.html"
+    },
+    {
+      "source": "/insights/how-to-create-online-course-gets-results",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?datapulsesocial\\.com"
+        }
+      ],
+      "destination": "/insights/how-to-create-online-course-gets-results.html"
+    },
+    {
+      "source": "/insights/curriculum-design-best-practices-corporate-training",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?datapulsesocial\\.com"
+        }
+      ],
+      "destination": "/insights/curriculum-design-best-practices-corporate-training.html"
+    },
+    {
+      "source": "/insights/instructional-design-vs-curriculum-design",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?datapulsesocial\\.com"
+        }
+      ],
+      "destination": "/insights/instructional-design-vs-curriculum-design.html"
+    },
+    {
+      "source": "/insights/backward-design-improved-reading-outcomes",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?datapulsesocial\\.com"
+        }
+      ],
+      "destination": "/insights/backward-design-improved-reading-outcomes.html"
+    },
+    {
       "source": "/((?!assets/|.*\\.[a-zA-Z0-9]+$).*)",
       "has": [
         {
@@ -12,6 +92,16 @@
         }
       ],
       "destination": "/pulseos.html"
+    },
+    {
+      "source": "/insights",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?datapulsesocial\\.com"
+        }
+      ],
+      "destination": "/insights.html"
     },
     {
       "source": "/robots.txt",
