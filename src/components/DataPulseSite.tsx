@@ -73,9 +73,9 @@ export function DataPulseSite() {
         <section className="blueprint-overlay relative overflow-hidden bg-navy-950 text-white">
           <div className="relative z-10 mx-auto grid max-w-7xl gap-12 px-4 py-20 sm:px-6 sm:py-28 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:px-8">
             <div>
-              <p className="mb-6 text-xs font-semibold uppercase tracking-[0.22em] text-gold-400">Social + Course Growth Partner</p>
-              <h1 className="max-w-3xl text-4xl font-bold leading-tight tracking-tight sm:text-6xl">We help experts grow online and turn knowledge into <span className="text-gold-400">paid courses.</span></h1>
-              <p className="mt-6 max-w-2xl text-base leading-relaxed text-slate-300 sm:text-lg">From social strategy to course design, we build the system that attracts, nurtures, and converts.</p>
+              <p className="mb-6 text-xs font-semibold uppercase tracking-[0.22em] text-gold-400">Learning Systems + Social Media</p>
+              <h1 className="max-w-3xl text-4xl font-bold leading-tight tracking-tight sm:text-6xl">Better learning. <span className="text-gold-400">Smarter social media.</span></h1>
+              <p className="mt-6 max-w-2xl text-base leading-relaxed text-slate-300 sm:text-lg">We design learning systems that make complex ideas clear—and help small businesses turn social media strategy into consistent action.</p>
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                 <a href={strategyCallUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl bg-gold-500 px-5 py-3 text-sm font-semibold text-navy-950 transition-all hover:-translate-y-0.5 hover:bg-gold-400">Book a Strategy Call <ArrowRight className="h-4 w-4" /></a>
                 <a href="/course-builder" className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 px-5 py-3 text-sm font-semibold text-white transition-colors hover:border-gold-400 hover:text-gold-300">Start Course Development <ArrowRight className="h-4 w-4" /></a>
