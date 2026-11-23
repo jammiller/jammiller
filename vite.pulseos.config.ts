@@ -18,5 +18,15 @@ export default defineConfig({
   build: {
     outDir: fileURLToPath(new URL('./dist', import.meta.url)),
     emptyOutDir: true,
+    rollupOptions: {
+      input: {
+        home: fileURLToPath(new URL('./pulseos/index.html', import.meta.url)),
+        'course-builder': fileURLToPath(new URL('./pulseos/course-builder/index.html', import.meta.url)),
+        'competency-library': fileURLToPath(new URL('./pulseos/competency-library/index.html', import.meta.url)),
+        'role-builder': fileURLToPath(new URL('./pulseos/role-builder/index.html', import.meta.url)),
+        'ojt-compliance': fileURLToPath(new URL('./pulseos/ojt-compliance/index.html', import.meta.url)),
+        program: fileURLToPath(new URL('./pulseos/construction-workforce-readiness/index.html', import.meta.url)),
+      },
+    },
   },
 });

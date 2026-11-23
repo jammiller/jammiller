@@ -1,0 +1,44 @@
+# PulseOS Platform
+
+> PulseOS Platform runs the Construction Workforce Readiness Program — a 12-week, self-paced online training and apprenticeship-readiness program for construction. Learners master 35 OSHA-aligned competencies and earn the PulseOS Construction Workforce Readiness Certificate and a digital badge. Starting at $299. Open enrollment, no previous construction experience required.
+
+## Construction Workforce Readiness Program
+
+- [Construction Workforce Readiness Program](https://pulseosplatform.com/construction-workforce-readiness): 12-week, self-paced online program. About 3–5 hours per week; motivated learners can finish faster.
+- What students receive: PulseOS Construction Workforce Readiness Certificate, digital credential/badge, OSHA 10 preparation materials, employability and workplace skills training, construction safety training, competency transcript, job readiness portfolio.
+- What students learn: Construction Safety, OSHA Fundamentals, Workplace Readiness, Skilled Trades Foundations, Communication & Teamwork, Career Preparation.
+- Cost: Starting at $299. Student enrollment $299, individual enrollment $399. Employer-sponsored cohorts and school/workforce board partnerships: custom pricing. Workforce, school, and employer discounts available.
+- Who can join: High school students (16+), adult learners, entry-level construction workers, apprentices, career changers, veterans, job seekers. No previous construction experience required.
+- How to enroll: Complete the online enrollment form, select the Construction Workforce Readiness pathway, receive access to PulseOS, complete learning activities and assessments, earn the certificate and digital credential.
+- Enrollment: Open year-round.
+
+## Pages
+
+- [PulseOS Platform home](https://pulseosplatform.com/): Construction Workforce Readiness Program — 12-week self-paced training for construction careers. Readiness proven by evidence, not course completion.
+- [Construction Workforce Readiness Program](https://pulseosplatform.com/construction-workforce-readiness): 12-week self-paced program. Certificate and digital badge. Starting at $299.
+- [Course Builder — Workforce Competency](https://pulseosplatform.com/course-builder): UbD-driven learning operations. Build reusable competency requirements, verify them in the field, and see workforce gaps.
+
+## What it does
+
+- [Competency Library](https://pulseosplatform.com/competency-library): An OSHA-aligned, construction-industry competency model built for field validation. 35 competencies. Start with a competency, then map it to roles, tasks, and evidence standards.
+- [Role Builder](https://pulseosplatform.com/role-builder): Roles are built from the competencies and tasks people must perform.
+- [OJT & Compliance](https://pulseosplatform.com/ojt-compliance): On-the-job training and compliance tracking, including competent-person and training requirements.
+- [Workforce Intelligence](https://pulseosplatform.com/): Verified competency data exposes readiness gaps by role, crew, and project.
+
+## Competency model
+
+- SKEB model: Skills, Knowledge, Experience, and Behaviors are defined for each competency.
+- Evidence-based validation: Training alone is not verification. Field evidence and assessment establish readiness.
+- Accepted evidence includes knowledge assessment, practical demonstration, and supervisor observation.
+- Example: Hazard Recognition (Level 3) — identify existing and predictable hazards and take action before work begins, including completing a job hazard analysis and escalating uncontrolled hazards.
+
+## Foreman field validation
+
+- [Foreman field-validation checklist](https://pulseosplatform.com/competency-library): Validate competency evidence in the field to ensure training translates to real readiness. Checks work relevance, level accuracy, evidence standard, site alignment, and safety.
+
+## Contact
+
+- [Start Your Training](https://pulseosplatform.com/construction-workforce-readiness)
+- Phone: 850-830-9910
+- Email: james@datapulsesocial.com
+- Mailing address: 28839 Midnight Star Loop, Wesley Chapel, FL 33543

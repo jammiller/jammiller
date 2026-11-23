@@ -101,8 +101,8 @@ export function PulseOS({ initialView = 'workforce', brand = 'pulseos' }: { init
               ))}
             </nav>
             <div className="flex items-center gap-3">
-              <a href="https://calendar.app.google/8otEDsChvouw51aaA" target="_blank" rel="noopener noreferrer" className="hidden items-center gap-1.5 rounded-lg border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 transition-colors hover:bg-white/5 hover:text-white sm:inline-flex">
-                <Calendar className="h-3.5 w-3.5" /> Book a Demo
+              <a href="https://pulseosplatform.com/construction-workforce-readiness" target="_blank" rel="noopener noreferrer" className="hidden items-center gap-1.5 rounded-lg border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 transition-colors hover:bg-white/5 hover:text-white sm:inline-flex">
+                <Calendar className="h-3.5 w-3.5" /> Start Your Training
               </a>
             </div>
           </div>
@@ -201,8 +201,8 @@ export function PulseOS({ initialView = 'workforce', brand = 'pulseos' }: { init
           <p className="text-xs text-slate-500">PulseOS — The standards-to-evidence layer for workforce training.</p>
           <p className="text-xs text-slate-500">{isDataPulseStudio ? 'DATAPULSE SOCIAL Course Studio — powered by PulseOS learning operations.' : 'PulseOS — UbD-driven learning operations. Built for real instructional design.'}</p>
           <div className="flex gap-3">
-            <a href="https://calendar.app.google/8otEDsChvouw51aaA" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-lg bg-gold-500 px-3 py-1.5 text-xs font-semibold text-navy-950 transition-colors hover:bg-gold-400">
-              <Calendar className="h-3.5 w-3.5" /> Book a Demo
+            <a href="https://pulseosplatform.com/construction-workforce-readiness" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-lg bg-gold-500 px-3 py-1.5 text-xs font-semibold text-navy-950 transition-colors hover:bg-gold-400">
+              <Calendar className="h-3.5 w-3.5" /> Start Your Training
             </a>
             <a href="tel:8508309910" className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-semibold text-navy-900 transition-colors hover:border-gold-400">
               <Phone className="h-3.5 w-3.5" /> 850-830-9910
@@ -441,7 +441,7 @@ function Dashboard({
               'OJT & compliance workspace',
             ]}
             ctaLabel="Book a pilot"
-            ctaHref="https://calendar.app.google/8otEDsChvouw51aaA"
+            ctaHref="https://pulseosplatform.com/construction-workforce-readiness"
             highlighted={false}
           />
           <PricingCard
@@ -456,8 +456,8 @@ function Dashboard({
               'Program setup support',
               'Priority support',
             ]}
-            ctaLabel="Book a demo"
-            ctaHref="https://calendar.app.google/8otEDsChvouw51aaA"
+            ctaLabel="Start Your Training"
+            ctaHref="https://pulseosplatform.com/construction-workforce-readiness"
             highlighted={true}
           />
           <PricingCard
@@ -473,7 +473,7 @@ function Dashboard({
               'Security and procurement support',
             ]}
             ctaLabel="Talk to us"
-            ctaHref="https://calendar.app.google/8otEDsChvouw51aaA"
+            ctaHref="https://pulseosplatform.com/construction-workforce-readiness"
             highlighted={false}
           />
         </div>
