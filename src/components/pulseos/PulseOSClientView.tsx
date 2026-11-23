@@ -170,8 +170,8 @@ export function PulseOSClientView({
         <div className="mx-auto flex max-w-5xl flex-col items-center gap-3 px-4 sm:flex-row sm:justify-between sm:px-6">
           <p className="text-xs text-slate-500">PulseOS Client Portal — UbD-driven learning operations.</p>
           <div className="flex gap-3">
-            <a href="https://calendar.app.google/8otEDsChvouw51aaA" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-lg bg-gold-500 px-3 py-1.5 text-xs font-semibold text-navy-950 transition-colors hover:bg-gold-400">
-              <Calendar className="h-3.5 w-3.5" /> Book a Demo
+            <a href="https://pulseosplatform.com/construction-workforce-readiness" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-lg bg-gold-500 px-3 py-1.5 text-xs font-semibold text-navy-950 transition-colors hover:bg-gold-400">
+              <Calendar className="h-3.5 w-3.5" /> Start Your Training
             </a>
             <a href="tel:8508309910" className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-semibold text-navy-900 transition-colors hover:border-gold-400">
               <Phone className="h-3.5 w-3.5" /> 850-830-9910

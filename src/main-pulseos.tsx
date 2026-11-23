@@ -5,11 +5,15 @@ import { WorkforceMode } from './components/pulseos/WorkforceMode';
 import { PulseOS } from './components/PulseOS';
 import { LearningIntelligence } from './components/pulseos/LearningIntelligence';
 import { ForemanPortal } from './components/pulseos/ForemanPortal';
+import { ConstructionReadiness, ProgramHeader, ProgramFooter } from './components/pulseos/ConstructionReadiness';
+import { OJTPublicPage } from './components/pulseos/OJTPublicPage';
 import './index.css';
 
 const isPasswordRecovery = new URLSearchParams(window.location.hash.slice(1)).get('type') === 'recovery'
   || new URLSearchParams(window.location.search).get('type') === 'recovery';
 const pathname = window.location.pathname.replace(/\/$/, '') || '/';
+const isPublicWorkforceRoute = pathname === '/competency-library' || pathname === '/role-builder';
+const workforceView = pathname === '/role-builder' ? 'roles' : (pathname === '/ojt-workspace' || isPasswordRecovery) ? 'ojt' : 'library';
 const isForemanRoute = pathname === '/foreman';
 const courseBuilderView = pathname === '/course-builder/assessments' ? 'assessments'
   : pathname === '/course-builder/analytics' ? 'analytics'
@@ -20,9 +24,19 @@ const learningTool = pathname === '/learning-intelligence/lvi' ? 'lvi' : 'overvi
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <PulseOSAuthProvider>
-    {isForemanRoute ? <ForemanPortal /> : courseBuilderView ? <PulseOS initialView={courseBuilderView} brand="pulseos" /> : isLearningIntelligenceRoute ? <LearningIntelligence initialTool={learningTool} /> : <WorkforceMode initialView={isPasswordRecovery ? 'ojt' : 'library'} />}
-    </PulseOSAuthProvider>
+    {!isPasswordRecovery && (pathname === '/' || pathname === '/construction-workforce-readiness') ? (
+      <ConstructionReadiness isHome={pathname === '/'} />
+    ) : (
+      <PulseOSAuthProvider>
+        {pathname === '/ojt-compliance' ? <OJTPublicPage /> : isPublicWorkforceRoute ? (
+          <div className="min-h-screen bg-softgray">
+            <ProgramHeader sectionBase="/construction-workforce-readiness" />
+            <main className="mx-auto max-w-6xl px-5 py-10"><WorkforceMode initialView={workforceView} /></main>
+            <ProgramFooter sectionBase="/construction-workforce-readiness" />
+          </div>
+        ) : isForemanRoute ? <ForemanPortal /> : courseBuilderView ? <PulseOS initialView={courseBuilderView} brand="pulseos" /> : isLearningIntelligenceRoute ? <LearningIntelligence initialTool={learningTool} /> : <WorkforceMode initialView={workforceView} />}
+      </PulseOSAuthProvider>
+    )}
   </StrictMode>
 );
 

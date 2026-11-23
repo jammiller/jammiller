@@ -1,21 +1,18 @@
-import { useMemo, useState } from 'react';
-import { CheckCircle2, ClipboardCheck, HardHat, Layers3, ShieldCheck, Users, Wrench, Clock3 } from 'lucide-react';
+import { useState } from 'react';
+import { CheckCircle2, ClipboardCheck, Layers3, ShieldCheck, Wrench, Clock3 } from 'lucide-react';
 import { OJTCompliance } from './OJTCompliance';
-import { competencies, roles, workers, type CompetencyDomain } from '../../lib/competency-foundation';
+import { competencies, roles, type CompetencyDomain } from '../../lib/competency-foundation';
 
 type WorkforceView = 'library' | 'roles' | 'passport' | 'ojt';
 
 const domains: CompetencyDomain[] = ['Safety', 'Technical', 'Quality', 'Productivity', 'Leadership', 'Professional Behaviors'];
 
 export function WorkforceMode({ initialView = 'library' }: { initialView?: WorkforceView }) {
-  const [view, setView] = useState<WorkforceView>(initialView);
+  const view = initialView;
   const [domain, setDomain] = useState<CompetencyDomain | 'All'>('All');
   const [selectedId, setSelectedId] = useState(competencies[0].id);
   const selected = competencies.find(item => item.id === selectedId) ?? competencies[0];
   const visible = domain === 'All' ? competencies : competencies.filter(item => item.domain === domain);
-  const worker = workers[0];
-  const verified = worker.competencies.filter(item => item.verified).length;
-  const selectedRole = useMemo(() => roles.find(role => role.title === worker.role) ?? roles[0], [worker.role]);
 
   return (
     <div className="space-y-6">
@@ -23,13 +20,10 @@ export function WorkforceMode({ initialView = 'library' }: { initialView?: Workf
         <div className="absolute inset-0 bg-grid-dark bg-grid opacity-30" />
         <div className="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-gold-500/10 blur-3xl" />
         <div className="relative max-w-3xl">
-          <div className="inline-flex items-center gap-2 rounded-full border border-gold-500/30 bg-gold-500/10 px-3 py-1 text-xs font-bold text-gold-300"><HardHat className="h-3.5 w-3.5" /> The Design-and-Evidence Layer</div>
-          <h1 className="mt-4 text-3xl font-bold leading-tight sm:text-5xl">Design training against the standards you are accountable to—and prove readiness with evidence.</h1>
-          <p className="mt-4 text-sm leading-6 text-slate-300 sm:text-base">PulseOS connects standards, curriculum, OJT, assessments, and field evidence so workforce programs can measure readiness—not just completion.</p>
-          <div className="inline-flex items-center gap-2 rounded-full border border-gold-500/30 bg-gold-500/10 px-3 py-1 text-xs font-bold text-gold-300"><HardHat className="h-3.5 w-3.5" /> Competency-First Workforce OS</div>
-          <h1 className="mt-4 text-3xl font-bold leading-tight sm:text-5xl">Readiness is proven by evidence, not course completion.</h1>
-          <p className="mt-4 text-sm leading-6 text-slate-300 sm:text-base">Industry → Occupation → Role → Competency → Task. Build reusable competency requirements, verify them in the field, and see the workforce gaps that affect delivery.</p>
-          <div className="mt-6 flex flex-wrap gap-3"><a href="/course-builder" className="rounded-xl bg-gold-500 px-4 py-2.5 text-sm font-bold text-navy-950 hover:bg-gold-400">Workforce Competency</a><a href="/" className="rounded-xl border border-white/20 bg-white/5 px-4 py-2.5 text-sm font-bold text-white hover:bg-white/10">Workforce Intelligence</a></div>
+          <p className="text-sm font-bold uppercase tracking-widest text-gold-300">PulseOS · Construction readiness</p>
+          <h1 className="mt-4 text-3xl font-bold leading-tight sm:text-5xl">{view === 'roles' ? 'Role Builder' : view === 'ojt' ? 'OJT & Compliance' : 'Competency Library'}</h1>
+          <p className="mt-4 text-base leading-7 text-slate-300">Readiness is proven by evidence, not course completion. Explore the competencies, role requirements, and field evidence behind construction workforce readiness.</p>
+          <div className="mt-6 flex flex-wrap gap-3"><a href="https://pulseosplatform.com/construction-workforce-readiness" className="rounded-xl bg-gold-500 px-4 py-2.5 text-sm font-bold text-navy-950 hover:bg-gold-400">Start Your Training</a><a href="/course-builder" className="rounded-xl border border-white/20 px-4 py-2.5 text-sm font-bold text-white hover:bg-white/10">Course Builder</a><a href="/" className="rounded-xl border border-white/20 px-4 py-2.5 text-sm font-bold text-white hover:bg-white/10">Home</a></div>
           <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {[
               ['Standards-to-curriculum map', 'Translate the standards, program outcomes, and job requirements you own into an intentional learning design.'],
@@ -53,10 +47,10 @@ export function WorkforceMode({ initialView = 'library' }: { initialView?: Workf
 
       <nav className="flex flex-wrap gap-2 border-b border-slate-200 pb-4">
         {([
-          ['library', 'Competency Library', Layers3],
-          ['roles', 'Role Builder', Wrench],
-          ['ojt', 'OJT & Compliance', Clock3],
-        ] as const).map(([key, label, Icon]) => <button key={key} onClick={() => setView(key)} className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition ${view === key ? 'border-b-2 border-gold-500 text-gold-700' : 'border-b-2 border-transparent text-slate-600 hover:text-navy-900'}`}><Icon className="h-4 w-4" />{label}</button>)}
+          ['library', 'Competency Library', Layers3, '/competency-library'],
+          ['roles', 'Role Builder', Wrench, '/role-builder'],
+          ['ojt', 'OJT & Compliance', Clock3, '/ojt-compliance'],
+        ] as const).map(([key, label, Icon, href]) => <a key={key} href={href} aria-current={view === key ? 'page' : undefined} className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition ${view === key ? 'border-b-2 border-gold-500 text-gold-700' : 'border-b-2 border-transparent text-slate-600 hover:text-navy-900'}`}><Icon className="h-4 w-4" />{label}</a>)}
       </nav>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
